@@ -12,7 +12,7 @@ import { BsArrowRight } from 'react-icons/bs';
 import About from '../components/About/About';
 import ServiceList from '../components/Services/ServiceList';
 // import BarberList from '../components/Barbers/BarberList';
-import FaqList from '../components/faq/faqList';
+import FaqList from '../components/faq/FaqList';
 import Testimonial from'../components/Testimonial/Testimonial';
 import CounterSection from '../components/Counter/CounterSection';
 
