@@ -1,5 +1,5 @@
 // Importing the app's main CSS file for global styles
-import './app.css'; 
+import './App.css'; 
 
 // Importing the Layout component, which includes the Header, Footer, and the main content (Routers)
 import Layout from './layout/Layout';
