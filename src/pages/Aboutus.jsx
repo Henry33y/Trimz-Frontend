@@ -1,5 +1,5 @@
 import { Users,Award, Star, Store, TrendingUp } from 'lucide-react';
-import About from '../components/About/about';
+import About from '../components/About/About';
 // import trimzImg from '../assets/images/trimz.png';
 import trimzImg from '../assets/images/about1.jpg';
 
