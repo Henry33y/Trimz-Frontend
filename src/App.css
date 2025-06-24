@@ -1,0 +1,139 @@
+        /* Importing a Google Font called 'Manrope' with weights ranging from 200 to 800 */
+        
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+        /* Applying a universal reset to remove margin and padding for all elements, 
+   and setting box-sizing to border-box for consistent sizing */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        /* Styling the body element with the 'Manrope' font as the primary font */
+        
+        body {
+            font-family: "Manrope", sans-serif;
+        }
+        
+        .swiper-pagination-bullet {
+            width: 12px !important;
+            height: 12px !important;
+            border: 1px solid #181a1e !important;
+            opacity: 100% !important;
+            background: #fff !important;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: #0067ff !important;
+            border: none !important;
+        }
+        
+        .swiper {
+            padding-bottom: 70px !important;
+        }
+        
+        .swiper-slide.swiper-slide-next {
+            background: #0067ff;
+            border-radius: 12px;
+            box-shadow: 0px 20px 70px rgba(0, 103, 255, 0.3) !important;
+        }
+        
+        .swiper-slide.swiper-slide-next h4,
+        .swiper-slide.swiper-slide-next p {
+            color: #fff !important;
+        }
+        
+        .swiper-pagination {
+            top: 90% !important;
+        }
+        /* Sticky header styling:
+   - The header will stick to the top of the page when scrolling.
+   - Box shadow adds a subtle 3D effect.
+   - Position is 'sticky' to keep it fixed once it reaches the top of the viewport.
+   - The z-index ensures it stays above other content. */
+        
+        .sticky__header {
+            width: 100px;
+            /* Width of the header (seems small for a header; adjust if necessary) */
+            height: 80px;
+            /* Height of the header */
+            line-height: 80px;
+            /* Ensures content inside the header is vertically centered */
+            position: sticky;
+            /* Makes the header stick to the top of the viewport when scrolling */
+            top: 0;
+            /* Positioning at the top */
+            left: 0;
+            /* Aligning to the left */
+            z-index: 9999;
+            /* High z-index to ensure the header stays on top of other elements */
+            box-shadow: 3px 3px -8px 3px #ddd;
+            /* Adds a shadow for depth */
+            /* background: white; */
+        }
+        /* Media query for screens that are 768px wide or less (typically tablets and mobile devices) */
+        
+        @media only screen and (max-width:768px) {
+            /* Styling for the navigation menu in mobile view */
+            .navigation {
+                width: 100%;
+                /* Full screen width */
+                height: 100%;
+                /* Full screen height */
+                position: relative;
+                /* Fixing the navigation to the viewport */
+                top: 0;
+                /* Aligning to the top */
+                left: 0;
+                /* Aligning to the left */
+                z-index: 1000;
+                /* Ensures it sits above most elements */
+                background: #00000084;
+                /* A semi-transparent black background */
+                display: none;
+                /* Initially hidden; it will be shown when the menu is toggled */
+                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+                width: 100%;
+                height: 100vh;
+
+            }
+            /* Styling for the menu list in mobile view */
+            .menu {
+                width: 15rem; /* Fixed width of the menu */
+                position: absolute; /* Positioned relative to the navigation */
+                /* top: 9px;  */
+                right: 0; /* Aligning to the right */
+                background:rgb(255, 255, 255); /* Yellow background for the menu */
+                z-index: 1100; /* Ensures it's above other elements */
+                display: flex; /* Enables flexbox layout */
+                flex-direction: column; /* Stacks the menu items vertically */
+                justify-content: center; /* Centers menu items vertically */
+                align-items: center; /* Centers menu items horizontally */
+                line-height: 30px; /* Space between menu items */
+                height: 100vh;
+                /* backdrop-filter: blur(3px); */
+            }
+            
+            /* Class to show the menu when toggled (in mobile view) */
+            .show__menu {
+                display: flex;
+                z-index: 9999;
+                animation: slideDown 0.3s ease forwards;
+
+                /* backdrop-filter: blur(0px); */
+            }
+            .navigation.show__menu{
+                /* backdrop-filter: blur(3px) */
+            }
+            @keyframes slideDown {
+                from {
+                  opacity: 0;
+                  transform: translateY(-10px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+            }
+        }
