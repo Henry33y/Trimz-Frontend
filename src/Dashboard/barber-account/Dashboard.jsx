@@ -7,7 +7,7 @@ import Tabs from "./Tabs";
 import { useContext, useEffect, useState } from "react";
 import BarberAbout from './../../pages/Barbers/BarberAbout';
 import Profile from "./Profile";
-import starIcon from '../../assets/images/star.png'
+import starIcon from '../../assets/images/Star.png'
 import { AuthContext } from "../../context/AuthContext";
 
 import Appointments  from "./Appointments";
