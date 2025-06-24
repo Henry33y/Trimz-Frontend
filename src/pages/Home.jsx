@@ -9,7 +9,7 @@ import icon02 from '../assets/images/icon02.png'
 import icon03 from '../assets/images/icon03.png'
 import faqImg from '../assets/images/faq-img1.png';
 import { BsArrowRight } from 'react-icons/bs';
-import About from '../components/About/about';
+import About from '../components/About/About';
 import ServiceList from '../components/Services/ServiceList';
 // import BarberList from '../components/Barbers/BarberList';
 import FaqList from '../components/faq/faqList';
