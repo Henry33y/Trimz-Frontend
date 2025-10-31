@@ -131,7 +131,7 @@ const Signup = () => {
   };
   const handleOauth = async () => {
     try {
-      window.location.href = "http://localhost:5000/api/auth/google";
+      window.location.href = `${BASE_URL}auth/google`;
       
     }catch(err){
       toast.error(err.message)
