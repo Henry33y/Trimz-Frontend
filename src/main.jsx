@@ -11,7 +11,7 @@ import App from './App.jsx';
 import './index.css';
 
 // Importing BrowserRouter from react-router-dom to handle routing in the app
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 // Importing toast notifications
 import { ToastContainer } from 'react-toastify';
@@ -22,8 +22,8 @@ import { AuthContextProvider } from './context/AuthContext.jsx';
 
 // Handle OAuth token passed via hash fragment from backend redirects like
 // https://your-frontend.com/#/users/profile/me?token=...&method=googleoauth
-// This keeps server-side changes minimal: backend can redirect to /#/<path>?token=...
-// and this code will extract the token, store it, and rewrite the URL to the SPA path
+// We use HashRouter so the SPA will not 404 on reload. This handler extracts the token
+// and stores it, then cleans the hash by removing the token param while keeping the route.
 ;(function handleHashOAuth() {
   try {
     const hash = window.location.hash || '';
@@ -39,13 +39,18 @@ import { AuthContextProvider } from './context/AuthContext.jsx';
     if (token) {
       // store token where the app expects it (localStorage used across the app)
       localStorage.setItem('token', token);
+      params.delete('token');
     }
-    // Replace the URL to the clean path (remove hash) so BrowserRouter can route normally
-    const newPath = '/' + rawPath + (params.toString() ? ('?' + params.toString().replace(/(^|&)token=[^&]+/,'').replace(/^&/,'').replace(/&$/,'')) : '');
-    // If the only param was token, newPath may end with '?' or empty query - clean it
-    const cleanedPath = newPath.replace(/\?$|\?&|&$/g, '');
-    if (cleanedPath !== window.location.pathname + window.location.search) {
-      window.history.replaceState({}, document.title, cleanedPath);
+
+    // Build cleaned hash (keep other params, if any)
+    const cleanedQuery = params.toString();
+    const cleanedHash = '#/' + rawPath + (cleanedQuery ? ('?' + cleanedQuery) : '');
+
+    // Replace only the hash portion so the browser continues to request the app root on reload
+    if (window.location.hash !== cleanedHash) {
+      // Use replaceState to avoid adding history entry
+      const newUrl = window.location.pathname + window.location.search + cleanedHash;
+      window.history.replaceState({}, document.title, newUrl);
     }
   } catch (e) {
     // Non-fatal: if parsing fails just continue rendering the app
