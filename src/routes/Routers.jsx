@@ -13,7 +13,7 @@ import MyAccount from '../Dashboard/user-account/MyAccount';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import ResetPassword from '../pages/ResetPassword';
-import Thankyou from '../../src/pages/Barbers/BarberServices/ThankYou';
+import Thankyou from '../pages/Barbers/BarberServices/ThankYou';
 import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
 import NotificationPage from '../pages/Notifications';
 

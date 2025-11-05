@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:prod": "vite build --mode production",
+    "preview": "vite preview --port 5173",
+    "serve": "npm run build && npm run preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "vite"
   },
   "dependencies": {
     "aos": "^2.3.4",
