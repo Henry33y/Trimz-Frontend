@@ -20,12 +20,14 @@ const MyAppointments = () => {
     }
 
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+        const storedToken = localStorage.getItem('token');
+        // Basic guard: ensure we don't send invalid or missing token strings like 'null' or 'undefined'
+        const tokenToSend = storedToken && typeof storedToken === 'string' && storedToken.split('.').length === 3 ? storedToken : null;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: tokenToSend ? { Authorization: `Bearer ${tokenToSend}` } : {},
+        });
 
       // Parse the response once
       const result = await response.json();

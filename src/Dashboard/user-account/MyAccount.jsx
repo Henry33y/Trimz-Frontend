@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import MyAppointments from './MyAppointments';
 import Profile from './Profile';
 
-import useGetProfile from '../../hooks/useFetchData';
+// ...existing code... (removed unused import 'useGetProfile')
 import { BASE_URL } from '../../config';
 
 import Loading from '../../components/Loading/Loading';
@@ -23,8 +23,19 @@ const MyAccount = () => {
   const [error, setError] = useState(null); // State for  error
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-  
+    // Prefer search params, but fall back to hash params for hash-based redirects
+    let urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.get('method')) {
+      // If the backend redirected using a hash (/#/path?token=...&method=...), parse that
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#/')) {
+        const [, rawQuery] = hash.slice(2).split('?');
+        if (rawQuery) {
+          urlParams = new URLSearchParams(rawQuery);
+        }
+      }
+    }
+
     if (urlParams.get('method') === 'googleoauth') {
       const initializeAuth = async () => {
         const jwtToken = urlParams.get('token');
