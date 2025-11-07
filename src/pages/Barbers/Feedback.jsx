@@ -6,7 +6,9 @@ import FeedbackForm from './FeedbackForm';
 import Loader from '../../components/Loading/Loading.jsx'
 import { useParams } from 'react-router-dom';
 
-const Feedback = ({reviews, loading}) => {
+import defaultAvatar from '../../assets/images/avatar-icon.png'
+
+const Feedback = ({reviews, loading, onReviewAdded}) => {
     const user = JSON.parse(localStorage.getItem('user'))
     console.log("User", user);
     const paramId = useParams().id
@@ -16,17 +18,22 @@ const Feedback = ({reviews, loading}) => {
       <div>
           <div className="mb-[50px]">
               <h4 className="text-[20px] leading-[30px] font-bold text-headingColor my-4">
-                  All reviews ({reviews.length})
+                  All reviews ({reviews?.length || 0})
               </h4>
 
             {loading && <Loader />}
 
-              {!loading &&
-               reviews?.map((review, index) => 
+                            {!loading && Array.isArray(reviews) &&
+                             reviews.map((review, index) => 
                 (<div key={index} className="flex justify-between gap-4 mb-[30px]">
                 <div className="flex space-x-4">
                     <figure className="w-10 h-10 rounded-full">
-                        <img className="w-full rounded-full h-full object-cover object-top" src={review?.customer?.profilePicture.url} alt="" />
+                                                <img
+                                                    className="w-full rounded-full h-full object-cover object-top"
+                                                    src={review?.customer?.profilePicture?.url || defaultAvatar}
+                                                    alt={review?.customer?.name || 'User'}
+                                                    onError={(e) => { e.currentTarget.src = defaultAvatar; }}
+                                                />
                     </figure>
 
                     <div className='w-5/6'>
@@ -44,8 +51,8 @@ const Feedback = ({reviews, loading}) => {
 
                   {/* ==== Rating Stars ===== */}
                 <div className='flex gap-1'>
-                    {[...Array(review?.rating).keys()].map((...index) => (
-                        <AiFillStar key={index} color='#0067FF' />
+                    {[...Array(Number(review?.rating) || 0).keys()].map((_, i) => (
+                        <AiFillStar key={i} color='#0067FF' />
                     ))}
                 </div>
             </div>
@@ -61,7 +68,18 @@ const Feedback = ({reviews, loading}) => {
                   </button>
               </div>}
           
-          {showFeedbackForm && <FeedbackForm/>}
+                    {showFeedbackForm && (
+                        <FeedbackForm
+                            onSuccess={(newReview) => {
+                                // Hide the form and bubble the new review to parent
+                                setShowFeedbackForm(false);
+                                if (typeof onReviewAdded === 'function') {
+                                    onReviewAdded(newReview);
+                                }
+                            }}
+                            onCancel={() => setShowFeedbackForm(false)}
+                        />
+                    )}
     </div>
   )
 }

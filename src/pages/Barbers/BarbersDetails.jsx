@@ -141,7 +141,16 @@ const BarbersDetails = () => {
               experience={experience}/>
               }
               {tab === 'feedback' && (
-              <Feedback reviews={reviews} totalRating={totalRating} loading={reviewsLoading} error={reviewsError} />)}
+              <Feedback
+                reviews={reviews}
+                totalRating={totalRating}
+                loading={reviewsLoading}
+                error={reviewsError}
+                onReviewAdded={(newReview) => {
+                  // Prepend the new review for instant UI update
+                  setReviews((prev) => [newReview, ...(Array.isArray(prev) ? prev : [])]);
+                }}
+              />)}
 
               {/* === Will be added later == Dynamic Services */}
               {tab === 'services' && <BarberServices barberData={provider} />}

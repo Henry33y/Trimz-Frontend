@@ -1,10 +1,11 @@
 import { useState } from "react";
+import PropTypes from 'prop-types';
 import { AiFillStar } from "react-icons/ai"
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/BeatLoader";
-const FeedbackForm = () => {
+const FeedbackForm = ({ onSuccess, onCancel }) => {
 
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
@@ -35,14 +36,27 @@ const FeedbackForm = () => {
             body: JSON.stringify({ rating, reviewText })
         });
 
-        const result = await res.json();
+    const result = await res.json();
 
         if (!res.ok) {
             throw new Error(result.message); // Handle server error messages
         }
 
-        setLoading(false);
-        toast.success(result.message); // Show success message
+                setLoading(false);
+                toast.success(result.message); // Show success message
+
+                // Construct a hydrated review object for immediate UI update
+                const hydratedReview = {
+                    ...result.data,
+                    customer: JSON.parse(localStorage.getItem('user')) || result.data.customer || null,
+                };
+                if (typeof onSuccess === 'function') {
+                    onSuccess(hydratedReview);
+                }
+                // Reset form state
+                setRating(0);
+                setHover(0);
+                setReviewText('');
         
         } catch (err) {
             setLoading(false);
@@ -102,11 +116,23 @@ const FeedbackForm = () => {
                     onChange={(e)=>setReviewText(e.target.value)}
                 ></textarea>
             </div>
-            <button type="submit" onClick={handleSubmitReview} className="btn">
-                {loading ? <HashLoader size={25} color="#fff"/> : 'Submit Feedback'}
-            </button>
+                        <div className="flex gap-3 mt-4">
+                            <button type="submit" onClick={handleSubmitReview} className="btn">
+                                    {loading ? <HashLoader size={25} color="#fff"/> : 'Submit Feedback'}
+                            </button>
+                            {onCancel && (
+                                <button type="button" onClick={onCancel} className="btn bg-gray-500 hover:bg-gray-600">
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
         </form>
     );
 };
 
 export default FeedbackForm;
+
+FeedbackForm.propTypes = {
+    onSuccess: PropTypes.func,
+    onCancel: PropTypes.func,
+};
