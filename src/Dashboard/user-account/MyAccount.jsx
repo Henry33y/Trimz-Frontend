@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
 import MyAppointments from './MyAppointments';
@@ -117,9 +118,12 @@ const MyAccount = () => {
   
   
 
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
-    window.location.href = '/login';
+    // With HashRouter, use navigate to avoid full-page reload and 404s
+    navigate('/login', { replace: true });
   };
 
   return (

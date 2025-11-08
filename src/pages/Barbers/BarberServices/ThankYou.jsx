@@ -1,7 +1,9 @@
 import { BsCheckCircle } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const ThankYou = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
       <motion.div
@@ -18,7 +20,7 @@ const ThankYou = () => {
           Your appointment has been confirmed. We appreciate your trust in us.
         </p>
         <button
-          onClick={() => window.location.href = "/"} // Adjust if using react-router
+          onClick={() => navigate('/')}
           className="mt-6 px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
         >
           Back to Home
