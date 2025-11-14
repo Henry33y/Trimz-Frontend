@@ -16,6 +16,7 @@ import ResetPassword from '../pages/ResetPassword';
 import Thankyou from '../pages/Barbers/BarberServices/ThankYou';
 import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
 import NotificationPage from '../pages/Notifications';
+import AuthCallback from '../pages/AuthCallback.jsx';
 
 
 const Routers = () => {
@@ -32,6 +33,7 @@ const Routers = () => {
       <Route path="/aboutus" element={<Aboutus />} />
       <Route path="/thank-you" element={<Thankyou />} />
       <Route path="/confirm-booking" element={<Confirmation />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/notifications" element={<NotificationPage />} />
       <Route
