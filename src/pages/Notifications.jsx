@@ -145,12 +145,20 @@ const Notifications = () => {
                   <h2 className="text-lg font-bold">
                     {notification.customer?.name || "Unknown Customer"}
                   </h2>
-                  <p>{notification.service?.name || "No service provided"}</p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Date:</span> {formateDate(notification.date)}
+                  <p>
+                    {notification.service?.name
+                      || (Array.isArray(notification.providerServices) && notification.providerServices.length > 0
+                        ? notification.providerServices.map(ps => ps?.name).filter(Boolean).join(', ')
+                        : "No service provided")}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Time:</span> {formatStartTime(notification.startTime)}
+                    <span className="font-semibold">Date (set to):</span> {formateDate(notification.date)}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Time (set to):</span> {formatStartTime(notification.startTime)}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Created:</span> {formateDate(notification.createdAt)}
                   </p>
                   <p className="text-gray-600">
                     <span className="font-semibold">Status:</span>{" "}
