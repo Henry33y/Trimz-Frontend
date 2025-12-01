@@ -11,6 +11,7 @@ import Confirmation from './Confirmation';
 import BookingSteps from './BookingSteps';
 import { useNavigate } from 'react-router-dom';
 import { BsCheckCircle } from 'react-icons/bs'; // Import a checkmark icon
+import { initAppointmentPayment, redirectToPaystack } from '../../../utils/paystack';
 
 const BarberServices = ({ barberData }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -127,24 +128,19 @@ const BarberServices = ({ barberData }) => {
     }
   };
 
-  // Handle Pay with Paystack
-  const handlePayWithPaystack = () => {
-    // Initialize Paystack payment
-    const paystackHandler = window.PaystackPop.setup({
-      key: 'YOUR_PAYSTACK_PUBLIC_KEY',
-      email: 'customer@example.com',
-      amount: calculateTotalPrice() * 100,
-      currency: 'GHS',
-      ref: `booking_${Date.now()}`,
-      callback: function (response) {
-        toast.success('Payment successful!');
-        handleConfirmBooking("momo");
-      },
-      onClose: function () {
-        toast.info('Payment window closed.');
-      },
-    });
-    paystackHandler.openIframe();
+  // Handle Pay with Paystack (create appointment, then init payment and redirect)
+  const handlePayWithPaystack = async () => {
+    try {
+      const appointment = await handleConfirmBooking('card');
+      if (!appointment?._id) {
+        throw new Error('Could not create appointment for payment');
+      }
+      const jwt = localStorage.getItem('token');
+      const { authorization_url } = await initAppointmentPayment({ appointmentId: appointment._id, token: jwt });
+      redirectToPaystack(authorization_url);
+    } catch (err) {
+      toast.error(err.message || 'Unable to start Paystack payment');
+    }
   };
 
   // Handle booking confirmation
@@ -182,11 +178,14 @@ const BarberServices = ({ barberData }) => {
         throw new Error('Booking failed. Please try again.');
       }
 
+      const json = await res.json();
       toast.success('Booking confirmed!');
       setCurrentStep(3);
+      return json?.data; // Return the created appointment
     } catch (err) {
       console.error('Booking error:', err);
       toast.error('Error confirming booking. Please try again.');
+      throw err;
     }
   };
 

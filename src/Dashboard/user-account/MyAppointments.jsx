@@ -60,6 +60,15 @@ const MyAppointments = () => {
     fetchAppointments();
   }, []);
 
+  // If coming back from payment callback, ensure a fresh fetch then clear the flag
+  useEffect(() => {
+    const flag = localStorage.getItem('appointments_refetch');
+    if (flag === '1') {
+      fetchAppointments();
+      localStorage.removeItem('appointments_refetch');
+    }
+  }, []);
+
   // Determine if there are no appointments
   const isNoAppointments =
     !loading &&

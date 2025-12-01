@@ -17,6 +17,7 @@ import Thankyou from '../pages/Barbers/BarberServices/ThankYou';
 import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
 import NotificationPage from '../pages/Notifications';
 import AuthCallback from '../pages/AuthCallback.jsx';
+import PaymentCallback from '../pages/PaymentCallback.jsx';
 
 
 const Routers = () => {
@@ -34,6 +35,7 @@ const Routers = () => {
       <Route path="/thank-you" element={<Thankyou />} />
       <Route path="/confirm-booking" element={<Confirmation />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/payment/callback" element={<PaymentCallback />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/notifications" element={<NotificationPage />} />
       <Route

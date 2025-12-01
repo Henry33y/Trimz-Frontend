@@ -5,6 +5,7 @@ import { useState } from "react";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 import Error from "../../components/Error/Error";
+import { initAppointmentPayment, redirectToPaystack } from "../../utils/paystack";
 
 const Appointments = ({ appointments, refreshAppointments }) => {
   // Local state to track which appointment is being edited
@@ -97,6 +98,27 @@ const Appointments = ({ appointments, refreshAppointments }) => {
     setEditingAppointment(null);
   };
 
+  const handlePayNow = async (appointmentId) => {
+    try {
+      const jwt = localStorage.getItem("token");
+      const { authorization_url } = await initAppointmentPayment({ appointmentId, token: jwt });
+      redirectToPaystack(authorization_url);
+    } catch (err) {
+      toast.error(err.message || "Unable to start payment");
+    }
+  };
+
+  const formatDateTime = (iso) => {
+    try {
+      const d = new Date(iso);
+      const date = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      return `${date} ${time}`;
+    } catch {
+      return '';
+    }
+  };
+
   console.log(appointments);
   return (
     <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
@@ -164,14 +186,27 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   <td className="px-6 py-4">{item.status}</td>
                   <td className="px-6 py-4">
                     {item.paymentStatus === "paid" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                        Paid
+                      <div className="flex flex-col">
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                          Paid
+                        </div>
+                        {item.paymentPaidAt && (
+                          <span className="text-xs text-gray-500 mt-1">Paid on {formatDateTime(item.paymentPaidAt)}</span>
+                        )}
                       </div>
                     ) : (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                        Not Paid
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center">
+                          <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                          Not Paid
+                        </div>
+                        <button
+                          onClick={() => handlePayNow(item._id)}
+                          className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 w-fit"
+                        >
+                          Pay Now
+                        </button>
                       </div>
                     )}
                   </td>
@@ -243,14 +278,27 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                 <div>
                   <p className="font-medium text-gray-500">Payment</p>
                   {item.paymentStatus === "paid" ? (
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                      Paid
+                    <div className="flex flex-col">
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                        Paid
+                      </div>
+                      {item.paymentPaidAt && (
+                        <span className="text-xs text-gray-500 mt-1">Paid on {formatDateTime(item.paymentPaidAt)}</span>
+                      )}
                     </div>
                   ) : (
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                      Not Paid
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                        Not Paid
+                      </div>
+                      <button
+                        onClick={() => handlePayNow(item._id)}
+                        className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 w-fit"
+                      >
+                        Pay Now
+                      </button>
                     </div>
                   )}
                 </div>
