@@ -23,31 +23,40 @@ const Dashboard = () => {
   const [tab, setTab] = useState('overview');
   const [appointments, setAppointments] = useState([]);
 
-  // ✅ Fetch Appointments in useEffect
-  useEffect(() => {
-    const getAppointmentsData = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}appointments/provider`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+  // Fetch appointments helper so we can reuse it
+  const getAppointmentsData = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}appointments/provider`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch appointments");
-        }
-
-        const result = await response.json();
-        console.log(result);
-        setAppointments(result.data); // Correctly setting state
-      } catch (error) {
-        console.error("Error fetching appointments:", error.message);
+      if (!response.ok) {
+        throw new Error("Failed to fetch appointments");
       }
-    };
 
+      const result = await response.json();
+      setAppointments(result.data);
+    } catch (error) {
+      console.error("Error fetching appointments:", error.message);
+    }
+  };
+
+  // Initial fetch on mount
+  useEffect(() => {
     getAppointmentsData();
-  }, []); // ✅ Runs once when component mounts
+  }, []);
+
+  // If returning from payment callback, refetch and clear the flag
+  useEffect(() => {
+    const flag = localStorage.getItem('appointments_refetch');
+    if (flag === '1') {
+      getAppointmentsData();
+      localStorage.removeItem('appointments_refetch');
+    }
+  }, []);
 
   // console.log("Profile Picture URL:", data?.profilePicture);
   // console.log("Profile Picture URL:", data?.user?.profilePicture);
@@ -135,7 +144,7 @@ const Dashboard = () => {
                   
 
                 {tab==='appointments' && 
-                <Appointments appointments={appointments}/>}
+                <Appointments appointments={appointments} refreshAppointments={getAppointmentsData}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
                 {tab==='services' && <Service barberData={data}/>}
                 {tab==='galleryupload' && <GalleryUpload providerId={JSON.parse(localStorage.getItem('user'))._id}/>}
