@@ -2,9 +2,22 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { BASE_URL } from "../config";
 import { CheckCircle } from "lucide-react";
+import { formateDate } from "../utils/formateDate";
+import convertTime from "../utils/convertTime";
 
 const Notifications = () => {
-  const { user, refreshNotifications } = useAuth();
+  const { user, token, refreshNotifications } = useAuth();
+  
+  const formatStartTime = (iso) => {
+    try {
+      const d = new Date(iso);
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return convertTime(`${hh}:${mm}`);
+    } catch {
+      return '';
+    }
+  };
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,18 +29,19 @@ const Notifications = () => {
     // Fetching Notification from the backend
     const fetchNotifications = async () => {
       try {
-        const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
+        const params = new URLSearchParams({ status: 'all', page: '1', limit: '20' });
+        const res = await fetch(`${BASE_URL}notifications?${params.toString()}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         
         if (!res.ok) throw new Error("Failed to fetch notifications");
         
         const data = await res.json();
-        const fetchedNotifications = Array.isArray(data) ? data : data.data || [];
+        const fetchedNotifications = Array.isArray(data?.data) ? data.data : [];
         setNotifications(fetchedNotifications);
       } catch (err) {
         console.error("Error fetching notifications:", err);
@@ -48,7 +62,7 @@ const Notifications = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       
@@ -74,19 +88,13 @@ const Notifications = () => {
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      await Promise.all(
-        notifications
-          .filter(notification => notification.notificationStatus === "unread")
-          .map((notification) =>
-            fetch(`${BASE_URL}notifications/${notification._id}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-              },
-            })
-          )
-      );
+      await fetch(`${BASE_URL}notifications/read-all`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       
       // Update local state
       setNotifications(
@@ -139,10 +147,10 @@ const Notifications = () => {
                   </h2>
                   <p>{notification.service?.name || "No service provided"}</p>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Date:</span> {notification.date}
+                    <span className="font-semibold">Date:</span> {formateDate(notification.date)}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Time:</span> {notification.time}
+                    <span className="font-semibold">Time:</span> {formatStartTime(notification.startTime)}
                   </p>
                   <p className="text-gray-600">
                     <span className="font-semibold">Status:</span>{" "}

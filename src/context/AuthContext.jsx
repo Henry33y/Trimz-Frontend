@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useReducer, useContext, useCallback } from "react";
+import { createContext, useEffect, useReducer, useContext, useCallback, useRef } from "react";
+import { io } from 'socket.io-client';
 import { BASE_URL } from "../config";
 
 // Initial state setup
@@ -58,6 +59,7 @@ const authReducer = (state, action) => {
 // AuthContextProvider
 export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const socketRef = useRef(null);
 
     // Update localStorage when state changes
     useEffect(() => {
@@ -88,19 +90,19 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         try {
-            const res = await fetch(`${BASE_URL}notifications/${state.user._id}`, {
+            const res = await fetch(`${BASE_URL}notifications/count`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${state.token}`,
                 },
             });
-            
+
             if (!res.ok) throw new Error("Failed to fetch notifications");
-            
+
             const data = await res.json();
-            const notifications = Array.isArray(data) ? data : data.data || [];
-            dispatch({ type: 'SET_NOTIFICATION_COUNT', payload: notifications.length });
+            const unread = typeof data?.unread === 'number' ? data.unread : 0;
+            dispatch({ type: 'SET_NOTIFICATION_COUNT', payload: unread });
         } catch (err) {
             console.error("Error fetching notification count:", err);
             // Don't update the count if there's an error
@@ -109,10 +111,43 @@ export const AuthContextProvider = ({ children }) => {
 
     // Fetch notifications on login
     useEffect(() => {
-        if (state.user && state.user._id && state.role === "provider") {
+        if (state.user && state.user._id && state.role === "provider" && state.token) {
             refreshNotifications();
+
+            // Initialize socket if not already
+            if (!socketRef.current) {
+                socketRef.current = io((import.meta.env.VITE_API_URL || 'http://localhost:5000'), {
+                    auth: { token: state.token },
+                    transports: ['websocket']
+                });
+
+                socketRef.current.on('connect', () => {
+                    // console.log('Socket connected');
+                });
+
+                // New notification event
+                socketRef.current.on('notification:new', () => {
+                    refreshNotifications();
+                });
+
+                // Updates (status changes)
+                socketRef.current.on('notification:update', () => {
+                    refreshNotifications();
+                });
+
+                // Deletions
+                socketRef.current.on('notification:delete', () => {
+                    refreshNotifications();
+                });
+            }
+        } else {
+            // If user logs out or not provider, cleanup socket
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+                socketRef.current = null;
+            }
         }
-    }, [state.user, state.role, refreshNotifications]);
+    }, [state.user, state.role, state.token, refreshNotifications]);
 
     return (
         <AuthContext.Provider
