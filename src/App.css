@@ -47,93 +47,106 @@
         .swiper-pagination {
             top: 90% !important;
         }
-        /* Sticky header styling:
-   - The header will stick to the top of the page when scrolling.
-   - Box shadow adds a subtle 3D effect.
-   - Position is 'sticky' to keep it fixed once it reaches the top of the viewport.
-   - The z-index ensures it stays above other content. */
+        /* Header base styling */
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header.dark:not(.sticky__header) {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            border-bottom-color: #374151;
+        }
         
-        .sticky__header {
-            width: 100px;
-            /* Width of the header (seems small for a header; adjust if necessary) */
-            height: 80px;
-            /* Height of the header */
-            line-height: 80px;
-            /* Ensures content inside the header is vertically centered */
-            position: sticky;
-            /* Makes the header stick to the top of the viewport when scrolling */
+        .header.sticky__header {
+            /* Switch to fixed positioning to guarantee sticky behavior */
+            position: fixed;
             top: 0;
-            /* Positioning at the top */
             left: 0;
-            /* Aligning to the left */
+            width: 100%;
             z-index: 9999;
-            /* High z-index to ensure the header stays on top of other elements */
-            box-shadow: 3px 3px -8px 3px #ddd;
-            /* Adds a shadow for depth */
-            /* background: white; */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.35s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header.sticky__header.dark {
+            background: rgba(17, 24, 39, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
         /* Media query for screens that are 768px wide or less (typically tablets and mobile devices) */
         
         @media only screen and (max-width:768px) {
-            /* Styling for the navigation menu in mobile view */
-            .navigation {
-                width: 100%;
-                /* Full screen width */
-                height: 100%;
-                /* Full screen height */
-                position: relative;
-                /* Fixing the navigation to the viewport */
-                top: 0;
-                /* Aligning to the top */
-                left: 0;
-                /* Aligning to the left */
-                z-index: 1000;
-                /* Ensures it sits above most elements */
-                background: #00000084;
-                /* A semi-transparent black background */
-                display: none;
-                /* Initially hidden; it will be shown when the menu is toggled */
-                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-                width: 100%;
-                height: 100vh;
+            /* Mobile nav overlay/backdrop */
+            .mobile-nav-backdrop {
+                /* Ensure the mobile nav backdrop sits above all page content */
+                @apply fixed inset-0;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
+                z-index: 99999; /* explicit high z-index so it won't be hidden behind other elements */
+                animation: fadeIn 200ms ease forwards;
+            }
 
+            /* Mobile nav sliding panel */
+            .mobile-nav-panel {
+                /* Make the panel fixed to the viewport and ensure a higher stacking order */
+                @apply right-0 top-0 h-full overflow-y-auto;
+                width: 280px;
+                background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
+                box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+                position: fixed;
+                z-index: 100000; /* even higher than the backdrop so panel content is on top */
+                animation: slideInRight 280ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                -webkit-overflow-scrolling: touch;
             }
-            /* Styling for the menu list in mobile view */
-            .menu {
-                width: 15rem; /* Fixed width of the menu */
-                position: absolute; /* Positioned relative to the navigation */
-                /* top: 9px;  */
-                right: 0; /* Aligning to the right */
-                background:rgb(255, 255, 255); /* Yellow background for the menu */
-                z-index: 1100; /* Ensures it's above other elements */
-                display: flex; /* Enables flexbox layout */
-                flex-direction: column; /* Stacks the menu items vertically */
-                justify-content: center; /* Centers menu items vertically */
-                align-items: center; /* Centers menu items horizontally */
-                line-height: 30px; /* Space between menu items */
-                height: 100vh;
-                /* backdrop-filter: blur(3px); */
-            }
-            
-            /* Class to show the menu when toggled (in mobile view) */
-            .show__menu {
-                display: flex;
-                z-index: 9999;
-                animation: slideDown 0.3s ease forwards;
 
-                /* backdrop-filter: blur(0px); */
+            .mobile-nav-panel.dark {
+                background: linear-gradient(to bottom, #1f2937 0%, #111827 100%);
+                box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
             }
-            .navigation.show__menu{
-                /* backdrop-filter: blur(3px) */
+
+            /* Slight padding when the header is taller; handled inline in JS as well */
+            .mobile-nav-panel__content {
+                @apply flex flex-col py-2;
             }
-            @keyframes slideDown {
-                from {
-                  opacity: 0;
-                  transform: translateY(-10px);
-                }
-                to {
-                  opacity: 1;
-                  transform: translateY(0);
-                }
+
+            .mobile-nav-panel__content li a {
+                @apply px-5 py-3 transition-all duration-200;
+                border-left: 3px solid transparent;
+            }
+
+            .mobile-nav-panel__content li a:hover {
+                background: rgba(0, 103, 255, 0.08);
+                border-left-color: #0067ff;
+                padding-left: 22px;
+            }
+
+            .mobile-nav-panel__content li a.active {
+                background: rgba(0, 103, 255, 0.12);
+                border-left-color: #0067ff;
+                padding-left: 22px;
+            }
+
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to   { transform: translateX(0);    opacity: 1; }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to   { opacity: 1; }
             }
         }

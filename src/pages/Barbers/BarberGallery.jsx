@@ -21,12 +21,12 @@ const BarberGallery = ({ gallery }) => {
   const openModal = (index) => {
     setCurrentIndex(index);
     setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
+    import('../../utils/scrollLock').then(({ lockScroll }) => lockScroll());
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = 'unset';
+    import('../../utils/scrollLock').then(({ unlockScroll }) => unlockScroll());
   };
 
   const handleShowMore = () => {

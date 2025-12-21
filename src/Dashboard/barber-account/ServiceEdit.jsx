@@ -11,21 +11,11 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
   // Prevent body scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
-      // Disable scrolling on the body
-      document.body.style.overflow = 'hidden';
-      
-      // Add event listener to prevent scroll on background
-      const preventScroll = (e) => {
-        e.preventDefault();
-      };
-      document.body.addEventListener('wheel', preventScroll, { passive: false });
-      document.body.addEventListener('touchmove', preventScroll, { passive: false });
-
-      // Cleanup function to re-enable scrolling
+      // use centralized scroll lock helper to allow multiple locks
+      import('../../utils/scrollLock').then(({ lockScroll }) => lockScroll());
+      // Cleanup function to re-enable scrolling via helper
       return () => {
-        document.body.style.overflow = 'unset';
-        document.body.removeEventListener('wheel', preventScroll);
-        document.body.removeEventListener('touchmove', preventScroll);
+        import('../../utils/scrollLock').then(({ unlockScroll }) => unlockScroll());
       };
     }
   }, [isOpen]);
