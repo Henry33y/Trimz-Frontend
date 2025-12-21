@@ -46,7 +46,7 @@ const Layout = () => {
       {!isAuthPage && <Header />}
 
       {/* Main content area where the current route's page will be displayed */}
-      <main>
+      <main className="min-h-screen transition-colors">
         <Routers />   {/* The Routers component handles switching between different routes (pages) */}
       </main>
 

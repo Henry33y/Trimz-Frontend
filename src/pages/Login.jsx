@@ -176,7 +176,7 @@ const Login = () => {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-900 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl w-full bg-white rounded-3xl sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col lg:flex-row-reverse">
         
         {/* ============================================ */}
@@ -220,7 +220,7 @@ const Login = () => {
         {/* ============================================ */}
         {/* LEFT SIDE - Login Form */}
         {/* ============================================ */}
-        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 xl:p-16 flex items-center">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 xl:p-16 flex items-center bg-white dark:bg-slate-800">
           <div className="max-w-md mx-auto">
             {/* Logo Section */}
             <div className="flex justify-center mb-6 sm:mb-8">
@@ -235,10 +235,10 @@ const Login = () => {
 
             {/* Form Header */}
             <div className="mb-8 text-center lg:text-left">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-2">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-gray-100 tracking-tight mb-2">
                 Welcome Back
               </h2>
-              <p className="text-slate-500 font-medium text-sm sm:text-base">
+              <p className="text-slate-500 dark:text-gray-300 font-medium text-sm sm:text-base">
                 Sign in to continue to your account
               </p>
             </div>
@@ -261,7 +261,7 @@ const Login = () => {
                   placeholder="Email Address"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                  className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-700 border-2 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-400"
                   required
                 />
               </div>
@@ -279,7 +279,7 @@ const Login = () => {
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                  className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-700 border-2 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-400"
                   required
                 />
                 <button 
@@ -362,7 +362,7 @@ const Login = () => {
                 <button 
                   type="button"
                   onClick={handleOauth}
-                  className="w-full py-3.5 sm:py-4 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"
+                  className="w-full py-3.5 sm:py-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-gray-100 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"
                 >
                   <FcGoogle className="text-2xl" />
                   <span>Continue with Google</span>
@@ -372,7 +372,7 @@ const Login = () => {
               {/* ============================================ */}
               {/* SIGNUP LINK */}
               {/* ============================================ */}
-              <p className="text-center text-slate-500 font-medium text-sm mt-6 pt-4 border-t border-slate-100">
+              <p className="text-center text-slate-500 dark:text-gray-300 font-medium text-sm mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
                 New to Trimz?{' '}
                 <Link to="/register" className="text-primaryColor font-bold hover:underline underline-offset-4 transition-all">
                   Create Account

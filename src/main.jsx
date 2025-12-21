@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { AuthContextProvider } from './context/AuthContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import App from './App.jsx';
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +17,9 @@ root.render(
   <StrictMode>
     <BrowserRouter>
       <AuthContextProvider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
         <ToastContainer 
           theme='dark'
           position='top-right' 

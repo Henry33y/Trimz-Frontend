@@ -120,15 +120,15 @@ const Barbers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       {/* ============================================ */}
       {/* HEADER SECTION - Search & Navigation */}
       {/* ============================================ */}
-      <section className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4 py-4 sm:py-6">
           {/* Page Title - Mobile */}
           <div className="mb-4 sm:hidden">
-            <h1 className="text-2xl font-bold text-headingColor">Find Stylists</h1>
+            <h1 className="text-2xl font-bold text-headingColor dark:text-gray-100">Find Stylists</h1>
           </div>
 
           {/* Search Bar */}
@@ -137,9 +137,9 @@ const Barbers = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="search"
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 rounded-full border-2 border-transparent
-                          text-[15px] text-gray-900 placeholder:text-gray-400
-                          focus:outline-none focus:bg-white focus:border-primaryColor
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-700 rounded-full border-2 border-transparent
+                          text-[15px] text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-400
+                          focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:border-primaryColor
                           transition-all duration-200"
                 placeholder="Search by name, service, or location..."
                 value={query}
@@ -161,7 +161,7 @@ const Barbers = () => {
       {/* ============================================ */}
       {/* FILTER SECTION - Category Filters */}
       {/* ============================================ */}
-      <section className="bg-white border-b border-gray-100 sticky top-[72px] sm:top-[88px] z-30">
+      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-[72px] sm:top-[88px] z-30">
         <div className="container mx-auto px-4">
           <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
             {filterCategories.map((category) => (
@@ -172,7 +172,7 @@ const Barbers = () => {
                           whitespace-nowrap transition-all duration-200 flex-shrink-0
                           ${activeFilter === category.id
                             ? 'bg-primaryColor text-white shadow-md'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                           }`}
               >
                 {category.icon}
@@ -186,21 +186,21 @@ const Barbers = () => {
       {/* ============================================ */}
       {/* RESULTS HEADER */}
       {/* ============================================ */}
-      <section className="bg-white border-b border-gray-100">
+      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-headingColor">
+              <h2 className="text-lg sm:text-xl font-semibold text-headingColor dark:text-gray-100">
                 {query ? `Search results for "${query}"` : 'Available Stylists'}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                 {filteredProviders.length} {filteredProviders.length === 1 ? 'stylist' : 'stylists'} found
               </p>
             </div>
             
             {/* Sort/Filter Button - Desktop */}
-            <button className="hidden sm:flex items-center gap-2 px-4 py-2 border border-gray-200 
-                               rounded-lg hover:bg-gray-50 transition-colors duration-200">
+            <button className="hidden sm:flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 dark:text-gray-300
+                               rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors duration-200">
               <Filter className="w-4 h-4" />
               <span className="text-sm font-medium">Filters</span>
             </button>
@@ -240,14 +240,14 @@ const Barbers = () => {
               ) : (
                 /* Empty State */
                 <div className="text-center py-16">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full 
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gray-100 dark:bg-slate-700 rounded-full 
                                 flex items-center justify-center">
                     <Search className="w-10 h-10 text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-semibold text-headingColor mb-2">
+                  <h3 className="text-xl font-semibold text-headingColor dark:text-gray-100 mb-2">
                     No stylists found
                   </h3>
-                  <p className="text-gray-500 mb-6">
+                  <p className="text-gray-500 dark:text-gray-300 mb-6">
                     Try adjusting your search or filters
                   </p>
                   <button 
@@ -271,17 +271,17 @@ const Barbers = () => {
       {/* QUICK STATS - Info Cards */}
       {/* ============================================ */}
       {!loading && !error && filteredProviders.length > 0 && (
-        <section className="py-12 bg-white">
+        <section className="py-12 bg-white dark:bg-slate-900">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="text-center p-6 bg-gradient-to-br from-primaryColor/5 to-primaryColor/10 
+                <div className="text-center p-6 bg-gradient-to-br from-primaryColor/5 to-primaryColor/10 
                             rounded-2xl">
                 <div className="w-12 h-12 mx-auto mb-4 bg-primaryColor/20 rounded-full 
                               flex items-center justify-center">
                   <Star className="w-6 h-6 text-primaryColor" />
                 </div>
-                <h3 className="text-3xl font-bold text-headingColor mb-1">4.9</h3>
-                <p className="text-sm text-gray-600">Average Rating</p>
+                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">4.9</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Average Rating</p>
               </div>
 
               <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 
@@ -290,8 +290,8 @@ const Barbers = () => {
                               flex items-center justify-center">
                   <Clock className="w-6 h-6 text-blue-600" />
                 </div>
-                <h3 className="text-3xl font-bold text-headingColor mb-1">15min</h3>
-                <p className="text-sm text-gray-600">Average Wait Time</p>
+                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">15min</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Average Wait Time</p>
               </div>
 
               <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 
@@ -300,8 +300,8 @@ const Barbers = () => {
                               flex items-center justify-center">
                   <TrendingUp className="w-6 h-6 text-green-600" />
                 </div>
-                <h3 className="text-3xl font-bold text-headingColor mb-1">10k+</h3>
-                <p className="text-sm text-gray-600">Happy Customers</p>
+                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">10k+</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Happy Customers</p>
               </div>
             </div>
           </div>
@@ -311,13 +311,13 @@ const Barbers = () => {
       {/* ============================================ */}
       {/* TESTIMONIALS SECTION */}
       {/* ============================================ */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-headingColor mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">
               What our clients say
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg">
+            <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg">
               Join thousands of satisfied customers who trust Trimz for their grooming needs
             </p>
           </div>

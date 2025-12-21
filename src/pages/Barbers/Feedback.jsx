@@ -17,7 +17,7 @@ const Feedback = ({reviews, loading, onReviewAdded}) => {
   return (
       <div>
           <div className="mb-[50px]">
-              <h4 className="text-[20px] leading-[30px] font-bold text-headingColor my-4">
+              <h4 className="text-[20px] leading-[30px] font-bold text-headingColor dark:text-gray-100 my-4">
                   All reviews ({reviews?.length || 0})
               </h4>
 
@@ -37,13 +37,13 @@ const Feedback = ({reviews, loading, onReviewAdded}) => {
                     </figure>
 
                     <div className='w-5/6'>
-                        <h5 className='text-[16px] leading-6 text-primaryColor font-bold'>
+                        <h5 className='text-[16px] leading-6 text-primaryColor font-bold dark:text-primaryColor'>
                             {review?.customer?.name}
                         </h5>
-                        <p className='text-[14px] leading-6 text-textColor'>
+                        <p className='text-[14px] leading-6 text-textColor dark:text-gray-300'>
                             {`${formateDate(review?.createdAt)}`}
                         </p>
-                        <p className='text__para mt-3 font-medium text-[15px]'>
+                        <p className='text__para mt-3 font-medium text-[15px] text-textColor dark:text-gray-200'>
                             {review.comment}
                         </p>
                     </div>

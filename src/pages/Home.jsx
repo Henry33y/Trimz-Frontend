@@ -46,7 +46,7 @@ const Home = () => {
       {/* ============================================ */}
       {/* HERO SECTION */}
       {/* ============================================ */}
-      <section className='hero__section pt-[60px] lg:pt-[100px] bg-gradient-to-b from-white to-gray-50' id="hero">
+      <section className='hero__section pt-[60px] lg:pt-[100px] bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-800' id="hero">
         <div className="container mx-auto px-4">
           <div className='flex flex-col lg:flex-row gap-12 lg:gap-[90px] items-center justify-between'>
             
@@ -56,14 +56,14 @@ const Home = () => {
                 <span className="inline-block px-4 py-2 rounded-full bg-primaryColor/10 text-primaryColor font-bold text-sm mb-6 uppercase tracking-wider">
                   Premium Campus Grooming
                 </span>
-                <h1 className='text-[38px] leading-[48px] text-headingColor font-[800] 
+                <h1 className='text-[38px] leading-[48px] text-headingColor dark:text-gray-100 font-[800] 
                   md:text-[52px] md:leading-[62px] lg:text-[64px] lg:leading-[74px] 
                   mb-6 tracking-tight'>
                   Looking for Expert <br className="hidden md:block" />
                   <span className="text-primaryColor">Grooming Services</span> Near You?
                 </h1>
 
-                <p className='text-[18px] leading-8 text-textColor mb-10 max-w-[540px] mx-auto lg:mx-0'>
+                <p className='text-[18px] leading-8 text-textColor dark:text-gray-300 mb-10 max-w-[540px] mx-auto lg:mx-0'>
                   Trimz offers expert grooming for everyone. Our professional barbers and stylists 
                   deliver precision haircuts, beard grooming, and modern styles right to your campus.
                 </p>
@@ -77,7 +77,7 @@ const Home = () => {
                   </button>
                 </ScrollLink>
                 <RouterLink to="/barbers">
-                  <button className="w-full sm:w-auto px-8 py-4 bg-white text-headingColor border border-gray-200 font-bold rounded-2xl hover:bg-gray-50 transition-all duration-300">
+                  <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-700 text-headingColor dark:text-gray-100 border border-gray-200 dark:border-slate-700 font-bold rounded-2xl hover:bg-gray-50 dark:hover:bg-slate-600 transition-all duration-300">
                     Find a Barber
                   </button>
                 </RouterLink>
@@ -117,26 +117,26 @@ const Home = () => {
       {/* ============================================ */}
       {/* HOW IT WORKS SECTION */}
       {/* ============================================ */}
-      <section className='py-[60px] lg:py-[100px] bg-white'>
+      <section className='py-[60px] lg:py-[100px] bg-white dark:bg-slate-900'>
         <div className="container mx-auto px-4">
           <div className='max-w-[600px] mx-auto mb-[60px] text-center'>
-            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-4 tracking-tight'>
+            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor dark:text-gray-100 mb-4 tracking-tight'>
               Your Style, Simplified
             </h2>
             <div className="w-20 h-1.5 bg-primaryColor mx-auto rounded-full mb-6" />
-            <p className='text-[16px] leading-7 text-textColor'>
+            <p className='text-[16px] leading-7 text-textColor dark:text-gray-300'>
               Booking your next look shouldn&apos;t be a hassle. We&apos;ve built the perfect platform to connect you with top-tier talent in just three easy steps.
             </p>
           </div>
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
             {/* Step 1 */}
-            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+            <div className='relative p-8 bg-gray-50 dark:bg-slate-800 rounded-[2rem] hover:bg-white dark:hover:bg-slate-700 hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100 dark:border-transparent'>
               <div className='w-16 h-16 bg-primaryColor/10 rounded-2xl flex items-center justify-center text-primaryColor font-bold text-2xl mb-8 group-hover:bg-primaryColor group-hover:text-white transition-colors'>
                 <User className="w-8 h-8" />
               </div>
-              <h3 className='text-2xl font-bold text-headingColor mb-4'>Find a Stylist</h3>
-              <p className='text-textColor leading-relaxed mb-6'>
+              <h3 className='text-2xl font-bold text-headingColor dark:text-gray-100 mb-4'>Find a Stylist</h3>
+              <p className='text-textColor dark:text-gray-300 leading-relaxed mb-6'>
                 Discover skilled professionals on campus. Browse detailed profiles, view portfolio photos, and read verified ratings.
               </p>
               <RouterLink to='/barbers' className='flex items-center gap-2 text-primaryColor font-bold group/btn'>
@@ -145,12 +145,12 @@ const Home = () => {
             </div>
 
             {/* Step 2 */}
-            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+            <div className='relative p-8 bg-gray-50 dark:bg-slate-800 rounded-[2rem] hover:bg-white dark:hover:bg-slate-700 hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100 dark:border-transparent'>
               <div className='w-16 h-16 bg-irisBlueColor/10 rounded-2xl flex items-center justify-center text-irisBlueColor font-bold text-2xl mb-8 group-hover:bg-irisBlueColor group-hover:text-white transition-colors'>
                 <Scissors className="w-8 h-8" />
               </div>
-              <h3 className='text-2xl font-bold text-headingColor mb-4'>Pick a Service</h3>
-              <p className='text-textColor leading-relaxed mb-6'>
+              <h3 className='text-2xl font-bold text-headingColor dark:text-gray-100 mb-4'>Pick a Service</h3>
+              <p className='text-textColor dark:text-gray-300 leading-relaxed mb-6'>
                 From fades to beard sculpting, choose exactly what you need. View pricing upfront—no surprises, just great results.
               </p>
               <RouterLink to='/services' className='flex items-center gap-2 text-irisBlueColor font-bold group/btn'>
@@ -159,12 +159,12 @@ const Home = () => {
             </div>
 
             {/* Step 3 */}
-            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+            <div className='relative p-8 bg-gray-50 dark:bg-slate-800 rounded-[2rem] hover:bg-white dark:hover:bg-slate-700 hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100 dark:border-transparent'>
               <div className='w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-600 font-bold text-2xl mb-8 group-hover:bg-yellow-600 group-hover:text-white transition-colors'>
                 <Calendar className="w-8 h-8" />
               </div>
-              <h3 className='text-2xl font-bold text-headingColor mb-4'>Book & Go</h3>
-              <p className='text-textColor leading-relaxed mb-6'>
+              <h3 className='text-2xl font-bold text-headingColor dark:text-gray-100 mb-4'>Book & Go</h3>
+              <p className='text-textColor dark:text-gray-300 leading-relaxed mb-6'>
                 Pick a time that fits your schedule. Confirm your booking instantly and get notified before your session starts.
               </p>
               <RouterLink to='/register' className='flex items-center gap-2 text-yellow-600 font-bold group/btn'>
@@ -186,7 +186,7 @@ const Home = () => {
       {/* ============================================ */}
       {/* FAQ SECTION */}
       {/* ============================================ */}
-      <section className='py-[60px] lg:py-[100px] bg-white overflow-hidden'>
+      <section className='py-[60px] lg:py-[100px] bg-white dark:bg-slate-900 overflow-hidden'>
         <div className="container mx-auto px-4">
           <div className='flex flex-col md:flex-row justify-between gap-12 lg:gap-20 items-center'>
             <div className='w-full md:w-[45%] hidden md:block'>

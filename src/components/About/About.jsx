@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
  */
 const ProfileCard = ({ image, alt }) => (
   <div className="relative group perspective-1000 w-full sm:w-[280px] lg:w-[320px]">
-    <div className="relative overflow-hidden rounded-3xl shadow-xl transition-all duration-700 border-2 border-transparent hover:border-blue-100 transform hover:rotate-1 hover:scale-[1.02] bg-white">
+    <div className="relative overflow-hidden rounded-3xl shadow-xl transition-all duration-700 border-2 border-transparent hover:border-blue-100 transform hover:rotate-1 hover:scale-[1.02] bg-white dark:bg-slate-800">
       {/* Glossy Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-blue-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20" />
       
@@ -45,7 +45,7 @@ ProfileCard.propTypes = {
 };
 function About() {
   return (
-    <section className="py-16 lg:py-24 bg-gray-50 overflow-hidden">
+    <section className="py-16 lg:py-24 bg-gray-50 dark:bg-slate-900 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
           
@@ -59,17 +59,17 @@ function About() {
 
           {/* ============= CONTENT SECTION ========= */}
           <div className="w-full lg:w-1/2">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
               Meet the Visionaries <br /> 
               <span className="text-blue-600">Behind Trimz</span>
             </h2>
             
-            <p className="text-lg text-gray-600 leading-relaxed mb-6">
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
               Trimz is the brainchild of Saddiq Ahmed, Benjamin and their founding team—forward-thinking entrepreneurs passionate
               about blending technology with everyday convenience.
             </p>
             
-            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
               Recognizing the challenges people face in accessing quality grooming services, 
               the team envisioned Trimz as more than just an app; it’s a lifestyle solution 
               designed to bridge the gap between skilled professionals and modern clients.
@@ -77,14 +77,14 @@ function About() {
             
             {/* Social Links */}
             <div className="flex items-center space-x-6">
-              <span className="text-sm font-semibold uppercase tracking-widest text-gray-400">Follow Our Journey:</span>
+              <span className="text-sm font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400">Follow Our Journey:</span>
               <div className="flex space-x-4">
                 {[
                   { Icon: Facebook, color: "hover:text-blue-600", href: "#" },
                   { Icon: Twitter, color: "hover:text-sky-400", href: "#" },
                   { Icon: Instagram, color: "hover:text-pink-500", href: "#" },
                 ].map(({ Icon, color, href }, idx) => (
-                  <a key={idx} href={href} className={`text-gray-400 transition-colors duration-300 ${color}`}>
+                  <a key={idx} href={href} className={`text-gray-400 dark:text-gray-300 transition-colors duration-300 ${color}`}>
                     <Icon size={24} />
                   </a>
                 ))}

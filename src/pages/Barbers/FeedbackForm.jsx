@@ -66,7 +66,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
     return (
         <form action="">
             <div>
-                <h3 className="text-headingColor text-[16px] leading-6 font-semibold mb-4 mt-0">
+                <h3 className="text-headingColor dark:text-gray-100 text-[16px] leading-6 font-semibold mb-4 mt-0">
                     How would you rate the Overall experience?*
                 </h3>
 
@@ -106,11 +106,11 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
 
             {/* ======== Type Feedback ========= */}
             <div className="mt-[30px]">
-                <h3 className="text-headingColor text-[16px] leading-6 font-semibold mb-4 mt-0">
+                <h3 className="text-headingColor dark:text-gray-100 text-[16px] leading-6 font-semibold mb-4 mt-0">
                     Share your feedback or suggestions*
                 </h3>
                 <textarea className="border border-solid border-[#0066ff34] focus:outline outline-primaryColor
-                w-full px-4 py-3 rounded-md"
+                w-full px-4 py-3 rounded-md bg-white dark:bg-slate-800 text-textColor dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-400"
                     rows="5"
                     placeholder="Write your message"
                     onChange={(e)=>setReviewText(e.target.value)}
@@ -121,7 +121,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                                     {loading ? <HashLoader size={25} color="#fff"/> : 'Submit Feedback'}
                             </button>
                             {onCancel && (
-                                <button type="button" onClick={onCancel} className="btn bg-gray-500 hover:bg-gray-600">
+                                <button type="button" onClick={onCancel} className="btn bg-gray-500 hover:bg-gray-600 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white">
                                     Cancel
                                 </button>
                             )}

@@ -40,20 +40,20 @@ const Services = () => {
   });
 
   return (
-    <section className="min-h-screen bg-gray-50">
+    <section className="min-h-screen bg-gray-50 dark:bg-slate-900">
       {/* ============================================ */}
       {/* HERO & HEADER SECTION */}
       {/* ============================================ */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700">
         <div className="container mx-auto px-4 py-12 lg:py-16">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center justify-center p-3 bg-primaryColor/10 rounded-2xl mb-6">
               <Scissors className="w-8 h-8 text-primaryColor" />
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold text-headingColor mb-6 tracking-tight">
+            <h1 className="text-3xl lg:text-5xl font-bold text-headingColor dark:text-gray-100 mb-6 tracking-tight">
               Our Premium Services
             </h1>
-            <p className="text-lg text-textColor leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg text-textColor dark:text-gray-300 leading-relaxed max-w-2xl mx-auto">
               Experience the art of grooming with our professional Stylists. 
               From classic cuts to modern styling and female hair care, we deliver excellence.
             </p>
@@ -64,21 +64,21 @@ const Services = () => {
       {/* ============================================ */}
       {/* SEARCH & FILTER BAR - Sticky for UX */}
       {/* ============================================ */}
-      <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <div className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-700 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between max-w-6xl mx-auto">
             
             {/* Search Input */}
             <div className="relative w-full lg:max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-400" />
               <input
                 type="text"
                 placeholder="Search for haircut, coloring, styling..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 pl-12 bg-gray-50 border border-gray-200 rounded-xl 
+                className="w-full px-4 py-3 pl-12 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-xl 
                          focus:ring-2 focus:ring-primaryColor focus:border-transparent 
-                         transition-all outline-none text-gray-700"
+                         transition-all outline-none text-gray-700 dark:text-gray-100"
               />
             </div>
 
@@ -92,7 +92,7 @@ const Services = () => {
                     className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap
                       ${selectedCategory === cat.id
                         ? 'bg-primaryColor text-white shadow-lg shadow-primaryColor/20'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:border-primaryColor hover:text-primaryColor'
+                        : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-primaryColor hover:text-primaryColor'
                       }`}
                   >
                     {cat.icon}
@@ -122,12 +122,12 @@ const Services = () => {
           </div>
         ) : (
           /* Empty State */
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-gray-200 dark:border-slate-700">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-10 h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-headingColor mb-2">No services found</h3>
-            <p className="text-textColor max-w-xs mx-auto mb-6">
+            <h3 className="text-xl font-bold text-headingColor dark:text-gray-100 mb-2">No services found</h3>
+            <p className="text-textColor dark:text-gray-300 max-w-xs mx-auto mb-6">
               We couldn&apos;t find anything matching your current filters. Try resetting your search.
             </p>
             <button 

@@ -60,16 +60,16 @@ const BarberGallery = ({ gallery }) => {
     return rotations[index % rotations.length];
   };
 
-  if (loading) return <div className="flex justify-center p-8"><div className="animate-spin h-8 w-8 border-4 border-zinc-600 border-t-transparent rounded-full"></div></div>;
+  if (loading) return <div className="flex justify-center p-8"><div className="animate-spin h-8 w-8 border-4 border-zinc-600 dark:border-zinc-400 border-t-transparent rounded-full"></div></div>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="w-full bg-zinc-50">
+    <div className="w-full bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-2">Our Masterpieces</h2>
-          <p className="text-zinc-600 text-sm max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Our Masterpieces</h2>
+          <p className="text-zinc-600 dark:text-zinc-400 text-sm max-w-2xl mx-auto">
             Every style tells a story of precision, style, and excellence
           </p>
         </div>
@@ -87,7 +87,7 @@ const BarberGallery = ({ gallery }) => {
                 onMouseLeave={() => setHoveredIndex(null)}
                 onClick={() => openModal(index)}
               >
-                <div className="relative overflow-hidden rounded-lg shadow-lg bg-white p-2">
+                <div className="relative overflow-hidden rounded-lg shadow-lg bg-white dark:bg-zinc-800 p-2 transition-colors duration-300">
                   <div className="aspect-square overflow-hidden rounded-md">
                     <img
                       src={image.url}
@@ -117,7 +117,7 @@ const BarberGallery = ({ gallery }) => {
             <button
               onClick={handleShowMore}
               className="px-6 py-2 bg-zinc-900 text-white text-sm rounded-full hover:bg-zinc-800 
-                transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Show More
             </button>
@@ -131,7 +131,7 @@ const BarberGallery = ({ gallery }) => {
             onClick={closeModal}
           >
             <div
-              className="relative w-full max-w-3xl bg-zinc-900 rounded-lg overflow-hidden shadow-xl"
+              className="relative w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-xl transition-colors duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <button

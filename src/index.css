@@ -14,6 +14,36 @@
                 @apply py-[75px];
                 /* Applying padding of 75px on the top and bottom */
             }
+
+            /* Global page background and text color for light/dark modes */
+            body {
+                @apply bg-white text-textColor transition-colors duration-300;
+            }
+
+            /* When html has the 'dark' class, apply dark styles */
+            .dark body {
+                @apply bg-slate-900 text-gray-200 transition-colors duration-300;
+            }
+
+            /* Smooth transitions for common containers */
+            .dark .header,
+            .header {
+                @apply transition-colors duration-300;
+            }
+
+            .btn {
+                @apply transition-colors duration-300;
+            }
+
+            /* Respect user preference for reduced motion */
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    animation-duration: 0.001ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.001ms !important;
+                    scroll-behavior: auto !important;
+                }
+            }
         }
         /* Components layer: Defining reusable component styles */
         
@@ -45,6 +75,10 @@
             .header {
                 @apply bg-[url('./assets/images/mask.png')] bg-no-repeat bg-center bg-cover w-full h-[100px] leading-[100px] backdrop-blur-lg;
                 /* Background image centered and covering full area, full width, height of 100px, and line-height for vertical centering */
+            }
+            /* Dark header variant when dark mode is enabled */
+            .dark .header {
+                @apply bg-slate-900;
             }
             .form__label {
                 @apply text-textColor font-semibold text-[16px] mb-2;

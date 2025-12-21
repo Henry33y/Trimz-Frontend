@@ -25,7 +25,7 @@ const ServiceSelection = ({ providerServices, selectedServices, handleServiceSel
               onClick={() => handleServiceSelect(service)}
               className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
                 selectedServices.some((s) => s.id === service.id)
-                  ? 'border-blue-500 bg-blue-50'
+                  ? 'border-blue-500 bg-blue-50 dark:bg-slate-700'
                   : 'hover:border-blue-500'
               }`}
             >
@@ -35,12 +35,12 @@ const ServiceSelection = ({ providerServices, selectedServices, handleServiceSel
                 className="w-16 h-16 rounded-lg object-cover"
               />
               <div className="ml-4 flex-1">
-                <h3 className="font-semibold">{service.name}</h3>
-                <p className="text-sm text-gray-500">{service.duration} mins</p>
+                <h3 className="font-semibold text-headingColor dark:text-gray-100">{service.name}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-300">{service.duration} mins</p>
                 {service.description && (
-                  <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{service.description}</p>
                 )}
-                <p className="text-blue-600 font-semibold mt-1">{formatPrice(service.price)}</p>
+                <p className="text-blue-600 dark:text-blue-400 font-semibold mt-1">{formatPrice(service.price)}</p>
               </div>
             </div>
           ))}
@@ -51,7 +51,7 @@ const ServiceSelection = ({ providerServices, selectedServices, handleServiceSel
 };
 
 const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDuration, calculateTotalPrice, formatPrice, setCurrentStep }) => (
-  <div className="bg-gray-50 p-4 rounded-lg mb-6">
+  <div className="bg-gray-50 dark:bg-slate-800 p-4 rounded-lg mb-6">
     <div className="flex items-center justify-between mb-4">
       <h3 className="font-semibold flex items-center">
         <ShoppingCart className="w-5 h-5 mr-2" />
@@ -64,10 +64,10 @@ const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDura
     {selectedServices.length > 0 ? (
       <div className="space-y-2">
         {selectedServices.map((service) => (
-          <div key={service.id} className="flex items-center justify-between bg-white p-2 rounded">
+          <div key={service.id} className="flex items-center justify-between bg-white dark:bg-slate-700 p-2 rounded">
             <div>
               <span className="font-medium">{service.name}</span>
-              <span className="text-sm text-gray-500 ml-2">{formatPrice(service.price)}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-300 ml-2">{formatPrice(service.price)}</span>
             </div>
             <button
               onClick={() => handleRemoveService(service.id)}
@@ -83,7 +83,7 @@ const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDura
         </div>
         <button
           onClick={() => setCurrentStep(2)}
-          className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
+          className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
         >
           Proceed to Date & Time
         </button>

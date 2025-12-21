@@ -17,12 +17,12 @@ const ServiceList = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {services.map((service, index) => (
-        <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div key={index} className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-xl font-bold text-slate-900">{service.name}</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-gray-100">{service.name}</h3>
             <span className="text-blue-600 font-bold">{service.price}</span>
           </div>
-          <p className="text-slate-600 text-sm leading-relaxed">{service.desc}</p>
+          <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed">{service.desc}</p>
         </div>
       ))}
     </div>
@@ -58,40 +58,40 @@ const Features = () => {
       {/* ============================================ */}
       {/* SERVICES OVERVIEW SECTION */}
       {/* ============================================ */}
-      <section id="services" className="py-[60px] lg:py-[100px] bg-gray-50/50">
+      <section id="services" className="py-[60px] lg:py-[100px] bg-gray-50/50 dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="max-w-[570px] mx-auto mb-[50px] text-center">
-            <h2 className="text-[32px] lg:text-[40px] font-[800] text-slate-900 mb-4 tracking-tight">
+            <h2 className="text-[32px] lg:text-[40px] font-[800] text-slate-900 dark:text-gray-100 mb-4 tracking-tight">
               Styling and Barbering Services
             </h2>
             <div className="w-20 h-1.5 bg-blue-600 mx-auto rounded-full mb-6" />
-            <p className="text-[16px] leading-7 text-slate-600 font-[400]">
+            <p className="text-[16px] leading-7 text-slate-600 dark:text-gray-300 font-[400]">
               Trimz provides on-campus haircuts, trims, beard grooming, and styling.
               Enjoy quick, quality service from vetted professionals.
             </p>
           </div>
 
           <div className="max-w-7xl mx-auto">
-            <ServiceList />
-          </div>
+              <ServiceList />
+            </div>
         </div>
       </section>
 
       {/* ============================================ */}
       {/* KEY BENEFITS & INTERACTIVE VISUAL SECTION */}
       {/* ============================================ */}
-      <section className="py-[60px] lg:py-[100px] bg-white overflow-hidden">
+      <section className="py-[60px] lg:py-[100px] bg-white dark:bg-slate-900 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between flex-col lg:flex-row gap-12 lg:gap-[100px]">
             
             {/* Benefits Content Column */}
             <div className="w-full lg:w-1/2 xl:w-[670px]">
-              <h2 className="text-[32px] leading-tight lg:text-[44px] lg:leading-[54px] font-[800] text-slate-900 mb-6 tracking-tight">
+              <h2 className="text-[32px] leading-tight lg:text-[44px] lg:leading-[54px] font-[800] text-slate-900 dark:text-gray-100 mb-6 tracking-tight">
                 Best Grooming Services <br className="hidden sm:block" /> 
                 <span className="text-blue-600">Anytime, Anywhere</span>
               </h2>
               
-              <p className="text-[16px] leading-7 text-slate-600 font-[400] mb-8 lg:max-w-[90%]">
+              <p className="text-[16px] leading-7 text-slate-600 dark:text-gray-300 font-[400] mb-8 lg:max-w-[90%]">
                 We bring the professional salon experience to your doorstep. Our platform 
                 ensures you never have to worry about long wait times or finding the right 
                 talent on campus again.
@@ -121,7 +121,7 @@ const Features = () => {
             {/* Visual Showcase Column */}
             <div className="relative z-10 w-full lg:w-1/2 flex justify-center lg:justify-end mt-12 lg:mt-0">
               <div className="relative w-full max-w-[500px] lg:max-w-none lg:w-[85%]">
-                <div className="absolute -inset-4 bg-blue-50 rounded-[2.5rem] blur-3xl -z-10" />
+                <div className="absolute -inset-4 bg-blue-50 dark:bg-slate-800 rounded-[2.5rem] blur-3xl -z-10" />
                 
                 <img 
                   src={featureImg} 
@@ -129,14 +129,14 @@ const Features = () => {
                   alt="Grooming visual" 
                 />
 
-                <div className="absolute -bottom-10 -left-2 sm:bottom-10 sm:-left-10 lg:bottom-[80px] lg:-left-12 z-20 w-[200px] sm:w-[250px] lg:w-[280px] bg-white p-5 lg:p-7 rounded-[2rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] border border-white/50 animate-float">
+                <div className="absolute -bottom-10 -left-2 sm:bottom-10 sm:-left-10 lg:bottom-[80px] lg:-left-12 z-20 w-[200px] sm:w-[250px] lg:w-[280px] bg-white dark:bg-slate-800 p-5 lg:p-7 rounded-[2rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] border border-white/50 dark:border-slate-700 animate-float">
                   
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
                       <div className="bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-100">
                         <p className="text-[10px] lg:text-[12px] text-blue-600 font-[900] uppercase tracking-tighter">Tues, 24</p>
                       </div>
-                      <p className="text-[10px] lg:text-[12px] text-slate-700 font-bold">10:00 AM</p>
+                      <p className="text-[10px] lg:text-[12px] text-slate-700 dark:text-gray-200 font-bold">10:00 AM</p>
                     </div>
                     
                     <div className="w-8 h-8 lg:w-[44px] lg:h-[44px] flex items-center justify-center bg-blue-500 text-white rounded-2xl shadow-lg shadow-blue-200">
@@ -144,7 +144,7 @@ const Features = () => {
                     </div>
                   </div>
 
-                  <div className="inline-block bg-blue-50 py-1.5 px-4 text-[10px] lg:text-[12px] text-blue-700 font-[900] rounded-full mb-6 shadow-sm border border-blue-100">
+                    <div className="inline-block bg-blue-50 dark:bg-slate-700 py-1.5 px-4 text-[10px] lg:text-[12px] text-blue-700 dark:text-white font-[900] rounded-full mb-6 shadow-sm border border-blue-100 dark:border-slate-700">
                     Verified Professional
                   </div>
 
@@ -158,10 +158,10 @@ const Features = () => {
                       <div className="absolute bottom-0.5 right-0.5 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] lg:text-[17px] font-[800] text-slate-900 tracking-tight">
+                      <h4 className="text-[14px] lg:text-[17px] font-[800] text-slate-900 dark:text-gray-100 tracking-tight">
                         Saddiq Ahmed
                       </h4>
-                      <p className="text-[11px] lg:text-[13px] text-slate-500 font-semibold uppercase tracking-widest">Master Barber</p>
+                      <p className="text-[11px] lg:text-[13px] text-slate-500 dark:text-gray-300 font-semibold uppercase tracking-widest">Master Barber</p>
                     </div>
                   </div>
                 </div>

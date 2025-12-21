@@ -59,9 +59,9 @@ const Aboutus = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-white">
+    <section className="min-h-screen bg-white dark:bg-slate-900">
       {/* Integrated About Component */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-slate-900">
         <About />
       </div>
 
@@ -88,20 +88,20 @@ const Aboutus = () => {
       {/* ============================================ */}
       {/* MISSION SECTION */}
       {/* ============================================ */}
-      <div className="py-20 bg-white">
+      <div className="py-20 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="order-2 lg:order-1">
-              <h2 className="text-3xl lg:text-4xl font-bold text-headingColor mb-6">Our Mission</h2>
-              <p className="text-lg text-textColor mb-8 leading-relaxed">
+              <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-6">Our Mission</h2>
+              <p className="text-lg text-textColor dark:text-gray-300 mb-8 leading-relaxed">
                 To revolutionize how people book and manage their beauty and wellness appointments, 
                 while helping local professionals grow their business through cutting-edge technology.
               </p>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 {missionItems.map((item, index) => (
-                  <div key={index} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-transparent hover:border-primaryColor/20 transition-all">
+                  <div key={index} className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-slate-800 border border-transparent hover:border-primaryColor/20 transition-all">
                     <CheckCircle2 className="w-6 h-6 text-primaryColor shrink-0" />
-                    <p className="text-headingColor font-medium">{item}</p>
+                    <p className="text-headingColor dark:text-gray-100 font-medium">{item}</p>
                   </div>
                 ))}
               </div>
@@ -132,14 +132,14 @@ const Aboutus = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="p-8 bg-white rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+              <div key={index} className="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-irisBlueColor/10 text-irisBlueColor mb-6">
                   {benefit.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-headingColor mb-4">{benefit.title}</h3>
+                <h3 className="text-2xl font-bold text-headingColor dark:text-gray-100 mb-4">{benefit.title}</h3>
                 <ul className="space-y-4">
                   {benefit.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3 text-textColor">
+                    <li key={idx} className="flex items-center gap-3 text-textColor dark:text-gray-300">
                       <div className="w-1.5 h-1.5 bg-irisBlueColor rounded-full" />
                       <span className="font-medium">{feature}</span>
                     </li>
@@ -154,24 +154,24 @@ const Aboutus = () => {
       {/* ============================================ */}
       {/* AWARDS SECTION */}
       {/* ============================================ */}
-      <div className="py-20 lg:py-32 bg-white">
+      <div className="py-20 lg:py-32 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-headingColor mb-4">Awards & Recognition</h2>
-            <p className="text-textColor">Trusted and recognized by industry leaders worldwide.</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">Awards & Recognition</h2>
+                <p className="text-textColor dark:text-gray-300">Trusted and recognized by industry leaders worldwide.</p>
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {awards.map((award, index) => (
-              <div key={index} className="group bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:border-primaryColor transition-all text-center">
+              <div key={index} className="group bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:border-primaryColor transition-all text-center">
                 <div className="text-primaryColor mb-6 flex justify-center transform group-hover:scale-110 transition-transform">
                   <div className="p-4 bg-primaryColor/10 rounded-2xl">
                     {award.icon}
                   </div>
                 </div>
                 <div className="text-sm text-primaryColor font-bold uppercase tracking-wider mb-2">{award.year}</div>
-                <h3 className="text-lg font-bold text-headingColor mb-2">{award.award}</h3>
-                <p className="text-sm text-textColor">{award.org}</p>
+                <h3 className="text-lg font-bold text-headingColor dark:text-gray-100 mb-2">{award.award}</h3>
+                <p className="text-sm text-textColor dark:text-gray-300">{award.org}</p>
               </div>
             ))}
           </div>

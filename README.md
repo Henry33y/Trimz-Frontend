@@ -92,6 +92,31 @@ Once both the frontend and backend are running:
 - You can register as a customer or a barber.
 - Barbers can manage their appointments, and students can book barbering services based on the barbers' availability.
 
+## Theme (Dark Mode)
+
+- The frontend supports **Light**, **Dark**, and **System** theme options.
+- Use the theme toggle in the **Header** to cycle between: Light → Dark → System.
+- The choice is saved to `localStorage` and when set to **System** the site follows the OS `prefers-color-scheme` setting and updates on change.
+
+To test: start the frontend (`npm run dev`) and click the theme button in the top-right of the header; try changing your OS theme to see the `system` option react.
+
+### Connecting to the Backend (Development)
+
+- Ensure the backend server is running (default port: `5000`).
+- The frontend reads `VITE_API_URL` from `.env` to determine the backend base URL. By default this repository includes `VITE_API_URL=http://localhost:5000`.
+- During development the Vite dev server proxies requests starting with `/api` to the `VITE_API_URL`, so you can keep `BASE_URL` as `/api/` in code and avoid CORS issues.
+
+Quick checklist:
+
+1. Start the backend (in `Trimz-Backend/`):
+    - Create a `.env` with `MONGO_URI` and other required env vars (see Backend README).
+    - Start it with `npm run dev` (ensuring it binds to port `5000`).
+2. Start the frontend (in `Trimz-Frontend/`):
+    - Verify `.env` contains `VITE_API_URL=http://localhost:5000`.
+    - Run `npm run dev` and open the app in the browser.
+
+If your frontend dev server runs on a different port than `5173` (for example Vite picked `5174`), set `LOCAL_FRONTEND_URL` (or `FRONTEND_URLS`) in the backend env so the backend CORS helper allows the origin. Alternatively, rely on the Vite proxy (default) and you won't need to change backend CORS during local development.
+
 ## API Endpoints
 
 ### Customer Routes

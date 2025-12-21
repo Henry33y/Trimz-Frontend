@@ -5,6 +5,7 @@ import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-ico
 import { FaHome } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import NotificationIcon from "./NotificationIcon.jsx";
+import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   {
@@ -78,7 +79,7 @@ const Header = () => {
                     className={(navClass) =>
                       navClass.isActive
                         ? "text-primaryColor text-[16px] leading-7 font-[600] flex items-center gap-1"
-                        : "text-textColor text-[16px] leading-7 font-[500] hover:text-primaryColor flex items-center gap-1"
+                        : "text-textColor dark:text-gray-200 text-[16px] leading-7 font-[500] hover:text-primaryColor flex items-center gap-1"
                     }
                   >
                     {link.icon}
@@ -92,7 +93,8 @@ const Header = () => {
           {/* Right section with profile/login and menu button */}
           {/* Right section with profile/login, notification, and menu button */}
 <div className="flex items-center gap-4">
-<NotificationIcon/>
+  <ThemeToggle />
+  <NotificationIcon/>
 
   {token && user ? (
     <div>
@@ -129,7 +131,7 @@ const Header = () => {
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-[80px] bg-white shadow-lg z-20">
+          <div className="md:hidden absolute left-0 right-0 top-[80px] bg-white dark:bg-slate-800 shadow-lg z-20">
             <ul className="flex flex-col py-4 px-6">
               {navLinks.map((link, index) => (
                 <li key={index} className="border-b border-gray-100 last:border-none">
@@ -138,7 +140,7 @@ const Header = () => {
                     className={(navClass) =>
                       navClass.isActive
                         ? "text-primaryColor text-[16px] leading-7 font-[600] flex items-center gap-2 py-3"
-                        : "text-textColor text-[16px] leading-7 font-[500] hover:text-primaryColor flex items-center gap-2 py-3"
+                        : "text-textColor dark:text-gray-200 text-[16px] leading-7 font-[500] hover:text-primaryColor flex items-center gap-2 py-3"
                     }
                     onClick={() => setIsMenuOpen(false)}
                   >

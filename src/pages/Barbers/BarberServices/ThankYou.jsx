@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 const ThankYou = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-slate-900 p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center"
+        className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg flex flex-col items-center"
       >
         <BsCheckCircle className="text-green-500" size={60} />
-        <h2 className="text-2xl font-semibold mt-4 text-gray-800">
+        <h2 className="text-2xl font-semibold mt-4 text-gray-800 dark:text-gray-100">
           Thank You for Booking!
         </h2>
-        <p className="text-gray-600 mt-2 text-center">
+        <p className="text-gray-600 dark:text-gray-300 mt-2 text-center">
           Your appointment has been confirmed. We appreciate your trust in us.
         </p>
         <button
