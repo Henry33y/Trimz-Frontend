@@ -3,7 +3,7 @@
 import Header from '../components/header/Header';  // Importing the Header component
 import Footer from '../components/footer/Footer';  // Importing the Footer component
 import Routers from '../routes/Routers';           // Importing the Routers component to handle page routing
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 

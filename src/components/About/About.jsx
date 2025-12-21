@@ -95,7 +95,7 @@ function About() {
       </div>
 
       {/* Global Styles for the Glare Animation */}
-      <style jsx global>{`
+      <style>{`
         @keyframes glare {
           0% { transform: skewX(-35deg) translateX(-150%); }
           100% { transform: skewX(-35deg) translateX(250%); }
