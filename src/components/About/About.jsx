@@ -1,131 +1,111 @@
 /* eslint-disable react/no-unknown-property */
 import ceoImg from "../../assets/images/ecutz-ceo.png";
-import aboutCardimg from "../../assets/images/about-card1.png";
-// import { Link } from "react-router-dom";
+import cofounderImg from "../../assets/images/ecutz-cofounder.jpeg"; // Added Co-founder import
+// import aboutCardimg from "../../assets/images/about-card1.png";
 import { Facebook, Twitter, Instagram } from "lucide-react";
+import PropTypes from "prop-types";
 
+/**
+ * A reusable component for team member portraits with hover effects
+ */
+const ProfileCard = ({ image, alt }) => (
+  <div className="relative group perspective-1000 w-full sm:w-[280px] lg:w-[320px]">
+    <div className="relative overflow-hidden rounded-3xl shadow-xl transition-all duration-700 border-2 border-transparent hover:border-blue-100 transform hover:rotate-1 hover:scale-[1.02] bg-white">
+      {/* Glossy Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-blue-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-20" />
+      
+      <img
+        src={image}
+        alt={alt}
+        className="w-full h-[400px] object-cover object-top filter grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 ease-in-out"
+      />
 
-// Functional component for the About section
+      {/* Animated Glare Effect */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-30">
+        <div className="absolute top-0 left-0 w-1/2 h-full bg-white/30 skew-x-[-35deg] -translate-x-[150%] group-hover:animate-glare" />
+      </div>
+    </div>
+
+    {/* Optional Float Card (Experience/Stats Badge) */}
+    {/* {showBadge && (
+      <div className="absolute z-40 -bottom-6 -right-4 w-[180px] md:w-[220px] transition-all duration-700 group-hover:translate-y-[-10px]">
+        <img
+          src={aboutCardimg}
+          alt="Achievement Badge"
+          className="w-full rounded-xl shadow-2xl border-4 border-white"
+        />
+      </div>
+    )} */}
+  </div>
+);
+
+ProfileCard.propTypes = {
+  image: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+};
 function About() {
   return (
-    <section>
-      <div className="container">
-        <div className="flex justify-between gap-[50px] lg:gap-[130px] xl:gap-0 flex-col lg:flex-row">
-          {/* ============= ABOUT IMAGE ========= */}
-          <div className="relative w-3/4 lg:w-1/2 xl:w-[400px] z-10 order-1 lg:order-2 perspective-1000">
-            <div
-              className="group relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-700 
-    border-2 border-transparent 
-    hover:border-gradient-to-r hover:from-blue-100 hover:via-white hover:to-blue-100
-    transform hover:rotate-1 hover:scale-[1.01]"
-            >
-              <div
-                className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-blue-100/30 
-        opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out"
-              ></div>
-              <img
-                src={ceoImg}
-                alt="About Ecutz Image"
-                className="w-full h-[380px] object-cover object-top
-            filter grayscale-[30%] brightness-90 contrast-110 
-            group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100
-            transition-all duration-700 ease-in-out 
-            origin-center hover:scale-105"
-              />
-              {/* Subtle glare effect */}
-              <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <div className="absolute top-0 left-0 w-1/2 h-full bg-white/20 skew-x-[35deg] animate-glare"></div>
-              </div>
+    <section className="py-16 lg:py-24 bg-gray-50 overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-24">
+          
+          {/* ============= IMAGES SECTION ========= */}
+          <div className="w-full lg:w-1/2 flex flex-col sm:flex-row gap-8 sm:gap-4 items-center justify-center lg:justify-start">
+            <ProfileCard image={ceoImg} alt="Saddiq Ahmed - CEO" showBadge={true} />
+            <div className="sm:mt-12"> {/* Offset the second image for a professional "gallery" feel */}
+               <ProfileCard image={cofounderImg} alt="Co-Founder" />
             </div>
-
-            <div
-              className="absolute z-30 bottom-0 w-[200px] md:w-[250px] lg:w-[300px] right-[-15%] md:right-[-10%] lg:right-[-20%] xl:right-[-15%] 
-    transform -translate-y-1/4 group-hover:translate-y-0 transition-all duration-700 ease-in-out"
-            >
-              <div className="duration-700 hover:rotate-2 hover:scale-105 hover:shadow-3xl">
-                <img
-                  src={aboutCardimg}
-                  alt="Card Testimonial"
-                  className="w-full rounded-xl 
-                filter brightness-95 contrast-110 
-                group-hover:brightness-100 group-hover:contrast-100
-                transition-all duration-700"
-                />
-              </div>
-            </div>
-
-            {/* Animated gradient border on hover */}
-            <style jsx>{`
-              @keyframes glare {
-                0% {
-                  transform: skewX(35deg) translateX(-100%);
-                }
-                100% {
-                  transform: skewX(35deg) translateX(300%);
-                }
-              }
-              .animate-glare {
-                animation: glare 3s infinite linear;
-                @media (prefers-reduced-motion: reduce) {
-                  animation: none;
-                }
-              }
-              .hover:border-gradient-to-r {
-                border-image: linear-gradient(
-                    to right,
-                    #bae6fd,
-                    #ffffff,
-                    #bae6fd
-                  )
-                  1;
-              }
-            `}</style>
           </div>
 
-          {/* ==================================================================== */}
-
-          {/* =========== About Content ============ */}
-          <div className="w-full lg:w-1/2 xl:w-[670px] order-1 lg:order-2">
-            <h2 className="heading">
-              Meet the Visionary Behind Trimz
+          {/* ============= CONTENT SECTION ========= */}
+          <div className="w-full lg:w-1/2">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Meet the Visionaries <br /> 
+              <span className="text-blue-600">Behind Trimz</span>
             </h2>
-            <p className="text__para">
-              Trimz is the brainchild of Saddiq Ahmed, a forward-thinking
-              entrepreneur passionate about blending technology with everyday
-              convenience. Recognizing the challenges people face in accessing
-              quality grooming services, Saddiq Ahmed envisioned Trimz as more
-              than just an app it’s a lifestyle solution.
+            
+            <p className="text-lg text-gray-600 leading-relaxed mb-6">
+              Trimz is the brainchild of Saddiq Ahmed, Benjamin and their founding team—forward-thinking entrepreneurs passionate
+              about blending technology with everyday convenience.
             </p>
-            {/* ========= FOR MORE THEN UNCOMMENT =========== */}
-            {/* <p className='text__para mt-[30px]'>
-                        This is a grooming app designed for students,
-                        connecting them with skilled barbers and hair stylists on campus. With features
-                        like profile browsing, appointment scheduling, and location finding, students can
-                        easily book services and get a fresh cut or style with just a few taps.
-                        Trimz makes on-campus grooming quick, convenient, and hassle-free.
-                    </p> */}
-            {/* <Link to="/about">
-              <button className="btn">Learn More</button>
-            </Link> */}
-           
-            <div className="flex space-x-4 mt-[30px]">
-                <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer">
-                  <Facebook className="w-6 h-6 text-gray-700 hover:text-blue-600 transition" />
-                </a>
-                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
-                  <Twitter className="w-6 h-6 text-gray-700 hover:text-blue-400 transition" />
-                </a>
-                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
-                  <Instagram className="w-6 h-6 text-gray-700 hover:text-pink-500 transition" />
-                </a>
+            
+            <p className="text-lg text-gray-600 leading-relaxed mb-8">
+              Recognizing the challenges people face in accessing quality grooming services, 
+              the team envisioned Trimz as more than just an app; it’s a lifestyle solution 
+              designed to bridge the gap between skilled professionals and modern clients.
+            </p>
+            
+            {/* Social Links */}
+            <div className="flex items-center space-x-6">
+              <span className="text-sm font-semibold uppercase tracking-widest text-gray-400">Follow Our Journey:</span>
+              <div className="flex space-x-4">
+                {[
+                  { Icon: Facebook, color: "hover:text-blue-600", href: "#" },
+                  { Icon: Twitter, color: "hover:text-sky-400", href: "#" },
+                  { Icon: Instagram, color: "hover:text-pink-500", href: "#" },
+                ].map(({ Icon, color, href }, idx) => (
+                  <a key={idx} href={href} className={`text-gray-400 transition-colors duration-300 ${color}`}>
+                    <Icon size={24} />
+                  </a>
+                ))}
+              </div>
             </div>
-
           </div>
         </div>
       </div>
+
+      {/* Global Styles for the Glare Animation */}
+      <style jsx global>{`
+        @keyframes glare {
+          0% { transform: skewX(-35deg) translateX(-150%); }
+          100% { transform: skewX(-35deg) translateX(250%); }
+        }
+        .animate-glare {
+          animation: glare 1.5s ease-in-out;
+        }
+      `}</style>
     </section>
   );
 }
 
-//  Will be Exporting the About component for use in other parts of the application
 export default About;

@@ -1,349 +1,236 @@
+/* eslint-disable react/jsx-no-undef */
+// ============================================
+// HOME PAGE COMPONENT - Trimz Grooming Services
+// ============================================
+// Main landing page featuring hero section, services overview,
+// features, testimonials, and FAQ section
+// ============================================
+
+import { useEffect } from 'react';
+import { Link as ScrollLink } from 'react-scroll';
+import { Link as RouterLink } from 'react-router-dom';
+import { BsArrowRight } from 'react-icons/bs';
+import { User, Scissors, Calendar, ArrowRight } from 'lucide-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+// ============================================
+// ASSET IMPORTS
+// ============================================
 import heroImg01 from '../assets/images/4.jpg';
 import heroImg02 from '../assets/images/2.jpg';
 import heroImg03 from '../assets/images/3.jpg';
-import featureImg from '../assets/images/feature-img1.jpg'
-import videoIcon from '../assets/images/video-icon.png'
-import avatarIcon from '../assets/images/avatar-icon.png'
-import icon01 from '../assets/images/icon01.png'
-import icon02 from '../assets/images/icon02.png'
-import icon03 from '../assets/images/icon03.png'
 import faqImg from '../assets/images/faq-img1.png';
-import { BsArrowRight } from 'react-icons/bs';
-import About from '../components/About/About';
-import ServiceList from '../components/Services/ServiceList';
-// import BarberList from '../components/Barbers/BarberList';
-import FaqList from '../components/faq/FaqList';
-import Testimonial from'../components/Testimonial/Testimonial';
-import CounterSection from '../components/Counter/CounterSection';
 
-import { Link } from 'react-scroll';
-import { useEffect } from 'react';
-import 'aos/dist/aos.css'; // Import AOS styles
-import AOS from 'aos'; // Import AOS library
+// ============================================
+// COMPONENT IMPORTS
+// ============================================
+import About from '../components/About/About';
+import Features from '../components/Features/Features.jsx';
+import FaqList from '../components/faq/FaqList';
+import Testimonial from '../components/Testimonial/Testimonial';
+import CounterSection from '../components/Counter/CounterSection';
 import ScrollToTop from './ScrollToTop';
-// import RecomBarbers from '../components/Barbers/RecomBarbers';
 
 const Home = () => {
   useEffect(() => {
     AOS.init({
-      duration: 2000, // Animation duration in milliseconds
-      once: false, // Whether animation should happen only once
+      duration: 1000,
+      once: false,
+      easing: 'ease-out-cubic',
     });
   }, []);
-  return <>
-    {/* ====== Hero Section ========== */}
-    <section className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
-      <div className="container">
-        <div className='flex flex-col lg:flex-row gap-[90px] items-center justify-between'>
 
-          {/* =========== Home Page CONTENTS ========== */}
-          <div>
-            <div className='lg:w-[570px]'>
-              
-
-              <h1 className='text-[24px] leading-[34px] text-headingColor font-[800] md:text-[36px] md:leading-[46px] lg:text-[60px] lg:leading-[70px]'>
-              Looking for Expert Grooming Services Near You?
+  return (
+    <>
+      {/* ============================================ */}
+      {/* HERO SECTION */}
+      {/* ============================================ */}
+      <section className='hero__section pt-[60px] lg:pt-[100px] bg-gradient-to-b from-white to-gray-50' id="hero">
+        <div className="container mx-auto px-4">
+          <div className='flex flex-col lg:flex-row gap-12 lg:gap-[90px] items-center justify-between'>
+            
+            {/* Hero Content */}
+            <div className='flex-1 text-center lg:text-left'>
+              <div className='lg:max-w-[620px]'>
+                <span className="inline-block px-4 py-2 rounded-full bg-primaryColor/10 text-primaryColor font-bold text-sm mb-6 uppercase tracking-wider">
+                  Premium Campus Grooming
+                </span>
+                <h1 className='text-[38px] leading-[48px] text-headingColor font-[800] 
+                  md:text-[52px] md:leading-[62px] lg:text-[64px] lg:leading-[74px] 
+                  mb-6 tracking-tight'>
+                  Looking for Expert <br className="hidden md:block" />
+                  <span className="text-primaryColor">Grooming Services</span> Near You?
                 </h1>
 
-              <p className='text_para'> Trimz offers expert grooming for everyone, with professional barbers and stylists delivering haircuts, 
-                beard grooming, and chic hairstyles. Enjoy convenient online booking for effortless service anywhere.
-              </p>
+                <p className='text-[18px] leading-8 text-textColor mb-10 max-w-[540px] mx-auto lg:mx-0'>
+                  Trimz offers expert grooming for everyone. Our professional barbers and stylists 
+                  deliver precision haircuts, beard grooming, and modern styles right to your campus.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <ScrollLink to="services" smooth={true} duration={500} offset={-80}>
+                  <button className="w-full sm:w-auto px-8 py-4 bg-primaryColor text-white font-bold rounded-2xl shadow-lg shadow-primaryColor/20 hover:bg-primaryColor/90 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group">
+                    View Services
+                    <BsArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </ScrollLink>
+                <RouterLink to="/barbers">
+                  <button className="w-full sm:w-auto px-8 py-4 bg-white text-headingColor border border-gray-200 font-bold rounded-2xl hover:bg-gray-50 transition-all duration-300">
+                    Find a Barber
+                  </button>
+                </RouterLink>
+              </div>
             </div>
-            {/* Home btn */}
-            <Link to="/services" smooth={true} duration={500}>
-                <button className="btn">Our Services</button>
-              </Link>
-          </div>
 
-          {/* =========== Home Page CONTENTS Image ========== */}
-<div className='flex flex-wrap gap-[20px] justify-center md:justify-end'>
-  {/* 'flex-wrap' allows the images to wrap if they can't fit on smaller screens. 
-      'gap-[20px]' reduces the gap a bit for smaller screens.
-      'justify-center' centers the images on small screens, 'md:justify-end' aligns them to the right on medium and larger screens. */}
-  
-  <div>
-  <img className='w-[150px] h-[250px] sm:w-[200px] sm:h-[300px] md:w-[250px] md:h-[400px] 
-    rounded-3xl' src={heroImg01} alt="First content Image" />
-    {/* Responsive image sizing: 
-        - On small screens (sm), it will scale to width 200px, height 300px.
-        - On medium screens (md), it will use 250px width and 400px height (original size).
-        - On extra-small screens, it shrinks to 150px width and 250px height. */}
-  </div>
+            {/* Hero Gallery */}
+            <div className='flex-1 flex flex-wrap gap-4 lg:gap-6 justify-center lg:justify-end'>
+              <div data-aos="fade-up" data-aos-delay="100">
+                <img 
+                  className='w-[160px] h-[240px] sm:w-[220px] sm:h-[340px] md:w-[260px] 
+                    md:h-[400px] rounded-[2rem] object-cover shadow-2xl ring-4 ring-white' 
+                  src={heroImg01} 
+                  alt="Professional styling" 
+                />
+              </div>
 
-  <div className='mt-[20px] sm:mt-[30px]'>
-    {/* Adjust top margin to be smaller on very small screens for better spacing. */}
-    
-              <img src={heroImg02} alt="Second Img" className='w-[150px] h-[120px] sm:w-[175px] sm:h-[150px] 
-    md:w-[200px] md:h-[170px] mb-[20px] rounded-lg' />
-    {/* Second image: 
-        - Shrinks to 150px wide and 120px tall on very small screens.
-        - Scales to 175px by 150px on small screens.
-        - Reverts to 200px by 170px on medium screens and larger. */}
-    
-              <img src={heroImg03} alt="Third Img" className='w-[150px] h-[100px] sm:w-[175px] sm:h-[130px] md:w-[200px] 
-    md:h-[150px] rounded-lg'/>
-    {/* Third image:
-        - Shrinks to 150px wide and 100px tall on very small screens.
-        - Grows to 175px by 130px on small screens.
-        - Reverts to 200px by 150px on medium and larger screens. */}
-  </div>
-
-            
-         {/* <div className='flex gap-[30px] justify-end'>
-            <div>
-              <img className='w-[250px] h-[400px] rounded-3xl' src={heroImg01} alt="Fisrt content Image" />
-            </div>
-            <div className='mt-[30px]'>
-              <img src={heroImg02} alt="Second Img" className='w-[200px] h-[170px] mb-[30px] rounded-lg' />
-              <img src={heroImg03} alt="Third Img" className='w-[200px] h-[150px] mb-[30px] rounded-lg'/>
-            </div>
-          </div> */}
-</div>
-
-        </div>
-
-          {/* ===== counter section ==== */}
-          <CounterSection/>
-       
-      </div>
-    </section>
-    {/* ==================== Hero Section End =================== */}
-
-    {/* =================== New Section Container======================== */}
-    
-    <section data-aos="zoom-in">
-      <div className="container">
-        <div className='lg:w-[470px] mx-auto'>
-          <h2 className='heading text-center'>Providing the Best Hair Styling Services
-          </h2>
-          <p className='text__para text-center'>First-Class Barbers and hair Stylists. View profiles and choose your favorite styler. 
-          </p>
-        </div>
-
-        
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-[30px] mt-[30px] 
-        lg:mt-[55px]'>
-
-
-          {/* ======= First Illustration ======== */}
-            <div className='py-[30px] px-5'>
-              <div className='flex items-center justify-center'>
-                <img src={icon01} alt="" />
-            </div>
-            
-            <div className='mt-[30px]'>
-              <h2 className='text-[26px] leading-9 text-headingColor font-[700] text-center'>
-                Find a Stylist Or Barber
-              </h2>
-              <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-                Discover skilled hair stylists and barbers.  Trimz allows you to explore profiles,
-                view ratings, and choose your ideal professional.
-              </p>
-
-              <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
-              flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
-                <BsArrowRight className='group-hover:text-white w-6 h-5'/>
-              </Link>
+              <div className='mt-8 sm:mt-12 space-y-4 lg:space-y-6' data-aos="fade-up" data-aos-delay="300">
+                <img 
+                  src={heroImg02} 
+                  alt="Shop" 
+                  className='w-[140px] h-[120px] sm:w-[200px] sm:h-[180px] rounded-3xl object-cover shadow-xl' 
+                />
+                <img 
+                  src={heroImg03} 
+                  alt="Tools" 
+                  className='w-[140px] h-[120px] sm:w-[200px] sm:h-[180px] rounded-3xl object-cover shadow-xl'
+                />
+              </div>
             </div>
           </div>
 
-
-          {/* ======= Second Illustration ======== */}
-            <div className='py-[30px] px-5'>
-              <div className='flex items-center justify-center'>
-                <img src={icon02} alt="" />
-            </div>
-            
-            <div className='mt-[30px]'>
-              <h2 className='text-[26px] leading-9 text-headingColor font-[700] text-center'>
-                Find a Location
-              </h2>
-              <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-              Find your favorite stylists on campus with  Trimz. Use our map to locate nearby stylists,
-              check availability, and book your slot.
-              </p>
-              <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
-              flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
-                <BsArrowRight className='group-hover:text-white w-6 h-5'/>
-              </Link>
-            </div>
-          </div>
-
-
-          {/* ======= Third Illustration ======== */}
-            <div className='py-[30px] px-5'>
-              <div className='flex items-center justify-center'>
-                <img src={icon03} alt="" />
-            </div>
-            
-            <div className='mt-[30px]'>
-              <h2 className='text-[26px] leading-9 text-headingColor font-[700] text-center'>
-                Book Appointment
-              </h2>
-              <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-              Book your next haircut easily with  Trimz. Browse stylists, choose a service, pick a time, and confirm in just a few clicks.
-              </p>
-              <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
-              flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
-                <BsArrowRight className='group-hover:text-white w-6 h-5'/>
-              </Link>
-            </div>
-          </div>
+          <CounterSection />
         </div>
-      </div>
-    </section>
-    {/* ===== End Of the New Section Container */}
+      </section>
 
-
-    {/* ======== About Section Begin ========== */}
-    <About/>
-    {/* ======== About Section End ========== */}
-
-
-    {/* ======== Services Section Start ========== */}
-    <section id="services" data-aos="zoom-in">
-      <div className="container">
-        <div className='xl:w-[470] mx-auto'>
-          <h2 className='heading text-center'>Styling and Babering Services</h2>
-          <p className='text__para text-center'>
-             Trimz provides on-campus haircuts, trims, beard grooming, and styling.
-            Enjoy quick, quality service.
-          </p> 
-        </div>
-
-      <ServiceList/>
-      </div>
-</section>
-    {/* ======== Services Section End ========== */}
-
-    
-    {/* ======== Feature Section ========= */}
-    <section data-aos="zoom-in">
-      <div className='container'>
-        <div className='flex items-center justify-between flex-col lg:flex-row'>
-
-          {/* ====== feature content ====== */}
-          <div className='xl:w-[670px]'>
-            <h2 className='heading'>
-              Best Grooming Services <br /> Anytime, Anywhere
+      {/* ============================================ */}
+      {/* HOW IT WORKS SECTION */}
+      {/* ============================================ */}
+      <section className='py-[60px] lg:py-[100px] bg-white'>
+        <div className="container mx-auto px-4">
+          <div className='max-w-[600px] mx-auto mb-[60px] text-center'>
+            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-4 tracking-tight'>
+              Your Style, Simplified
             </h2>
-            <ul className="pl-4">
-              <li className="text__para">
-                1. Book your appointment directly with just a few clicks.
-              </li>
-              <li className="text__para">
-                2. Explore and connect with professional barbers available on campus.
-              </li>
-              <li className="text__para">
-                3. Browse our barbers and stylists, view their availability, and
-                choose a time that fits your schedule.
-              </li> 
-            </ul>
-
-            <Link to='/aboutus'>
-              <button className='btn'>Learn More</button>
-            </Link>
+            <div className="w-20 h-1.5 bg-primaryColor mx-auto rounded-full mb-6" />
+            <p className='text-[16px] leading-7 text-textColor'>
+              Booking your next look shouldn&apos;t be a hassle. We&apos;ve built the perfect platform to connect you with top-tier talent in just three easy steps.
+            </p>
           </div>
 
-
-          {/* ============ feature Image ========== */}
-          <div className='relative z-10 xl:w-[770px] flex justify-end mt-[50px] lg:mt-0'>
-            <img src={featureImg} className='w-3/4' alt="The Feature Content Image" />
-
-            <div className='w-[150px] lg:w-[248px] bg-white absolute bottom-[50px] left-0 
-            md:bottom-[100px] md:left-5 z-20 p-2 pb-3 lg:pt-4 lg:px-4 lg:pb-[26px] rounded-[10px]'>
-
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-[6px] lg:gap-3'>
-                  {/* ==== Example Appoint Date */}
-                  <p className='text-[10px] leading-[10px] lg:text-[14px] lg:leading-5 text-textColor
-                  font-[400]'>Tues, 24
-                  </p>
-                  <p className='text-[10px] leading-[10px] lg:text-[14px] lg:leading-5 text-textColor
-                  font-[400]'>10:00AM
-                  </p>
-                </div>
-                <span className='w-5 h-5 lg:w-[34px] lg:h-[34px] flex items-center justify-center
-                bg-irisBlueColor rounded py-1 px-[6px] lg:py-3 lg:px-[9px]'>
-                  <img src={videoIcon} alt="Small Video Icon" />
-                </span>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+            {/* Step 1 */}
+            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+              <div className='w-16 h-16 bg-primaryColor/10 rounded-2xl flex items-center justify-center text-primaryColor font-bold text-2xl mb-8 group-hover:bg-primaryColor group-hover:text-white transition-colors'>
+                <User className="w-8 h-8" />
               </div>
+              <h3 className='text-2xl font-bold text-headingColor mb-4'>Find a Stylist</h3>
+              <p className='text-textColor leading-relaxed mb-6'>
+                Discover skilled professionals on campus. Browse detailed profiles, view portfolio photos, and read verified ratings.
+              </p>
+              <RouterLink to='/barbers' className='flex items-center gap-2 text-primaryColor font-bold group/btn'>
+                Explore Talent <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </RouterLink>
+            </div>
 
-              {/* ============= Styled Small Text ================= */}
-              <div className='w-[75px] lg:w-[96px] bg-[#CCF0F3] py-1 px-2 lg:py-[6px] lg:px-[10px]
-              text-[8px] leading-[8px] lg:text-[12px] lg:leading-4 text-irisBlueColor font-[800] mt-2 lg:mt-4
-              rounded-s-full'>
-                Professional
+            {/* Step 2 */}
+            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+              <div className='w-16 h-16 bg-irisBlueColor/10 rounded-2xl flex items-center justify-center text-irisBlueColor font-bold text-2xl mb-8 group-hover:bg-irisBlueColor group-hover:text-white transition-colors'>
+                <Scissors className="w-8 h-8" />
               </div>
+              <h3 className='text-2xl font-bold text-headingColor mb-4'>Pick a Service</h3>
+              <p className='text-textColor leading-relaxed mb-6'>
+                From fades to beard sculpting, choose exactly what you need. View pricing upfront—no surprises, just great results.
+              </p>
+              <RouterLink to='/services' className='flex items-center gap-2 text-irisBlueColor font-bold group/btn'>
+                Browse Services <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </RouterLink>
+            </div>
 
-            {/* ======= small Profile Icon Image */}
-            {/* ========== CHANGE THIS IMAGE/ AVATAR ICON ============== */}
-              <div className='flex items-center gap-[6px] lg:gap-[10px] mt-2 lg:mt-[18px]'>
-                <img src={avatarIcon} alt="Profile Avartar Icon" />
-                <h4 className='text-[10px] leading-3 lg:text-[16px] lg:leading-[22px] font-[700] text-headingColor'>
-                  Saddiq Ahmed
-                </h4>
+            {/* Step 3 */}
+            <div className='relative p-8 bg-gray-50 rounded-[2rem] hover:bg-white hover:shadow-2xl transition-all duration-300 group border border-transparent hover:border-gray-100'>
+              <div className='w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-600 font-bold text-2xl mb-8 group-hover:bg-yellow-600 group-hover:text-white transition-colors'>
+                <Calendar className="w-8 h-8" />
               </div>
-
-
+              <h3 className='text-2xl font-bold text-headingColor mb-4'>Book & Go</h3>
+              <p className='text-textColor leading-relaxed mb-6'>
+                Pick a time that fits your schedule. Confirm your booking instantly and get notified before your session starts.
+              </p>
+              <RouterLink to='/register' className='flex items-center gap-2 text-yellow-600 font-bold group/btn'>
+                Get Started <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </RouterLink>
             </div>
           </div>
-
-
         </div>
+      </section>
 
-      </div>
-    </section>
+      {/* ============================================ */}
+      {/* INTEGRATED ABOUT & FEATURES COMPONENTS */}
+      {/* ============================================ */}
+      <About />
+      
+      {/* Features handles both Services List and Feature (Benefits) blocks */}
+      <Features />
 
-    {/* ============= Feature Section ============== */}
-    {/* ============= High Rated OR Recommended Barbers Section START ============== */}
-    {/* <div>
-        <RecomBarbers/>
-      </div> */}
-    {/* ============= High Rated OR Recommended Barbers Section END ============== */}
+      {/* ============================================ */}
+      {/* FAQ SECTION */}
+      {/* ============================================ */}
+      <section className='py-[60px] lg:py-[100px] bg-white overflow-hidden'>
+        <div className="container mx-auto px-4">
+          <div className='flex flex-col md:flex-row justify-between gap-12 lg:gap-20 items-center'>
+            <div className='w-full md:w-[45%] hidden md:block'>
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-primaryColor/5 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
+                <img 
+                  src={faqImg} 
+                  alt="FAQ" 
+                  className='relative rounded-[2rem] shadow-2xl w-full'
+                />
+              </div>
+            </div>
 
-
-    
-    {/* ================== faqs SECTION START ==================*/}
-    <section data-aos="zoom-in">
-      <div className="container">
-        <div className='flex justify-between gap-[50px] lg:gap-0'>
-          <div className='w-[40%] hidden md:block'>
-            <img src={faqImg} alt="faq Image" />
+            <div className='w-full md:w-[50%]'>
+              <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-8 leading-tight tracking-tight'>
+                Everything you need to <br className="hidden lg:block" /> 
+                know <span className="text-primaryColor">about Trimz</span>
+              </h2>
+              <FaqList />
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className='w-full md:w-1/2 '>
-            <h2 className='heading'>Most questions by our beloved customers</h2>
-            <FaqList/>
-
+      {/* ============================================ */}
+      {/* TESTIMONIALS SECTION */}
+      {/* ============================================ */}
+      <section className='py-[60px] lg:py-[100px] bg-gray-50'>
+        <div className="container mx-auto px-4">
+          <div className='max-w-[500px] mx-auto mb-[60px] text-center'>
+            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-4 tracking-tight'>What our clients say</h2>
+            <div className="w-20 h-1.5 bg-primaryColor mx-auto rounded-full mb-6" />
+            <p className='text-[16px] leading-7 text-textColor'>
+              Don&apos;t just take our word for it. Join thousands of satisfied customers who trust Trimz for their everyday grooming.
+            </p>
           </div>
-
-
+          
+          <Testimonial />
         </div>
-      </div>
+      </section>
 
-    </section>
-    {/* ================== faqs SECTION END ==================*/}
-
-    {/* ================== Testimonial SECTION Start ==================*/}
-    <section data-aos="fade-up">
-      <div className="container">
-        <div className='xl:w-[470] mx-auto'>
-            <h2 className='heading text-center'>What our clients say</h2>
-            <p className='text__para text-center'>
-            At Trimz, we pride ourselves on delivering top-notch styling
-            services to everyone everywhere.
-            </p> 
-        </div>
-        <Testimonial/>
-      </div>
-      {/* <Footer/> */}
-    </section>
-    <ScrollToTop/>
-
-    {/* ================== Testimonial SECTION End ==================*/}
-
-  </>
-}
+      <ScrollToTop />
+    </>
+  );
+};
 
 export default Home;

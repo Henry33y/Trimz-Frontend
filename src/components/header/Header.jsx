@@ -14,7 +14,7 @@ const navLinks = [
   },
   {
     path: "/barbers",
-    display: "MarketPlace",
+    display: "Providers",
     icon: <BiStore className="text-xl" />,
   },
   {
@@ -109,7 +109,7 @@ const Header = () => {
   ) : (
     <Link to="/login">
       <button className="bg-primaryColor py-6 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
-        Login / Register
+        Login/Register
       </button>
     </Link>
   )}

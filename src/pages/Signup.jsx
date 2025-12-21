@@ -1,67 +1,107 @@
-/* eslint-disable no-undef */
-import signupImg from '../assets/images/signup.png';
-import signupImg1 from '../assets/images/signup1.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { BASE_URL } from '../config';
-import {toast} from 'react-toastify';
-import HashLoader from 'react-spinners/BeatLoader';
-import { FcGoogle } from 'react-icons/fc'
+/* eslint-disable no-unused-vars */
+// ============================================
+// SIGNUP PAGE - Modern Design with Complete Logic
+// ============================================
+// Professional signup form with validation, file upload,
+// and OAuth integration
+// ============================================
 
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  Lock, 
+  Camera, 
+  ChevronDown, 
+  ArrowRight,
+  ShieldCheck,
+  Smartphone,
+  Loader2,
+  Eye,
+  EyeOff
+} from 'lucide-react';
+import { toast } from 'react-toastify';
+import HashLoader from 'react-spinners/BeatLoader';
+import { FcGoogle } from 'react-icons/fc';
+import { BASE_URL } from '../config';
+
+// ============================================
+// ASSETS
+// ============================================
+const signupVisual = 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000';
+
+// ============================================
+// CUSTOM GOOGLE ICON COMPONENT
+// ============================================
+const GoogleIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 48 48">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    <path fill="none" d="M0 0h48v48H0z"/>
+  </svg>
+);
+
+// ============================================
+// MAIN SIGNUP COMPONENT
+// ============================================
 const Signup = () => {
-  // State for handling file upload preview
+  // ============================================
+  // STATE MANAGEMENT
+  // ============================================
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewURL, setPreviewURL] = useState();
-  
-  // State for managing loading state during form submission
+  const [previewURL, setPreviewURL] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  // State for confirm password field (separate from main form data)
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  // Main form data state with initial values
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    phone: '', // Added phone number field
-    profilePicture: selectedFile,
-    gender: '',
+    phone: '',
+    profilePicture: null,
+    gender: 'male',
     role: 'customer',
   });
 
-  // Hook for programmatic navigation
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  // Generic input handler for form fields
+  // ============================================
+  // INPUT HANDLERS
+  // ============================================
   const handleInputChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Separate handler for confirm password
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
   };
-  
-  // Handler for file input changes (profile photo upload)
+
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
-      // Generate a local preview URL for the selected image
+      // Generate preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewURL(reader.result);
       };
       reader.readAsDataURL(file);
 
-      // Update the formData with the selected file
+      // Store file in state
       setSelectedFile(file);
     }
   };
 
-  // Form submission handler
-  const submitHandler = async event => {
+  // ============================================
+  // FORM SUBMISSION HANDLER
+  // ============================================
+  const submitHandler = async (event) => {
     event.preventDefault();
     
     // Password validation checks
@@ -76,8 +116,8 @@ const Signup = () => {
       return;
     }
 
-    // Phone number validation (basic)
-    const phoneRegex = /^[0-9]{10}$/; // Assumes 10-digit phone number
+    // Phone number validation
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(formData.phone)) {
       toast.error('Please enter a valid 10-digit phone number');
       return;
@@ -86,310 +126,325 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      // Create a FormData object to send the data
-      const formDataToSend = new FormData();
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('password', formData.password);
-      formDataToSend.append('phone', formData.phone); // Add phone number
-      formDataToSend.append('gender', formData.gender);
-      formDataToSend.append('role', formData.role);
-      
-      if (selectedFile) {
-        formDataToSend.append('profilePicture', selectedFile);
-      }
       const token = localStorage.getItem('token');
-
+      
       const res = await fetch(`${BASE_URL}users`, {
-        method: 'post',
-        headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
-
+        method: 'POST',
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : ""
+        },
+        body: JSON.stringify(formData),
       });
-
 
       const { message } = await res.json();
 
-      // Handle unsuccessful registration
       if (!res.ok) {
         throw new Error(message);
       }
 
-      // Handle successful registration
       setLoading(false);
       toast.success(message);
       navigate('/login');
     
     } catch (err) {
-      // Handle registration errors
       toast.error(err.message);
       setLoading(false);
     }
   };
+
+  // ============================================
+  // OAUTH HANDLER
+  // ============================================
   const handleOauth = async () => {
     try {
       window.location.href = `${BASE_URL}auth/google`;
-      
-    }catch(err){
-      toast.error(err.message)
+    } catch(err) {
+      toast.error(err.message);
     }
-  }
-    
+  };
+
   return (
-    <section className='px-5 xl:px-0'>
-      <div className='px-5 lg:px-0 min-h-screen flex items-center justify-center'>
-      <div className='max-w-[1000px] mx-auto'>
-        <div className='grid grid-cols-1 lg:grid-cols-2'>
+    <section className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl w-full bg-white rounded-3xl sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        
+        {/* ============================================ */}
+        {/* LEFT SIDE - Visual/Branding */}
+        {/* ============================================ */}
+        <div className="hidden lg:block lg:w-1/2 relative">
+          <img 
+            src={signupVisual} 
+            alt="Barber Shop" 
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
           
-          {/* Left side - Image display (hidden on mobile) */}
-          <div className='hidden lg:block rounded-l-lg'>
-            <figure className='rounded-l-lg'>
-              <img src={signupImg} alt='SignUp Image' className='w-full rounded-l-lg'/>
-              <img src={signupImg1} alt='SignUp Image' className='w-full rounded-l-lg'/>
-            </figure>
+          {/* Branding Content */}
+          <div className="absolute bottom-12 left-12 right-12 text-white">
+            <h2 className="text-5xl font-black mb-4 tracking-tight">
+              <span className="text-primaryColor">Trimz</span>
+            </h2>
+            <p className="text-xl text-slate-200 leading-relaxed font-medium mb-8">
+              &quot;Style is a way to say who you are without having to speak.&quot;
+            </p>
+            
+            {/* Social Proof */}
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="w-11 h-11 rounded-full border-2 border-slate-900 bg-slate-700 overflow-hidden">
+                    <img src={`https://i.pravatar.cc/100?u=${i + 20}`} alt="User" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm font-bold text-slate-300 tracking-wide">
+                Joined by 2k+ stylists
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Right side - Signup form */}
-        <div className='w-full max-w-[600px] mx-auto bg-white/90 rounded-lg shadow-[0_5px_20px_rgba(0,0,0,0.1)] md:p-10 p-6 backdrop-blur-sm my-8'>    {/* Added Logo Section */}
-          <div className='rounded-l-lg lg:pl-16 py-10'>
-            <h3 className='text-headingColor text-[22px] leading-9 font-bold mb-10'>
-              Create an Account with
-              <p>
-                <span className='text-primaryColor'> 
-                  Trimz</span></p>
-            </h3>
+        {/* ============================================ */}
+        {/* RIGHT SIDE - Signup Form */}
+        {/* ============================================ */}
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 xl:p-16">
+          <div className="max-w-md mx-auto">
+            {/* Form Header */}
+            <div className="mb-8 text-center lg:text-left">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-2">
+                Create Account
+              </h2>
+              <p className="text-slate-500 font-medium text-sm sm:text-base">
+                Join the community of expert groomers
+              </p>
+            </div>
 
+            {/* ============================================ */}
+            {/* SIGNUP FORM */}
+            {/* ============================================ */}
+            <form onSubmit={submitHandler} className="space-y-4 sm:space-y-5">
+              
+              {/* ============================================ */}
+              {/* PROFILE PHOTO UPLOAD */}
+              {/* ============================================ */}
+              <div className="flex items-center gap-4 sm:gap-5 mb-6">
+                <div className="relative group">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden transition-all group-hover:border-primaryColor">
+                    {previewURL ? (
+                      <img src={previewURL} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <Camera className="text-slate-400 group-hover:text-primaryColor transition-colors" size={28} />
+                    )}
+                  </div>
+                  <input 
+                    type="file" 
+                    name="profilePicture"
+                    id="profilePicture"
+                    onChange={handleFileInputChange} 
+                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                    accept=".jpg, .jpeg, .png"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 mb-1">Profile Picture</h4>
+                  <p className="text-xs text-slate-400">PNG, JPG up to 5MB</p>
+                </div>
+              </div>
 
-
-            {/* Sign up form */}
-            <form onSubmit={submitHandler}>
-              {/* Name input field */}
-              <div className='mb-5'>
+              {/* ============================================ */}
+              {/* FULL NAME INPUT */}
+              {/* ============================================ */}
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primaryColor transition-colors">
+                  <User size={20} />
+                </div>
                 <input
                   type="text"
-                  placeholder='Full Name'
-                  name='name'
+                  name="name"
+                  placeholder="Full Name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className='w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-                    focus:border-b-primaryColor text-[16px] leading-7 text-headingColor 
-                    placeholder:text-textColor rounded-md cursor-pointer'
-                  required 
+                  className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                  required
                 />
               </div>
 
-              {/* Email input field */}
-              <div className='mb-5'>
+              {/* ============================================ */}
+              {/* EMAIL INPUT */}
+              {/* ============================================ */}
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primaryColor transition-colors">
+                  <Mail size={20} />
+                </div>
                 <input
                   type="email"
-                  placeholder='Enter your email'
-                  name='email'
+                  name="email"
+                  placeholder="Email Address"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className='w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-                    focus:border-b-primaryColor text-[16px] leading-7 text-headingColor 
-                    placeholder:text-textColor rounded-md cursor-pointer'
-                  required 
+                  className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                  required
                 />
               </div>
 
-              {/* Phone number input field */}
-              <div className='mb-5'>
+              {/* ============================================ */}
+              {/* PHONE NUMBER INPUT */}
+              {/* ============================================ */}
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primaryColor transition-colors">
+                  <Smartphone size={20} />
+                </div>
                 <input
                   type="tel"
-                  placeholder='Phone Number (10 digits)'
-                  name='phone'
+                  name="phone"
+                  placeholder="Phone Number (10 digits)"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className='w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-                    focus:border-b-primaryColor text-[16px] leading-7 text-headingColor 
-                    placeholder:text-textColor rounded-md cursor-pointer'
                   pattern="[0-9]{10}"
-                  required 
+                  className="w-full pl-12 pr-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                  required
                 />
-                <p className="text-xs text-textColor mt-1">Please enter a 10-digit phone number</p>
+                <p className="text-xs text-slate-500 mt-1.5 ml-1">Enter a valid 10-digit phone number</p>
               </div>
 
-              {/* Existing password and confirm password fields */}
-              <div className='mb-5'>
-                <input
-                  type="password"
-                  placeholder='Password'
-                  name='password'
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className='w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-                    focus:border-b-primaryColor text-[16px] leading-7 text-headingColor 
-                    placeholder:text-textColor rounded-md cursor-pointer'
-                  required 
-                />
-                <p className="text-xs text-textColor mt-1">Password must be at least 6 characters long</p>
-              </div>
+              {/* ============================================ */}
+              {/* PASSWORD FIELDS */}
+              {/* ============================================ */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Password */}
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primaryColor transition-colors">
+                    <Lock size={20} />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                    required
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primaryColor transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
 
-              <div className='mb-5'>
-                <input
-                  type="password"
-                  placeholder='Confirm Password'
-                  name='confirmPassword'
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  className='w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-                    focus:border-b-primaryColor text-[16px] leading-7 text-headingColor 
-                    placeholder:text-textColor rounded-md cursor-pointer'
-                  required 
-                />
+                {/* Confirm Password */}
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primaryColor transition-colors">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 placeholder:text-slate-400"
+                    required
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primaryColor transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
+              <p className="text-xs text-slate-500 -mt-1 ml-1">Password must be at least 6 characters</p>
 
-              {/* Role and Gender selection container */}
-              <div className='mb-5 flex items-center justify-between'>
-                {/* Role selection dropdown */}
-                <label className='text-textColor font-semibold text-[15px] leading-7'>
-                  Are you a:
+              {/* ============================================ */}
+              {/* ROLE & GENDER SELECTION */}
+              {/* ============================================ */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Role Selection */}
+                <div className="relative">
                   <select
+                    name="role"
                     value={formData.role}
                     onChange={handleInputChange}
-                    name="role"
-                    className="text-textColor font-semibold text-[15px] leading-7 px-4 py-3
-                      focus:outline-none"
+                    className="w-full appearance-none px-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-bold text-slate-700 text-sm cursor-pointer"
                   >
-                    <option value="provider">Provider</option>
                     <option value="customer">Customer</option>
+                    <option value="provider">Provider</option>
                   </select>
-                </label>
-                
-                {/* Gender selection dropdown */}
-                <label className='text-textColor font-semibold text-[15px] leading-7'>
-                  Gender:
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
+                </div>
+
+                {/* Gender Selection */}
+                <div className="relative">
                   <select
+                    name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
-                    name="gender"
-                    className="text-textColor font-semibold text-[15px] leading-7 px-4 py-3
-                      focus:outline-none"
+                    className="w-full appearance-none px-4 py-3.5 sm:py-4 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-bold text-slate-700 text-sm cursor-pointer"
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                    {/* Uncomment later ---- Only 2 genders for now */}
-                    {/* <option value="other">Other</option> */}
                   </select>
-                </label>
-              </div>
-
-              {/* Photo upload section */}
-              <div className='mb-5 flex items-center gap-3'>
-                {/* Preview selected photo if available */}
-                {selectedFile && (
-                  <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid
-                    border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
-                    <img 
-                      src={previewURL} 
-                      alt="" 
-                      className='w-full h-full object-cover'
-                    />
-                  </figure>
-                )}
-
-                {/* Photo upload input */}
-                <div className='relative w-[130px] h-[50px]'>
-                  <input 
-                    type="file"
-                    name='profilePicture'
-                    id='customFile'
-                    onChange={handleFileInputChange}
-                    accept='.jpg, .jpeg, .png'
-                    className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
-                  />
-
-                  {/* Custom styled upload button */}
-                  <label 
-                    htmlFor="customFile" 
-                    className='absolute top-0 left-0 w-full h-full flex
-                      items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46]
-                      text-headingColor font-semibold rounded-lg truncate cursor-pointer'
-                  >
-                    Upload Photo
-                  </label>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
                 </div>
               </div>
-              <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
-      {/* Primary Sign Up Button */}
-      <div className="flex justify-center">
-        <button
-          disabled={loading}
-          type="submit"
-          onClick={submitHandler}
-          className="w-full relative bg-primaryColor text-white text-lg font-semibold rounded-xl
-                   px-6 py-4 shadow-lg hover:shadow-primaryColor/30
-                   transform hover:-translate-y-0.5 active:translate-y-0
-                   transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed
-                   disabled:hover:shadow-none disabled:hover:translate-y-0"
-        >
-          <div className="flex items-center justify-center min-h-[30px]">
-            {loading ? (
-              <HashLoader size={30} color="#ffffff" />
-            ) : (
-              <span>Sign Up</span>
-            )}
-          </div>
-        </button>
-      </div>
 
-      {/* Divider */}
-      <div className="flex items-center gap-4 my-2">
-        <div className="flex-1 h-px bg-gray-300"></div>
-        <span className="text-gray-500 text-sm font-medium">OR</span>
-        <div className="flex-1 h-px bg-gray-300"></div>
-      </div>
+              {/* ============================================ */}
+              {/* SUBMIT BUTTONS */}
+              {/* ============================================ */}
+              <div className="pt-4 space-y-4">
+                {/* Primary Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 sm:py-5 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-primaryColor hover:-translate-y-1 hover:shadow-2xl transition-all flex items-center justify-center gap-3 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                >
+                  {loading ? (
+                    <HashLoader size={24} color="#ffffff" />
+                  ) : (
+                    <>
+                      <span>Create Account</span>
+                      <ArrowRight size={20} />
+                    </>
+                  )}
+                </button>
 
-      {/* Google Auth Button */}
-      <div>
-        <button 
-          onClick={handleOauth}
-          className="group relative w-full bg-white text-gray-700 font-medium
-                   rounded-xl border border-gray-300 shadow-sm
-                   hover:shadow-lg hover:border-gray-400
-                   transition-all duration-200 overflow-hidden"
-        >
-          {/* Colored top border */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r 
-                        from-[#4285F4] via-[#34A853] to-[#FBBC05]"></div>
-          
-          {/* Button content */}
-          <div className="flex items-center justify-center gap-3 px-6 py-4">
-            <FcGoogle className="text-2xl" />
-            <span className="font-roboto">Sign up with Google</span>
-          </div>
+                {/* Divider */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                  <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">or</span>
+                  <div className="flex-1 h-px bg-slate-200"></div>
+                </div>
 
-          {/* Hover gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r 
-                        from-[#4285F4]/5 via-[#34A853]/5 to-[#FBBC05]/5 
-                        opacity-0 group-hover:opacity-100 
-                        transition-opacity duration-200" />
-        </button>
-      </div>
-    </div>
-  
+                {/* Google OAuth Button */}
+                <button 
+                  type="button"
+                  onClick={handleOauth}
+                  className="w-full py-3.5 sm:py-4 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"
+                >
+                  <FcGoogle className="text-2xl" />
+                  <span>Continue with Google</span>
+                </button>
+              </div>
 
-
-
-              {/* Login link for existing users */}
-              <p className='mt-5 text-textColor text-center'>
-                Already have an account? 
-                <Link to='/login' className='text-primaryColor font-medium mt-1'> 
-                  Login
+              {/* ============================================ */}
+              {/* LOGIN LINK */}
+              {/* ============================================ */}
+              <p className="text-center text-slate-500 font-medium text-sm mt-6 pt-4 border-t border-slate-100">
+                Already have an account?{' '}
+                <Link to="/login" className="text-primaryColor font-bold hover:underline underline-offset-4 transition-all">
+                  Sign In
                 </Link>
               </p>
             </form>
-            </div>
-          </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;
