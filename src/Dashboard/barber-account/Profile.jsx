@@ -27,29 +27,32 @@ const Profile = ({ barberData }) => {
 
   // Populate the form data when barberData changes
   useEffect(() => {
-    if (barberData) {
-      setFormData({
-        name: barberData.name || '',
-        email: barberData.email || '',
-        phone: barberData.phone || '',
-        bio: barberData.bio || '',
-        gender: barberData.gender || '',
-        specialization: barberData.specialization || '',
-        experience: barberData.experience || [],
-        achievements: barberData.achievements || [],
-        // Note: we're mapping workingHours from barberData to timeSlots here
-        timeSlots: barberData.workingHours || [],
-        about: barberData.about || '',
-        profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
-      });
-      // Set preview URL from barberData if available
-      if (barberData.profilePicture?.url) {
-        setPreviewURL(barberData.profilePicture.url);
-      } else {
-        setPreviewURL(barberData.profilePicture);
-      }
+  if (barberData) {
+    setFormData({
+      name: barberData.name || '',
+      email: barberData.email || '',
+      phone: barberData.phone || '',
+      bio: barberData.bio || '',
+      gender: barberData.gender || '',
+      specialization: barberData.specialization || '',
+      experience: barberData.experience || [],
+      achievements: barberData.achievements || [],
+      timeSlots: barberData.workingHours || [],
+      about: barberData.about || '',
+      profilePicture: barberData.profilePicture || null,
+    });
+
+    // Set preview URL
+    if (barberData.profilePicture?.url) {
+      setPreviewURL(`${BASE_URL}${barberData.profilePicture.url}`);
+    } else if (typeof barberData.profilePicture === "string") {
+      setPreviewURL(`${BASE_URL}${barberData.profilePicture}`);
+    } else {
+      setPreviewURL("/placeholder.jpg"); // default fallback
     }
-  }, [barberData]);
+  }
+}, [barberData]);
+
 
   useEffect(() => {
     return () => {

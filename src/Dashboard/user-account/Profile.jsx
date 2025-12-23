@@ -26,16 +26,19 @@ const Profile = ({user}) => {
   // Hook for programmatic navigation
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    setFormData({
-      name: user.name, 
-      email: user.email, 
-      gender: user.gender, 
-      phone: user.phone,
-      bio: user.bio || '',  // Set bio from user object, default to empty string
-      newPassword: '',
-    })
-  }, [user])
+  useEffect(() => {
+  if (!user) return;
+
+  setFormData({
+    name: user.name || '',
+    email: user.email || '',
+    gender: user.gender || '',
+    phone: user.phone || '',
+    bio: user.bio || '',
+    newPassword: '',
+  });
+}, [user]);
+
 
   // Generic input handler for form fields
   const handleInputChange = e => {
@@ -262,10 +265,14 @@ const Profile = ({user}) => {
     <figure className='w-[70px] h-[70px] rounded-full border-2 border-solid
         border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
       <img 
-        src={previewUrl || user.profilePicture.url} 
-        alt="profile" 
-        className='w-full h-full object-cover'
-      />
+            src={
+              previewUrl ||
+              user?.profilePicture?.url ||
+              "/default-avatar.png"
+            }
+            alt="profile"
+      className='w-full h-full object-cover'
+    />
     </figure>
   )}
 

@@ -1,5 +1,4 @@
-/* eslint-disable react/jsx-no-undef */
-// ============================================
+ // ============================================
 // HOME PAGE COMPONENT - Trimz Grooming Services
 // ============================================
 // Main landing page featuring hero section, services overview,

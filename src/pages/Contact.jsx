@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-import React from 'react';
+ import React from 'react';
 import { Mail, MessageSquare, Send, Phone, MapPin } from 'lucide-react';
 
 const Contact = () => {

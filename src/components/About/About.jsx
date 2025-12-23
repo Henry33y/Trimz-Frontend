@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unknown-property */
-import ceoImg from "../../assets/images/ecutz-ceo.png";
+ import ceoImg from "../../assets/images/ecutz-ceo.png";
 import cofounderImg from "../../assets/images/ecutz-cofounder.jpeg"; // Added Co-founder import
 // import aboutCardimg from "../../assets/images/about-card1.png";
 import { Facebook, Twitter, Instagram } from "lucide-react";
