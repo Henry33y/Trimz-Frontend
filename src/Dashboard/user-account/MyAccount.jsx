@@ -5,23 +5,30 @@ import { AuthContext } from '../../context/AuthContext';
 import MyAppointments from './MyAppointments';
 import Profile from './Profile';
 
-// ...existing code... (removed unused import 'useGetProfile')
 import { BASE_URL } from '../../config';
 
 import Loading from '../../components/Loading/Loading';
-import Error   from '../../components/Error/Error';
-import {jwtDecode} from 'jwt-decode';
-// import { Navigate } from 'react-router-dom';
-
+import Error from '../../components/Error/Error';
+import { jwtDecode } from 'jwt-decode';
+import { 
+  LogOut, 
+  Trash2, 
+  Calendar, 
+  Settings, 
+  User, 
+  Mail, 
+  Phone, 
+  Info 
+} from 'lucide-react';
 
 const MyAccount = () => {
   const { dispatch } = useContext(AuthContext);
   const [tab, setTab] = useState('bookings'); // Default active tab
   // eslint-disable-next-line no-unused-vars
-  const {user, role, token} = useContext(AuthContext)
+  const { user, role, token } = useContext(AuthContext)
   const [userData, setUserData] = useState(null); // State to store user data
-  const [loading, setLoading] = useState(false); // State for  loading
-  const [error, setError] = useState(null); // State for  error
+  const [loading, setLoading] = useState(false); // State for loading
+  const [error, setError] = useState(null); // State for error
 
   useEffect(() => {
     // Prefer search params, but fall back to hash params for hash-based redirects
@@ -116,8 +123,6 @@ const MyAccount = () => {
     }
   }, [userData]);
   
-  
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -127,99 +132,144 @@ const MyAccount = () => {
   };
 
   return (
-   <section>
-     <div className="max-w-[1170px] px-5 mx-auto">
+    <section className="bg-slate-50 min-h-screen py-10 font-sans transition-colors duration-300">
+      <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
 
-    {loading && !error && <Loading/>}
+        {loading && !error && <Loading />}
 
-    { error && !loading && <Error errMessage={error}/>}
+        {error && !loading && <Error errMessage={error} />}
 
-     {!loading && !error && (
-        <div className="grid md:grid-cols-3 gap-10">
-        {/* Sidebar */}
-        <div className="pb-[50px] px-[30px] rounded-md">
-          <div className="flex items-center justify-center">
-            <figure className="w-[100px] h-[100px] rounded-full border-2 border-solid border-primaryColor">
-              {userData && userData.profilePicture &&(
-                <img
-                src={userData.profilePicture.url}
-                alt="The user's image"
-                className="w-full h-full object-cover object-top rounded-full"
-              />)}
-            </figure>
+        {!loading && !error && (
+          <div className="grid lg:grid-cols-12 gap-8">
             
-          </div>
+            {/* ==================== */}
+            {/* SIDEBAR SECTION      */}
+            {/* ==================== */}
+            <div className="lg:col-span-4 xl:col-span-3">
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 sticky top-24">
+                
+                {/* Profile Image */}
+                <div className="flex flex-col items-center text-center">
+                  <figure className="w-32 h-32 rounded-full p-1 border-2 border-dashed border-blue-200 mb-4 bg-slate-50 overflow-hidden">
+                    {userData && userData.profilePicture ? (
+                      <img
+                        src={userData.profilePicture.url}
+                        alt="The user's image"
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => { e.currentTarget.src = "/default-avatar.png"; }}
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                        <User size={48} />
+                      </div>
+                    )}
+                  </figure>
+                  
+                  <div className="mt-2 space-y-1">
+                    {userData && userData.name && (
+                      <h3 className="text-xl font-bold text-slate-900">{userData.name}</h3>
+                    )}
+                    {userData && userData.email && (
+                      <div className="flex items-center justify-center gap-2 text-slate-500 text-sm font-medium">
+                        <Mail size={14} />
+                        <span>{userData.email}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
+                {/* User Details Info */}
+                <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+                  <div className="text-center">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Info</h4>
+                    <div className="space-y-3">
+                      {userData && userData.phone && (
+                        <div className="flex items-center gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl">
+                          <div className="p-2 bg-white rounded-lg shadow-sm text-blue-500">
+                            <Phone size={16} />
+                          </div>
+                          <span className="font-medium">{userData.phone}</span>
+                        </div>
+                      )}
+                      
+                      {userData && userData.bio && (
+                        <div className="flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl text-left">
+                          <div className="p-2 bg-white rounded-lg shadow-sm text-blue-500 shrink-0">
+                            <Info size={16} />
+                          </div>
+                          <p className="italic leading-relaxed text-slate-500 text-xs">
+                            {userData.bio}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-           
-
-          <div className="text-center mt-4">
-          <div className="mt-4 text-center">
-              <h4 className="text-[16px] font-semibold text-headingColor mb-2">Bio</h4>
-              {userData && userData.bio && (<p className="text-textColor text-[14px] leading-6 italic">
-                {userData.bio}
-              </p>)}
+                {/* Action Buttons */}
+                <div className="mt-8 space-y-3">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-slate-900/10 active:scale-95"
+                  >
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                  <button 
+                    className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 py-3.5 rounded-xl font-bold transition-colors"
+                  >
+                    <Trash2 size={18} />
+                    Delete Account
+                  </button>
+                </div>
+              </div>
             </div>
-            {userData && userData.name &&(<h3 className="text-[18px] leading-[30px] text-headingColor font-bold">{userData.name}</h3>)}
-            {userData && userData.email &&(<p className="text-textColor text-[15px] leading-6 font-medium">{userData.email}</p>)}
-            {userData && userData.phone &&(<p className="text-textColor text-[15px] leading-6 font-medium">{userData.phone}</p>)}
+
+            {/* ==================== */}
+            {/* MAIN CONTENT SECTION */}
+            {/* ==================== */}
+            <div className="lg:col-span-8 xl:col-span-9">
+              
+              {/* Tab Navigation */}
+              <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 mb-6 flex overflow-x-auto">
+                <button
+                  onClick={() => { console.log('My Bookings button clicked'); setTab('bookings'); }}
+                  className={`
+                    flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
+                    ${tab === 'bookings' 
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
+                  `}
+                >
+                  <Calendar size={18} />
+                  My Appointments
+                </button>
+
+                <button
+                  onClick={() => setTab('settings')}
+                  className={`
+                    flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
+                    ${tab === 'settings' 
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
+                  `}
+                >
+                  <Settings size={18} />
+                  Profile Settings
+                </button>
+              </div>
+
+              {/* Tab Content Rendering */}
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+                {tab === 'bookings' && <MyAppointments />}
+                {tab === 'settings' && <Profile user={userData} />}
+              </div>
+
+            </div>
           </div>
-
-          
-
-          <div className="mt-[50px] md:mt-[100px]">
-            <button
-              onClick={handleLogout}
-              className="w-full bg-[#181A1E] p-3 text-[16px] leading-7 rounded-md text-white font-bold"
-            >
-              Logout
-            </button>
-            <button className="w-full bg-red-600 mt-4 p-3 text-[16px] leading-7 rounded-md text-white font-bold">
-              Delete Account
-            </button>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="md:col-span-2 md:px-[30px]">
-          {/* Tab Buttons */}
-          <div style={{ position: 'relative', zIndex: 10 }}>
-          <button
-              onClick={() =>{ console.log('My Bookings button clicked');
-                setTab('bookings')}}
-              className={`p-2 mr-5 px-5 rounded-md font-semibold text-[16px] leading-7 border border-solid ${
-                tab === 'bookings'
-                  ? 'bg-primaryColor text-white border-primaryColor'
-                  : 'text-headingColor border-gray-300'
-              }`}
-            >
-              My Appointments
-            </button>
-
-            <button
-              onClick={() => setTab('settings')}
-              className={`py-2 px-5 rounded-md font-semibold text-[16px] leading-7 border border-solid ${
-                tab === 'settings'
-                  ? 'bg-primaryColor text-white border-primaryColor'
-                  : 'text-headingColor border-gray-300'
-              }`}
-            >
-              Profile Settings
-            </button>
-          </div>
-
-          {
-          tab ==='bookings' && <MyAppointments/>
-          }
-          {
-            tab==='settings' && <Profile user={userData}/>
-          }
-        </div>
+        )}
       </div>
-      )
-      }
-    </div>
-   </section>
+    </section>
   );
 };
 
