@@ -1,8 +1,24 @@
 /* eslint-disable react/prop-types */
-import { formateDate } from "../../utils/formateDate";
+// import { formateDate } from "../../utils/formateDate"; // UNCOMMENT IN PRODUCTION
+// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
 import { useState } from "react";
-import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
+import { 
+  Calendar, 
+  Clock, 
+  MoreVertical, 
+  CheckCircle2, 
+  XCircle, 
+  DollarSign, 
+  Phone,
+  Mail,
+  User,
+  Scissors
+} from "lucide-react";
+
+// MOCK CONSTANTS FOR PREVIEW (Remove these when using in your project)
+const BASE_URL = "http://localhost:5000/api/v1/";
+const formateDate = (date) => new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const Appointments = ({ appointments, refreshAppointments }) => {
   // State to track which appointment's dropdown is open
@@ -54,103 +70,155 @@ const Appointments = ({ appointments, refreshAppointments }) => {
     setDropdownOpenId((prevId) => (prevId === appointmentId ? null : appointmentId));
   };
 
-  return (
-    <div className="w-full overflow-x-auto shadow-md sm:rounded-lg">
-      <div className="min-w-full p-4">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Appointments</h2>
+  // Helper to get status badge styles
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'completed': return 'bg-green-100 text-green-700 border-green-200';
+      case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
+      case 'pending': return 'bg-amber-100 text-amber-700 border-amber-200';
+      default: return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
+  };
 
-        {/* Desktop Table */}
-        <div className="hidden md:block">
-          <table className="w-full text-left text-sm text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+  return (
+    <div className="w-full space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Appointments</h2>
+        <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-semibold">
+          {appointments?.length || 0} Total
+        </span>
+      </div>
+
+      {/* ==================== */}
+      {/* DESKTOP TABLE VIEW   */}
+      {/* ==================== */}
+      <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th scope="col" className="px-6 py-3">Client</th>
-                <th scope="col" className="px-6 py-3">Status</th>
-                <th scope="col" className="px-6 py-3">Price</th>
-                <th scope="col" className="px-6 py-3">Payment</th>
-                <th scope="col" className="px-6 py-3">Time</th>
-                <th scope="col" className="px-6 py-3">Duration</th>
-                <th scope="col" className="px-6 py-3">Mobile</th>
-                <th scope="col" className="px-6 py-3">Services</th>
-                <th scope="col" className="px-6 py-3">Scheduled Date</th>
-                <th scope="col" className="px-6 py-3">Actions</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Client Details</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Schedule</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Services</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Payment</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {appointments.map((item) => (
-                <tr key={item._id} className="bg-white border-b hover:bg-gray-50 relative">
-                  <th scope="row" className="flex items-center px-6 py-4 text-gray-900">
-                  <img
-                    src={item.customer.profilePicture?.url || "/default-profile.png"}
-                    className="w-10 h-10 rounded-full object-cover"
-                    alt="Client"
-                    />
-                    <div className="pl-3">
-                      <div className="text-base font-semibold">{item.customer.name}</div>
-                      <div className="text-sm text-gray-500">{item.customer.email}</div>
+            <tbody className="divide-y divide-slate-100">
+              {appointments?.map((item) => (
+                <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
+                  {/* Client Column */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <img
+                          src={item.customer.profilePicture?.url || "/default-profile.png"}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
+                          alt="Client"
+                        />
+                      </div>
+                      <div>
+                        <div className="font-bold text-slate-900">{item.customer.name}</div>
+                        <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                          <Mail size={12} /> {item.customer.email}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                          <Phone size={12} /> {item.customer.phone}
+                        </div>
+                      </div>
                     </div>
-                  </th>
-                  <td className="px-6 py-4">{item.status}</td>
-                  <td className="px-6 py-4">{item.totalPrice}</td>
+                  </td>
+
+                  {/* Schedule Column */}
                   <td className="px-6 py-4">
-                    {item.paymentStatus === "paid" ? (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                        Paid
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
+                        <Calendar size={14} className="text-slate-400" />
+                        {formateDate(item.date)}
                       </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                        Not Paid
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <Clock size={14} className="text-slate-400" />
+                        {(new Date(item.startTime)).toLocaleTimeString("en-GB", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })} ({item.duration} mins)
                       </div>
-                    )}
+                    </div>
                   </td>
+
+                  {/* Services Column */}
                   <td className="px-6 py-4">
-                    {(new Date(item.startTime)).toLocaleTimeString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    <div className="flex items-start gap-2">
+                      <Scissors size={14} className="text-slate-400 mt-1 shrink-0" />
+                      <div className="text-sm text-slate-600 font-medium">
+                        {item.providerServices.map((i) => i.name).join(", ")}
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">{item.duration} mins</td>
-                  <td className="px-6 py-4">{item.customer.phone}</td>
+
+                  {/* Status Column */}
                   <td className="px-6 py-4">
-                    {item.providerServices.map((i) => i.name).join(", ")}
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getStatusColor(item.status)} uppercase tracking-wide`}>
+                      {item.status}
+                    </span>
                   </td>
-                  <td className="px-6 py-4">{formateDate(item.date)}</td>
-                  <td className="px-6 py-3 relative">
+
+                  {/* Payment Column */}
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="font-bold text-slate-900">${item.totalPrice}</span>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${
+                        item.paymentStatus === "paid" 
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                          : "bg-rose-50 text-rose-700 border-rose-100"
+                      }`}>
+                        {item.paymentStatus === "paid" ? <CheckCircle2 size={10} /> : <XCircle size={10} />}
+                        {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Actions Column */}
+                  <td className="px-6 py-4 text-center relative">
                     <button
                       onClick={() => toggleDropdown(item._id)}
-                      className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
+                      className={`p-2 rounded-lg transition-all ${
+                        dropdownOpenId === item._id 
+                          ? 'bg-slate-200 text-slate-900' 
+                          : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                      }`}
                     >
-                      Actions
+                      <MoreVertical size={18} />
                     </button>
+
+                    {/* Dropdown Menu */}
                     {dropdownOpenId === item._id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10">
-                        {/* Show Cancel if not already cancelled or completed */}
+                      <div className="absolute right-0 top-12 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                         {item.status !== "cancelled" && item.status !== "completed" && (
                           <button
-                            onClick={() => handleCancel(item._id)}
-                            className="block w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-gray-100"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                        {/* Show Complete if not already completed or cancelled */}
-                        {item.status !== "completed" && item.status !== "cancelled" && (
-                          <button
                             onClick={() => handleComplete(item._id)}
-                            className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-emerald-600 hover:bg-emerald-50 flex items-center gap-2"
                           >
-                            Complete
+                            <CheckCircle2 size={16} /> Complete
                           </button>
                         )}
-                        {/* Show Mark as Paid if paymentStatus is not 'paid' */}
+                        
                         {item.paymentStatus !== "paid" && (
                           <button
                             onClick={() => handleMarkAsPaid(item._id)}
-                            className="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50 flex items-center gap-2"
                           >
-                            Mark as Paid
+                            <DollarSign size={16} /> Mark as Paid
+                          </button>
+                        )}
+
+                        {item.status !== "cancelled" && item.status !== "completed" && (
+                          <button
+                            onClick={() => handleCancel(item._id)}
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2 border-t border-slate-50"
+                          >
+                            <XCircle size={16} /> Cancel
                           </button>
                         )}
                       </div>
@@ -161,118 +229,118 @@ const Appointments = ({ appointments, refreshAppointments }) => {
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Mobile Cards */}
-        <div className="md:hidden space-y-4">
-          {appointments.map((item) => (
-            <div key={item._id} className="bg-white p-4 rounded-lg shadow space-y-3 relative">
-              <div className="flex items-center space-x-3">
-              <img
+      {/* ==================== */}
+      {/* MOBILE CARD VIEW     */}
+      {/* ==================== */}
+      <div className="md:hidden space-y-4">
+        {appointments?.map((item) => (
+          <div key={item._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+             {/* Status Bar */}
+             <div className={`absolute top-0 left-0 w-1.5 h-full ${
+                item.status === 'completed' ? 'bg-emerald-500' : 
+                item.status === 'cancelled' ? 'bg-rose-500' : 'bg-amber-500'
+             }`}></div>
+
+            <div className="flex justify-between items-start mb-4 pl-3">
+              <div className="flex items-center gap-3">
+                <img
                   src={item.customer.profilePicture?.url || "/default-profile.png"}
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                   alt="Client"
                 />
                 <div>
-                  <h3 className="font-semibold text-gray-900">{item.customer.name}</h3>
-                  <p className="text-sm text-gray-500">{item.customer.email}</p>
+                  <h3 className="font-bold text-slate-900 text-lg">{item.customer.name}</h3>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusColor(item.status)} uppercase tracking-wide`}>
+                    {item.status}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => toggleDropdown(item._id)}
+                className="p-2 -mr-2 text-slate-400 hover:text-slate-600"
+              >
+                <MoreVertical size={20} />
+              </button>
+            </div>
+
+            {/* Dropdown Mobile */}
+            {dropdownOpenId === item._id && (
+              <div className="bg-slate-50 rounded-xl p-2 mb-4 animate-in slide-in-from-top-2">
+                <div className="grid grid-cols-1 gap-1">
+                   {item.status !== "cancelled" && item.status !== "completed" && (
+                    <button onClick={() => handleComplete(item._id)} className="w-full py-2 px-3 text-sm font-bold text-emerald-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                      <CheckCircle2 size={16}/> Mark Complete
+                    </button>
+                   )}
+                   {item.paymentStatus !== "paid" && (
+                    <button onClick={() => handleMarkAsPaid(item._id)} className="w-full py-2 px-3 text-sm font-bold text-blue-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                      <DollarSign size={16}/> Mark Paid
+                    </button>
+                   )}
+                   {item.status !== "cancelled" && item.status !== "completed" && (
+                    <button onClick={() => handleCancel(item._id)} className="w-full py-2 px-3 text-sm font-bold text-rose-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                      <XCircle size={16}/> Cancel
+                    </button>
+                   )}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-4 pl-3 text-sm">
+              <div className="col-span-2 flex items-center gap-2 text-slate-600 bg-slate-50 p-2 rounded-lg">
+                <Scissors size={16} className="text-slate-400" />
+                <span className="font-medium truncate">{item.providerServices.map((i) => i.name).join(", ")}</span>
+              </div>
+              
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-slate-400 uppercase">Date & Time</p>
+                <div className="flex items-center gap-2 font-medium text-slate-700">
+                  <Calendar size={14} /> {formateDate(item.date)}
+                </div>
+                <div className="flex items-center gap-2 font-medium text-slate-700">
+                   <Clock size={14} /> {(new Date(item.startTime)).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <p className="font-medium text-gray-500">Status</p>
-                  <p>{item.status}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Price</p>
-                  <p>{item.totalPrice}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Payment</p>
-                  {item.paymentStatus === "paid" ? (
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                      Paid
-                    </div>
-                  ) : (
-                    <div className="flex items-center">
-                      <div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                      Not Paid
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Time</p>
-                  <p>
-                    {(new Date(item.startTime)).toLocaleTimeString("en-GB", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Duration</p>
-                  <p>{item.duration} mins</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Phone</p>
-                  <p>{item.customer.phone}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-500">Services</p>
-                  <p>{item.providerServices.map((i) => i.name).join(", ")}</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="font-medium text-gray-500">Scheduled Date</p>
-                  <p>{formateDate(item.date)}</p>
-                </div>
-                <div className="col-span-2 flex justify-end gap-2">
-                  <button
-                    onClick={() => toggleDropdown(item._id)}
-                    className="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300"
-                  >
-                    Actions
-                  </button>
-                  {dropdownOpenId === item._id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10">
-                      {item.status !== "completed" && item.status !== "cancelled" && (
-                        <button
-                          onClick={() => handleComplete(item._id)}
-                          className="block w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
-                        >
-                          Complete
-                        </button>
-                      )}
-                      {item.paymentStatus !== "paid" && (
-                        <button
-                          onClick={() => handleMarkAsPaid(item._id)}
-                          className="block w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
-                        >
-                          Mark as Paid
-                        </button>
-                      )}
-                      {item.status !== "cancelled" && item.status !== "completed" && (
-                        <button
-                          onClick={() => handleCancel(item._id)}
-                          className="block w-full text-left px-4 py-2 text-sm text-orange-600 hover:bg-gray-100"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
+              <div className="space-y-1 text-right">
+                <p className="text-xs font-bold text-slate-400 uppercase">Total</p>
+                <p className="text-xl font-black text-slate-900">${item.totalPrice}</p>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
+                  item.paymentStatus === "paid" 
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                    : "bg-rose-50 text-rose-700 border-rose-100"
+                }`}>
+                  {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
+                </span>
               </div>
             </div>
-          ))}
-        </div>
 
-        {appointments.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-lg">No appointments found</p>
+            <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center pl-3">
+              <div className="flex gap-4">
+                 <a href={`mailto:${item.customer.email}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                    <Mail size={14}/> Email
+                 </a>
+                 <a href={`tel:${item.customer.phone}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                    <Phone size={14}/> Call
+                 </a>
+              </div>
+              <span className="text-xs font-bold text-slate-400">{item.duration} min session</span>
+            </div>
           </div>
-        )}
+        ))}
       </div>
+
+      {(!appointments || appointments.length === 0) && (
+        <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+            <Calendar className="text-slate-400 w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900">No appointments found</h3>
+          <p className="text-slate-500 text-sm mt-1">When clients book with you, they'll appear here.</p>
+        </div>
+      )}
     </div>
   );
 };

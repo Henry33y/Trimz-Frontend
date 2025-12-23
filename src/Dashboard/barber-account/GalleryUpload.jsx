@@ -2,9 +2,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
 import { toast } from 'react-toastify';
-import { BASE_URL } from '../../config';
+// import { BASE_URL } from '../../config'; // UNCOMMENT FOR PRODUCTION
+import { 
+  Upload, 
+  Trash2, 
+  Image as ImageIcon, 
+  Loader2, 
+  Plus 
+} from 'lucide-react';
+
+// MOCK CONSTANT FOR PREVIEW (Remove this when using in your project)
+const BASE_URL = "http://localhost:5000/api/v1/";
 
 const GalleryUpload = ({ providerId }) => {
   const [images, setImages] = useState([]); // For newly uploaded images (previews)
@@ -141,81 +150,121 @@ const GalleryUpload = ({ providerId }) => {
   };
 
   return (
-    <div className="mb-5">
-      <h2 className="text-xl font-bold mb-4">Gallery Management</h2>
+    <div className="space-y-10">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-5">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Gallery Management</h2>
+          <p className="text-gray-500 text-sm mt-1">Showcase your best work to attract more clients</p>
+        </div>
+        <div className="hidden sm:block text-sm text-gray-400 font-medium">
+          {galleryImages.length} images uploaded
+        </div>
+      </div>
 
       {/* Upload Section */}
-      <div className="mb-8">
-        <p className="form__label">Upload New Pictures</p>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageUpload}
-          className="block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-full file:border-0
-            file:text-sm file:font-semibold
-            file:bg-blue-50 file:text-blue-700
-            hover:file:bg-blue-100"
-        />
+      <div className="space-y-4">
+        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <Plus className="text-blue-600" size={20} />
+          Add New Photos
+        </h3>
+        
+        <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 transition-colors hover:border-blue-500 hover:bg-blue-50/30 group text-center relative">
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="p-4 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-100 group-hover:scale-110 transition-all">
+              <Upload size={32} />
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-gray-700">Click or drag images here</p>
+              <p className="text-sm text-gray-500 mt-1">Supports JPG, PNG, WEBP</p>
+            </div>
+          </div>
+        </div>
 
         {/* Upload Previews */}
         {images.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-            {images.map((imageObj, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={imageObj.preview}
-                  alt={`Preview ${index}`}
-                  className="w-full h-32 object-cover rounded-md shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={() => removePreviewImage(index)}
-                  className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
-                >
-                  <AiOutlineDelete />
-                </button>
-              </div>
-            ))}
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {images.map((imageObj, index) => (
+                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 bg-white">
+                  <img
+                    src={imageObj.preview}
+                    alt={`Preview ${index}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() => removePreviewImage(index)}
+                      className="p-2 bg-white text-red-600 rounded-full shadow-lg hover:bg-red-50 transition-transform hover:scale-110"
+                      title="Remove image"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={submitGallery}
+                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3 px-6 rounded-xl font-bold shadow-lg shadow-gray-900/10 transition-all active:scale-95"
+              >
+                <Upload size={18} />
+                Upload {images.length} Image{images.length !== 1 && 's'}
+              </button>
+            </div>
           </div>
-        )}
-
-        {images.length > 0 && (
-          <button
-            type="button"
-            onClick={submitGallery}
-            className="bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md"
-          >
-            Upload New Images
-          </button>
         )}
       </div>
 
       {/* Existing Gallery Section */}
-      <div>
-        <h3 className="text-lg font-semibold mb-3">Current Gallery</h3>
+      <div className="space-y-6">
+        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2 border-t border-gray-100 pt-8">
+          <ImageIcon className="text-blue-600" size={20} />
+          Current Gallery
+        </h3>
+        
         {loading ? (
-          <p className="text-center text-zinc-600">Loading gallery...</p>
-        ) : galleryImages.length == 0 ? (
-          <p className="text-zinc-600">No images in the gallery</p>
+          <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+            <Loader2 className="animate-spin mb-3 text-blue-600" size={32} />
+            <p>Loading your masterpiece...</p>
+          </div>
+        ) : galleryImages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+            <div className="p-4 bg-white rounded-full shadow-sm mb-3">
+              <ImageIcon className="text-gray-300" size={32} />
+            </div>
+            <h4 className="text-gray-900 font-semibold">Gallery is empty</h4>
+            <p className="text-gray-500 text-sm mt-1 max-w-xs">Upload photos of your work to build trust with potential clients.</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {galleryImages.map((image) => (
-              <div key={image.public_id} className="relative">
+              <div key={image.public_id} className="relative group aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 bg-gray-50">
                 <img
                   src={image.url}
-                  alt={`Gallery ${image.public_id}`}
-                  className="w-full h-32 object-cover rounded-md shadow-md"
+                  alt="Gallery Item"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <button
-                  type="button"
-                  onClick={() => deleteGalleryImage(image.public_id)}
-                  className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
-                >
-                  <AiOutlineDelete />
-                </button>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+                  <button
+                    type="button"
+                    onClick={() => deleteGalleryImage(image.public_id)}
+                    className="self-end p-2 bg-white/90 text-red-600 rounded-lg shadow-sm backdrop-blur-sm hover:bg-white transition-colors"
+                    title="Delete from gallery"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -226,4 +275,3 @@ const GalleryUpload = ({ providerId }) => {
 };
 
 export default GalleryUpload;
-
