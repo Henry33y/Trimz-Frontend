@@ -1,87 +1,174 @@
 /* eslint-disable react/prop-types */
-import { formateDate } from '../../utils/formateDate';
-import { AiFillStar } from 'react-icons/ai';
-import { useState } from 'react';
-import FeedbackForm from './FeedbackForm';
-import Loader from '../../components/Loading/Loading.jsx'
-import { useParams } from 'react-router-dom';
+import { useState } from "react";
+import PropTypes from 'prop-types';
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Star, Loader2, Send } from "lucide-react";
+// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
 
-import defaultAvatar from '../../assets/images/avatar-icon.png'
+// MOCK CONSTANT FOR PREVIEW (Remove in production)
+const BASE_URL = "http://localhost:5000/api/v1/";
 
-const Feedback = ({reviews, loading, onReviewAdded}) => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    console.log("User", user);
-    const paramId = useParams().id
-    console.log(paramId);
-    const [showFeedbackForm, setShowFeedbackForm] = useState(false)
-  return (
-      <div>
-          <div className="mb-[50px]">
-              <h4 className="text-[20px] leading-[30px] font-bold text-headingColor dark:text-gray-100 my-4">
-                  All reviews ({reviews?.length || 0})
-              </h4>
+const FeedbackForm = ({ onSuccess, onCancel }) => {
+    const [rating, setRating] = useState(0);
+    const [hover, setHover] = useState(0);
+    const [reviewText, setReviewText] = useState('');
+    const [loading, setLoading] = useState(false);
 
-            {loading && <Loader />}
+    const { id } = useParams();
 
-                            {!loading && Array.isArray(reviews) &&
-                             reviews.map((review, index) => 
-                (<div key={index} className="flex justify-between gap-4 mb-[30px]">
-                <div className="flex space-x-4">
-                    <figure className="w-10 h-10 rounded-full">
-                                                <img
-                                                    className="w-full rounded-full h-full object-cover object-top"
-                                                    src={review?.customer?.profilePicture?.url || defaultAvatar}
-                                                    alt={review?.customer?.name || 'User'}
-                                                    onError={(e) => { e.currentTarget.src = defaultAvatar; }}
-                                                />
-                    </figure>
+    const handleSubmitReview = async e => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            if (!rating || !reviewText) {
+                setLoading(false);
+                return toast.error('Rating and Review Fields are required');
+            }
+            
+            const token = localStorage.getItem('token');
+            // API request for a single provider reviews by id 
+            const res = await fetch(`${BASE_URL}reviews/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ rating, reviewText })
+            });
 
-                    <div className='w-5/6'>
-                        <h5 className='text-[16px] leading-6 text-primaryColor font-bold dark:text-primaryColor'>
-                            {review?.customer?.name}
-                        </h5>
-                        <p className='text-[14px] leading-6 text-textColor dark:text-gray-300'>
-                            {`${formateDate(review?.createdAt)}`}
-                        </p>
-                        <p className='text__para mt-3 font-medium text-[15px] text-textColor dark:text-gray-200'>
-                            {review.comment}
-                        </p>
+            const result = await res.json();
+
+            if (!res.ok) {
+                throw new Error(result.message); // Handle server error messages
+            }
+
+            setLoading(false);
+            toast.success(result.message); // Show success message
+
+            // Construct a hydrated review object for immediate UI update
+            const hydratedReview = {
+                ...result.data,
+                customer: JSON.parse(localStorage.getItem('user')) || result.data.customer || null,
+            };
+            
+            if (typeof onSuccess === 'function') {
+                onSuccess(hydratedReview);
+            }
+            
+            // Reset form state
+            setRating(0);
+            setHover(0);
+            setReviewText('');
+
+        } catch (err) {
+            setLoading(false);
+            toast.error(err.message); // Show error message
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmitReview} className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-2">
+            <div className="mb-8">
+                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center justify-between">
+                    How would you rate your experience?
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded">Required</span>
+                </h3>
+
+                <div className="flex flex-col items-start gap-2">
+                    <div className="flex gap-2">
+                        {[...Array(5).keys()].map((_, i) => {
+                            const index = i + 1;
+                            return (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    className="focus:outline-none transition-transform hover:scale-110 active:scale-95 group"
+                                    onClick={() => setRating(index)}
+                                    onMouseEnter={() => setHover(index)}
+                                    onMouseLeave={() => setHover(rating)}
+                                    onDoubleClick={() => {
+                                        setHover(0);
+                                        setRating(0);
+                                    }}
+                                >
+                                    <Star 
+                                        size={32}
+                                        className={`transition-all duration-200 ${
+                                            index <= (hover || rating)
+                                                ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
+                                                : 'fill-slate-50 text-slate-200 group-hover:text-slate-300'
+                                        }`}
+                                    />
+                                </button>
+                            );
+                        })}
                     </div>
-                </div>
-
-                  {/* ==== Rating Stars ===== */}
-                <div className='flex gap-1'>
-                    {[...Array(Number(review?.rating) || 0).keys()].map((_, i) => (
-                        <AiFillStar key={i} color='#0067FF' />
-                    ))}
+                    {rating > 0 && (
+                        <p className="text-sm font-semibold text-yellow-600 animate-in fade-in">
+                            {rating === 5 && "Excellent! 😍"}
+                            {rating === 4 && "Good! 🙂"}
+                            {rating === 3 && "Average 😐"}
+                            {rating === 2 && "Poor 😕"}
+                            {rating === 1 && "Terrible 😫"}
+                        </p>
+                    )}
                 </div>
             </div>
-            )
-              )} 
-          </div>
 
-            {/* === Give Feedback btn ==== */}
-          {!showFeedbackForm && (user._id !== paramId) &&
-              <div className='text-center'>
-                  <button className='btn' onClick={() => setShowFeedbackForm(true)}>
-                      Give Feedback
-                  </button>
-              </div>}
-          
-                    {showFeedbackForm && (
-                        <FeedbackForm
-                            onSuccess={(newReview) => {
-                                // Hide the form and bubble the new review to parent
-                                setShowFeedbackForm(false);
-                                if (typeof onReviewAdded === 'function') {
-                                    onReviewAdded(newReview);
-                                }
-                            }}
-                            onCancel={() => setShowFeedbackForm(false)}
-                        />
+            <div className="mb-8">
+                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center justify-between">
+                    Share your feedback
+                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded">Required</span>
+                </h3>
+                <div className="relative">
+                    <textarea 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none text-slate-700 placeholder:text-slate-400 min-h-[140px]"
+                        rows="5"
+                        placeholder="What did you like? What could we improve?"
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                    ></textarea>
+                </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full sm:w-auto px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                    {loading ? (
+                        <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Submitting...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>Submit Feedback</span>
+                            <Send size={18} />
+                        </>
                     )}
-    </div>
-  )
-}
+                </button>
+                
+                {onCancel && (
+                    <button 
+                        type="button" 
+                        onClick={onCancel} 
+                        disabled={loading}
+                        className="w-full sm:w-auto px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors disabled:opacity-50"
+                    >
+                        Cancel
+                    </button>
+                )}
+            </div>
+        </form>
+    );
+};
 
-export default Feedback;
+FeedbackForm.propTypes = {
+    onSuccess: PropTypes.func,
+    onCancel: PropTypes.func,
+};
+
+export default FeedbackForm;

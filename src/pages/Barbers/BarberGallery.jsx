@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
+import { X, ZoomIn, Loader2, Image as ImageIcon } from 'lucide-react';
 
 const BarberGallery = ({ gallery }) => {
   const INITIAL_DISPLAY_COUNT = 8;
@@ -9,7 +10,6 @@ const BarberGallery = ({ gallery }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [displayCount, setDisplayCount] = useState(INITIAL_DISPLAY_COUNT);
 
@@ -21,137 +21,184 @@ const BarberGallery = ({ gallery }) => {
   const openModal = (index) => {
     setCurrentIndex(index);
     setIsModalOpen(true);
-    import('../../utils/scrollLock').then(({ lockScroll }) => lockScroll());
+    // Simple body scroll lock
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    import('../../utils/scrollLock').then(({ unlockScroll }) => unlockScroll());
+    document.body.style.overflow = 'unset';
   };
 
   const handleShowMore = () => {
     setDisplayCount(prev => prev + INITIAL_DISPLAY_COUNT);
   };
 
-  // Function to get random offset classes
+  // Function to get random offset classes (kept for visual interest)
   const getRandomOffset = (index) => {
     const offsets = [
       'translate-y-4',
       '-translate-y-4',
-      'translate-x-4',
-      '-translate-x-4',
-      'translate-y-8',
-      '-translate-y-8',
+      'translate-x-2',
+      '-translate-x-2',
+      'translate-y-2',
+      '-translate-y-2',
       'translate-x-0',
       'translate-y-0'
     ];
     return offsets[index % offsets.length];
   };
 
-  // Function to get random rotation
-  const getRandomRotation = (index) => {
-    const rotations = [
-      'rotate-2',
-      '-rotate-2',
-      'rotate-1',
-      '-rotate-1',
-      'rotate-0'
-    ];
-    return rotations[index % rotations.length];
-  };
+  if (loading) return (
+    <div className="flex flex-col justify-center items-center py-20 text-slate-400">
+      <Loader2 className="w-8 h-8 animate-spin mb-2" />
+      <p className="text-sm font-medium">Loading gallery...</p>
+    </div>
+  );
 
-  if (loading) return <div className="flex justify-center p-8"><div className="animate-spin h-8 w-8 border-4 border-zinc-600 dark:border-zinc-400 border-t-transparent rounded-full"></div></div>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (error) return (
+    <div className="text-center py-12 px-4">
+      <p className="text-red-500 bg-red-50 py-3 px-6 rounded-xl inline-block border border-red-100">
+        {error}
+      </p>
+    </div>
+  );
 
   return (
-    <div className="w-full bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="w-full bg-slate-50 min-h-[400px] py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Our Masterpieces</h2>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm max-w-2xl mx-auto">
-            Every style tells a story of precision, style, and excellence
+        {/* <div className="text-center mb-16 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
+            Our Masterpieces
+          </h2>
+          <p className="text-slate-600 text-base md:text-lg leading-relaxed">
+            Every style tells a story of precision, style, and excellence. Explore our portfolio of transformations.
           </p>
-        </div>
+        </div> */}
 
-        {/* Scattered Gallery Grid */}
-        <div className="relative">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-            {images.slice(0, displayCount).map((image, index) => (
-              <div
-                key={image._id || index}
-                className={`group relative cursor-pointer transition-all duration-500 ease-out
-                  ${getRandomOffset(index)} ${getRandomRotation(index)}
-                  hover:-translate-y-1 hover:rotate-0 hover:z-10`}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                onClick={() => openModal(index)}
-              >
-                <div className="relative overflow-hidden rounded-lg shadow-lg bg-white dark:bg-zinc-800 p-2 transition-colors duration-300">
-                  <div className="aspect-square overflow-hidden rounded-md">
-                    <img
-                      src={image.url}
-                      alt={image.caption}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent 
-                        transition-opacity duration-300 ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}
-                    >
-                      <div className="absolute bottom-0 left-0 right-0 p-3">
-                        <p className="text-zinc-300 text-xs mb-0.5">{image.category}</p>
-                        <h3 className="text-white text-sm font-medium">{image.caption}</h3>
+        {/* Gallery Grid */}
+        {images.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ImageIcon className="w-8 h-8 text-slate-400" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900">No images yet</h3>
+            <p className="text-slate-500 mt-1">Check back later to see our latest work.</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+              {images.slice(0, displayCount).map((image, index) => {
+                // Determine if image is string URL or object
+                const imageUrl = typeof image === 'string' ? image : image.url;
+                const caption = typeof image === 'string' ? `Work #${index + 1}` : image.caption;
+                const category = typeof image === 'string' ? 'Style' : image.category;
+
+                return (
+                  <div
+                    key={image._id || index}
+                    className={`group relative cursor-zoom-in transition-all duration-500 ease-out z-0 hover:z-10
+                      ${getRandomOffset(index)} hover:translate-y-0 hover:translate-x-0 hover:scale-[1.02]`}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    onClick={() => openModal(index)}
+                  >
+                    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-shadow duration-300">
+                      <img
+                        src={imageUrl}
+                        alt={caption}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      
+                      {/* Overlay */}
+                      <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent 
+                        transition-opacity duration-300 flex flex-col justify-end p-6
+                        ${hoveredIndex === index ? 'opacity-100' : 'opacity-0'}`}
+                      >
+                        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <p className="text-slate-300 text-xs font-bold uppercase tracking-wider mb-1">
+                            {category || 'Showcase'}
+                          </p>
+                          <h3 className="text-white text-lg font-bold leading-tight">
+                            {caption || 'Haircut Style'}
+                          </h3>
+                        </div>
+                        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                          <ZoomIn className="w-5 h-5" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                );
+              })}
+            </div>
 
-        {/* Show More Button */}
-        {images.length > displayCount && (
-          <div className="flex justify-center mt-12">
-            <button
-              onClick={handleShowMore}
-              className="px-6 py-2 bg-zinc-900 text-white text-sm rounded-full hover:bg-zinc-800 
-                dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-            >
-              Show More
-            </button>
-          </div>
+            {/* Show More Button */}
+            {images.length > displayCount && (
+              <div className="flex justify-center mt-16">
+                <button
+                  onClick={handleShowMore}
+                  className="px-8 py-3.5 bg-white text-slate-900 font-bold rounded-xl border border-slate-200 
+                    shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Load More Photos
+                </button>
+              </div>
+            )}
+          </>
         )}
 
-        {/* Modal */}
+        {/* Lightbox Modal */}
         {isModalOpen && (
           <div
-            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-slate-950/95 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={closeModal}
           >
             <div
-              className="relative w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-xl transition-colors duration-300"
+              className="relative w-full max-w-5xl max-h-[90vh] flex flex-col items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Close Button */}
               <button
                 onClick={closeModal}
-                className="absolute top-2 right-2 z-50 bg-black/50 hover:bg-black/70 text-white w-8 h-8 
-                  rounded-full flex items-center justify-center transition-all duration-200"
+                className="absolute -top-12 right-0 md:-right-12 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
                 aria-label="Close modal"
               >
-                ✕
+                <X className="w-6 h-6" />
               </button>
-              <div className="relative">
+
+              {/* Main Image */}
+              <div className="relative rounded-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
                 <img
-                  src={`${images[currentIndex].url}`}
-                  alt={images[currentIndex].caption}
-                  className="w-full h-auto"
+                  src={typeof images[currentIndex] === 'string' ? images[currentIndex] : images[currentIndex].url}
+                  alt="Gallery View"
+                  className="max-h-[85vh] w-auto object-contain bg-black"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4">
-                  <p className="text-zinc-300 text-xs mb-1">{images[currentIndex].category}</p>
-                  <h3 className="text-white text-base font-bold">{images[currentIndex].caption}</h3>
+                
+                {/* Caption Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
+                  <h3 className="text-white text-xl md:text-2xl font-bold">
+                    {typeof images[currentIndex] === 'string' ? `Work #${currentIndex + 1}` : images[currentIndex].caption}
+                  </h3>
+                  <p className="text-slate-300 text-sm mt-1 font-medium">
+                    {typeof images[currentIndex] === 'string' ? 'Gallery Image' : images[currentIndex].category}
+                  </p>
                 </div>
+              </div>
+
+              {/* Navigation Hints (Optional) */}
+              <div className="absolute bottom-[-3rem] left-1/2 -translate-x-1/2 flex gap-2">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
+                    className={`w-2 h-2 rounded-full transition-all ${idx === currentIndex ? 'bg-white w-6' : 'bg-white/30 hover:bg-white/50'}`}
+                  />
+                )).slice(0, Math.min(images.length, 10))} 
+                {/* Limit dots to 10 for neatness */}
               </div>
             </div>
           </div>
