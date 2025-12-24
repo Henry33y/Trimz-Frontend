@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import starIcon from '../../assets/images/Star.png';
 import BarberAbout from './BarberAbout';
-import Feedback from './Feedback';
+import FeedbackDisplay from './FeedbackDisplay';
 import SidePanel from './SidePanel';
 import BarberServices from './BarberServices/BarberServices.jsx';
 import BarberGallery from './BarberGallery';
@@ -167,7 +167,7 @@ const BarbersDetails = () => {
                 )}
                 {tab === 'feedback' && role !== 'provider' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <Feedback
+                    <FeedbackDisplay
                       reviews={reviews}
                       totalRating={totalRating}
                       loading={reviewsLoading}

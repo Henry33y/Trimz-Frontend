@@ -1,9 +1,20 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { BASE_URL } from "../config";
-import { CheckCircle } from "lucide-react";
 import { formateDate } from "../utils/formateDate";
 import convertTime from "../utils/convertTime";
+import { 
+  CheckCircle2, 
+  Bell, 
+  Clock, 
+  Calendar, 
+  CheckCheck, 
+  User, 
+  Scissors,
+  Loader2 
+} from "lucide-react";
 
 const Notifications = () => {
   const { user, token, refreshNotifications } = useAuth();
@@ -18,13 +29,13 @@ const Notifications = () => {
       return '';
     }
   };
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user || !user._id) return;
-
 
     // Fetching Notification from the backend
     const fetchNotifications = async () => {
@@ -53,7 +64,6 @@ const Notifications = () => {
 
     fetchNotifications();
   }, [user]);
-
 
   // Mark a notification as read
   const markAsRead = async (notificationId) => {
@@ -84,7 +94,6 @@ const Notifications = () => {
     }
   };
 
-
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
@@ -113,78 +122,118 @@ const Notifications = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-semibold">Notifications</h1>
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <Bell className="text-blue-600" size={24} />
+            Notifications
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">Stay updated with your latest appointments and alerts.</p>
+        </div>
+        
         {notifications.some(n => n.notificationStatus === "unread") && (
           <button
             onClick={markAllAsRead}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all text-sm font-medium"
           >
+            <CheckCheck size={16} />
             Mark all as read
           </button>
         )}
       </div>
 
-      {loading && <p>Loading notifications...</p>}
-      {error && <p className="text-red-500">Error: {error.message}</p>}
+      {/* Content */}
+      <div className="space-y-4">
+        {loading && (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          </div>
+        )}
+        
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 text-center">
+            Error: {error.message}
+          </div>
+        )}
 
-      {!loading && !error && notifications.length > 0 ? (
-        <ul>
-          {notifications.map((notification) => (
-            <li
-              key={notification._id}
-              className={`p-4 mb-4 rounded-lg shadow-md border ${notification.notificationStatus === "unread"
-                  ? "bg-blue-50 border-blue-200"
-                  : "bg-white"
+        {!loading && !error && notifications.length > 0 ? (
+          <ul className="space-y-3">
+            {notifications.map((notification) => (
+              <li
+                key={notification._id}
+                className={`relative group p-5 rounded-2xl border transition-all duration-200 ${
+                  notification.notificationStatus === "unread"
+                    ? "bg-white border-blue-200 shadow-md shadow-blue-50"
+                    : "bg-slate-50 border-slate-200 opacity-90 hover:opacity-100"
                 }`}
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="text-lg font-bold">
-                    {notification.customer?.name || "Unknown Customer"}
-                  </h2>
-                  <p>
-                    {notification.service?.name
-                      || (Array.isArray(notification.providerServices) && notification.providerServices.length > 0
-                        ? notification.providerServices.map(ps => ps?.name).filter(Boolean).join(', ')
-                        : "No service provided")}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Date (set to):</span> {formateDate(notification.date)}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Time (set to):</span> {formatStartTime(notification.startTime)}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Created:</span> {formateDate(notification.createdAt)}
-                  </p>
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Status:</span>{" "}
-                    {notification.notificationStatus}
-                  </p>
-                </div>
-
+              >
+                {/* Unread Indicator Dot */}
                 {notification.notificationStatus === "unread" && (
-                  <button
-                    onClick={() => markAsRead(notification._id)}
-                    className="text-blue-500 hover:text-blue-700 flex items-center"
-                    title="Mark as read"
-                  >
-                    <CheckCircle className="h-5 w-5 mr-1" />
-                    Mark as read
-                  </button>
+                  <span className="absolute top-5 right-5 w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></span>
                 )}
+
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <div className="space-y-3 w-full">
+                    {/* Customer & Service Info */}
+                    <div>
+                      <div className="flex items-center gap-2 text-slate-900 font-bold text-lg mb-1">
+                        <User size={18} className="text-slate-400" />
+                        {notification.customer?.name || "Unknown Customer"}
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-600 text-sm font-medium bg-slate-100/50 w-fit px-2 py-1 rounded-lg">
+                        <Scissors size={14} />
+                        {notification.service?.name
+                          || (Array.isArray(notification.providerServices) && notification.providerServices.length > 0
+                            ? notification.providerServices.map(ps => ps?.name).filter(Boolean).join(', ')
+                            : "No service provided")}
+                      </div>
+                    </div>
+
+                    {/* Meta Details Grid */}
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <Calendar size={14} className="text-slate-400" />
+                        <span>{formateDate(notification.date)}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={14} className="text-slate-400" />
+                        <span>{formatStartTime(notification.startTime)}</span>
+                      </div>
+                      <div className="col-span-2 text-xs text-slate-400 mt-1 pt-2 border-t border-slate-100/50">
+                        Received: {formateDate(notification.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Button */}
+                  {notification.notificationStatus === "unread" && (
+                    <button
+                      onClick={() => markAsRead(notification._id)}
+                      className="shrink-0 flex items-center gap-1.5 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors mt-2 sm:mt-0"
+                      title="Mark as read"
+                    >
+                      <CheckCircle2 size={16} />
+                      Read
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !loading && !error && (
+            <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                <Bell className="text-slate-300" size={32} />
               </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        !loading &&
-        !error && (
-          <p className="text-center text-gray-500">No notifications available</p>
-        )
-      )}
+              <h3 className="text-lg font-bold text-slate-900">All caught up!</h3>
+              <p className="text-slate-500 text-sm mt-1">No new notifications at the moment.</p>
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 };

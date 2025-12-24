@@ -2,13 +2,11 @@
 // ============================================
 // BARBERS PAGE - Fresha-Inspired Design
 // ============================================
-// Modern, clean interface for browsing and finding barbers
-// Features: Advanced search, filters, and responsive grid layout
-// ============================================
 
 import { useState, useEffect } from "react";
-import { Search, MapPin, Filter, Star, Clock, TrendingUp, Scissors, User } from 'lucide-react';
-import BarberCard from "../../components/Barbers/BarberCard";
+import { Link } from "react-router-dom";
+import { Search, MapPin, Filter, Star, Clock, TrendingUp, Scissors, User, Heart } from 'lucide-react';
+// import BarberCard from "../../components/Barbers/BarberCard"; // Replaced with local ProviderCard for specific UI styling
 import Testimonial from "../../components/Testimonial/Testimonial";
 import { BASE_URL } from "./../../config";
 import Loader from "../../components/Loading/Loading.jsx";
@@ -65,7 +63,7 @@ const Barbers = () => {
       });
     };
 
-    // 1. Filter by Search Query (Name, Specialization, or Services)
+    // 1. Filter by Search Query
     if (query.trim() !== "") {
       const lowerQuery = query.toLowerCase();
       result = result.filter((provider) => {
@@ -82,14 +80,12 @@ const Barbers = () => {
       if (activeFilter === "top-rated") {
         result = result.filter(p => (p.averageRating || 0) >= 4.5);
       } else if (activeFilter === "female") {
-        // Filters for Female services (Styling, Women, Ladies, etc)
         const femaleKeywords = ["female", "women", "ladies", "styling", "nails", "makeup"];
         result = result.filter(p => 
           femaleKeywords.some(k => p.specialization?.toLowerCase().includes(k)) ||
           matchesService(p, femaleKeywords)
         );
       } else if (activeFilter === "male") {
-        // Filters for traditional Barbering/Men's services
         const maleKeywords = ["barber", "men", "shave", "beard", "grooming"];
         result = result.filter(p => 
           maleKeywords.some(k => p.specialization?.toLowerCase().includes(k)) ||
@@ -107,159 +103,100 @@ const Barbers = () => {
     setQuery(e.target.value);
   };
 
-  // ============================================
-  // FILTER CATEGORIES
-  // ============================================
   const filterCategories = [
-    { id: "all", label: "All Stylists", icon: <TrendingUp className="w-4 h-4" /> },
-    { id: "male", label: "Men's Grooming", icon: <Scissors className="w-4 h-4" /> },
-    { id: "female", label: "Women's Styling", icon: <User className="w-4 h-4" /> },
+    { id: "all", label: "All", icon: <TrendingUp className="w-4 h-4" /> },
+    { id: "male", label: "Men", icon: <Scissors className="w-4 h-4" /> },
+    { id: "female", label: "Women", icon: <User className="w-4 h-4" /> },
     { id: "top-rated", label: "Top Rated", icon: <Star className="w-4 h-4" /> },
-    { id: "available", label: "Available Now", icon: <Clock className="w-4 h-4" /> },
+    { id: "available", label: "Available", icon: <Clock className="w-4 h-4" /> },
     { id: "nearby", label: "Nearby", icon: <MapPin className="w-4 h-4" /> },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
-      {/* ============================================ */}
-      {/* HEADER SECTION - Search & Navigation */}
-      {/* ============================================ */}
-      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4 py-4 sm:py-6">
-          {/* Page Title - Mobile */}
-          <div className="mb-4 sm:hidden">
-            <h1 className="text-2xl font-bold text-headingColor dark:text-gray-100">Find Stylists</h1>
-          </div>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+    <div className="min-h-screen bg-white dark:bg-slate-900 font-sans">
+      
+      {/* ==================== HEADER ==================== */}
+      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-4">
+          <div className="max-w-4xl mx-auto space-y-4">
+            {/* Search Input */}
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-slate-900 transition-colors" />
+              </div>
               <input
                 type="search"
-                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-slate-700 rounded-full border-2 border-transparent
-                          text-[15px] text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-400
-                          focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:border-primaryColor
-                          transition-all duration-200"
-                placeholder="Search by name, service, or location..."
+                className="block w-full pl-11 pr-4 py-3.5 bg-gray-100 dark:bg-slate-700 border-none rounded-xl text-slate-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-slate-500 transition-all font-medium"
+                placeholder="Search for services or venues..."
                 value={query}
                 onChange={handleSearch}
               />
-              <button 
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full
-                          bg-primaryColor text-white hover:bg-primaryColor/90 
-                          transition-colors duration-200 sm:hidden"
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+              {filterCategories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveFilter(category.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all border
+                    ${activeFilter === category.id
+                      ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900'
+                      : 'bg-white text-slate-600 border-gray-200 hover:border-gray-300 dark:bg-slate-800 dark:text-gray-300 dark:border-slate-700'
+                    }`}
+                >
+                  {category.icon}
+                  {category.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ============================================ */}
-      {/* FILTER SECTION - Category Filters */}
-      {/* ============================================ */}
-      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-[72px] sm:top-[88px] z-30">
-        <div className="container mx-auto px-4">
-          <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
-            {filterCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setActiveFilter(category.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium
-                          whitespace-nowrap transition-all duration-200 flex-shrink-0
-                          ${activeFilter === category.id
-                            ? 'bg-primaryColor text-white shadow-md'
-                            : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
-                          }`}
-              >
-                {category.icon}
-                <span>{category.label}</span>
-              </button>
-            ))}
+      {/* ==================== CONTENT ==================== */}
+      <section className="py-6 bg-gray-50/50 dark:bg-slate-900 min-h-[80vh]">
+        <div className="container mx-auto px-4 max-w-[1400px]">
+          
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              {query ? `Results for "${query}"` : 'Recommended for you'}
+            </h2>
+            <span className="text-xs font-medium text-slate-500 bg-white dark:bg-slate-800 px-2 py-1 rounded-full border border-gray-100 dark:border-slate-700">
+              {filteredProviders.length} results
+            </span>
           </div>
-        </div>
-      </section>
 
-      {/* ============================================ */}
-      {/* RESULTS HEADER */}
-      {/* ============================================ */}
-      <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-headingColor dark:text-gray-100">
-                {query ? `Search results for "${query}"` : 'Available Stylists'}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                {filteredProviders.length} {filteredProviders.length === 1 ? 'stylist' : 'stylists'} found
-              </p>
-            </div>
-            
-            {/* Sort/Filter Button - Desktop */}
-            <button className="hidden sm:flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 dark:text-gray-300
-                               rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors duration-200">
-              <Filter className="w-4 h-4" />
-              <span className="text-sm font-medium">Filters</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================ */}
-      {/* BARBERS GRID - Main Content */}
-      {/* ============================================ */}
-      <section className="py-6 sm:py-8">
-        <div className="container mx-auto px-4">
-          {/* Loading State */}
-          {loading && (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <Loader />
-            </div>
-          )}
-
-          {/* Error State */}
+          {loading && <Loader />}
+          
           {error && (
-            <div className="max-w-md mx-auto mt-8">
-              <Error errMessage={error.message} />
+            <div className="max-w-lg mx-auto mt-10">
+               <Error errMessage={error.message} />
             </div>
           )}
 
-          {/* Barbers Grid */}
           {!loading && !error && (
             <>
               {filteredProviders.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 
-                              gap-4 sm:gap-6">
+                /* Adjusted Grid: Smaller Cards, More Columns */
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {filteredProviders.map((provider) => (
-                    <BarberCard key={provider._id} user={provider} />
+                    <ProviderCard key={provider._id} user={provider} />
                   ))}
                 </div>
               ) : (
-                /* Empty State */
-                <div className="text-center py-16">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gray-100 dark:bg-slate-700 rounded-full 
-                                flex items-center justify-center">
-                    <Search className="w-10 h-10 text-gray-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-headingColor dark:text-gray-100 mb-2">
-                    No stylists found
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-300 mb-6">
-                    Try adjusting your search or filters
-                  </p>
-                  <button 
-                    onClick={() => {
-                      setQuery("");
-                      setActiveFilter("all");
-                    }}
-                    className="px-6 py-2.5 bg-primaryColor text-white rounded-full
-                              hover:bg-primaryColor/90 transition-colors duration-200"
-                  >
-                    Clear All Filters
-                  </button>
+                <div className="text-center py-20">
+                   <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="w-8 h-8 text-gray-400" />
+                   </div>
+                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No professionals found</h3>
+                   <p className="text-slate-500 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
+                   <button 
+                     onClick={() => { setQuery(""); setActiveFilter("all"); }}
+                     className="mt-6 text-sm font-bold text-blue-600 hover:underline"
+                   >
+                     Clear all filters
+                   </button>
                 </div>
               )}
             </>
@@ -267,85 +204,92 @@ const Barbers = () => {
         </div>
       </section>
 
-      {/* ============================================ */}
-      {/* QUICK STATS - Info Cards */}
-      {/* ============================================ */}
-      {!loading && !error && filteredProviders.length > 0 && (
-        <section className="py-12 bg-white dark:bg-slate-900">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div className="text-center p-6 bg-gradient-to-br from-primaryColor/5 to-primaryColor/10 
-                            rounded-2xl">
-                <div className="w-12 h-12 mx-auto mb-4 bg-primaryColor/20 rounded-full 
-                              flex items-center justify-center">
-                  <Star className="w-6 h-6 text-primaryColor" />
-                </div>
-                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">4.9</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Average Rating</p>
-              </div>
-
-              <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 
-                            rounded-2xl">
-                <div className="w-12 h-12 mx-auto mb-4 bg-blue-200 rounded-full 
-                              flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">15min</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Average Wait Time</p>
-              </div>
-
-              <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 
-                            rounded-2xl">
-                <div className="w-12 h-12 mx-auto mb-4 bg-green-200 rounded-full 
-                              flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="text-3xl font-bold text-headingColor dark:text-gray-100 mb-1">10k+</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Happy Customers</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ============================================ */}
-      {/* TESTIMONIALS SECTION */}
-      {/* ============================================ */}
-      <section className="py-16 bg-gray-50 dark:bg-slate-900">
+      {/* ==================== TESTIMONIALS ==================== */}
+      <section className="py-16 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">
-              What our clients say
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg">
-              Join thousands of satisfied customers who trust Trimz for their grooming needs
-            </p>
-          </div>
-          <Testimonial />
+           <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-10">Trusted by thousands</h2>
+           <Testimonial />
         </div>
       </section>
-
-      {/* FLOATING ACTION BUTTON - Mobile Only */}
-      <button 
-        className="fixed bottom-6 right-6 w-14 h-14 bg-primaryColor text-white 
-                  rounded-full shadow-2xl flex items-center justify-center
-                  hover:bg-primaryColor/90 transition-all duration-200
-                  sm:hidden z-50 active:scale-95"
-        aria-label="Filter options"
-      >
-        <Filter className="w-6 h-6" />
-      </button>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+      
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
+  );
+};
+
+// ====================================================================
+// INTERNAL COMPONENT: ProviderCard
+// COMPACT Version for Denser Grid
+// ====================================================================
+const ProviderCard = ({ user }) => {
+  return (
+    <Link to={`/barbers/${user._id}`} className="group block h-full">
+      <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden border border-gray-100 dark:border-slate-700 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
+        {/* Rectangular Image - 4:3 Aspect Ratio */}
+        <div className="relative aspect-[4/3] bg-gray-100 dark:bg-slate-700 overflow-hidden">
+          <img 
+            src={user.profilePicture?.url || "/placeholder.jpg"} 
+            alt={user.name}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/400x300?text=No+Image"; }}
+          />
+          
+          {/* Top Rating Badge - Simplified for small card */}
+          {user.averageRating >= 4.5 && (
+            <div className="absolute top-2 left-2 bg-white/95 dark:bg-slate-900/90 backdrop-blur-sm px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+              <Star className="w-2.5 h-2.5 text-slate-900 dark:text-white fill-slate-900 dark:fill-white" />
+              <span className="text-[10px] font-bold text-slate-900 dark:text-white">Top</span>
+            </div>
+          )}
+
+          {/* Favorite Button Overlay - Smaller */}
+          <button className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 hover:bg-white text-slate-500 hover:text-red-500 transition-colors">
+            <Heart className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Content - Compact Padding */}
+        <div className="p-3 flex flex-col flex-1">
+          <div className="flex justify-between items-start mb-1 gap-2">
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 transition-colors truncate">
+                {user.name}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.specialization || 'Professional'}</p>
+            </div>
+            
+            {/* Rating Box - Compact */}
+            <div className="flex items-center gap-1 shrink-0 bg-green-50 dark:bg-green-900/20 px-1 py-0.5 rounded">
+              <span className="text-xs font-bold text-green-700 dark:text-green-400">{Number(user.averageRating).toFixed(1) || "5.0"}</span>
+              <Star className="w-2.5 h-2.5 text-green-700 dark:text-green-400 fill-current" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 text-[11px] text-slate-400 mb-3">
+            <MapPin className="w-3 h-3 shrink-0" />
+            <span className="truncate">{user.location || "Location not set"}</span>
+          </div>
+
+          <div className="mt-auto pt-3 border-t border-gray-50 dark:border-slate-700">
+             {/* Service Pills - Very Compact */}
+             <div className="flex flex-wrap gap-1.5 mb-2 h-6 overflow-hidden">
+               {user.services?.slice(0,2).map((s, idx) => (
+                 <span key={idx} className="text-[10px] font-medium px-1.5 py-0.5 bg-gray-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md border border-gray-100 dark:border-slate-600">
+                   {typeof s === 'string' ? s : s.name}
+                 </span>
+               ))}
+             </div>
+             
+             <button className="w-full py-1.5 rounded-md border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-bold text-xs hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-colors">
+               Book Now
+             </button>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 };
 
