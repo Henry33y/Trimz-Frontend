@@ -93,7 +93,7 @@ const Profile = ({user}) => {
       }
       const token = localStorage.getItem('token');
 
-      const res = await fetch(`${BASE_URL}users/${user._id}`, {
+      const res = await fetch(`${BASE_URL}/users/${user._id}`, {
         method: 'PATCH',
         headers: {
               // "Content-Type": "application/json",

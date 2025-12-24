@@ -19,9 +19,9 @@ const BarbersDetails = () => {
   const [tab, setTab] = useState('about');
 
   const { id } = useParams();
-  const { data: provider, loading, error } = useFetchData(`${BASE_URL}users/${id}`);
-  
-  const { 
+  const { data: provider, loading, error } = useFetchData(`users/${id}`);
+
+  const {
     name,
     achievements,
     experience,
@@ -45,10 +45,10 @@ const BarbersDetails = () => {
     const fetchReviews = async () => {
       setReviewsLoading(true);
       try {
-        const response = await fetch(`${BASE_URL}reviews/user/${id}`, { method: 'GET' });
+        const response = await fetch(`${BASE_URL}/reviews/user/${id}`, { method: 'GET' });
         const result = await response.json();
         if (response.ok) {
-          setReviews(result.data || []); 
+          setReviews(result.data || []);
         } else {
           setReviewsError(result.message || "Error fetching reviews");
           toast.error(result.message || "Error fetching reviews");
@@ -67,16 +67,16 @@ const BarbersDetails = () => {
   return (
     <section className="bg-slate-50 min-h-screen py-10">
       <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
-        
+
         {loading && <Loader />}
         {error && <Error />}
 
         {!loading && !error && (
           <div className="grid lg:grid-cols-3 gap-10">
-            
+
             {/* LEFT COLUMN: Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              
+
               {/* Profile Header Card */}
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-8 items-start">
                 {/* Profile Image */}
@@ -133,8 +133,8 @@ const BarbersDetails = () => {
                     onClick={() => setTab(tabName)}
                     className={`
                       flex-1 py-3 px-6 rounded-xl text-sm font-bold capitalize transition-all whitespace-nowrap
-                      ${tab === tabName 
-                        ? 'bg-slate-900 text-white shadow-md' 
+                      ${tab === tabName
+                        ? 'bg-slate-900 text-white shadow-md'
                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
                     `}
                   >

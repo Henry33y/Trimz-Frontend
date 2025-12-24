@@ -78,7 +78,7 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
       };
 
       const res = await fetch(
-        `${BASE_URL}appointments/${editingAppointment._id}`,
+        `${BASE_URL}/appointments/${editingAppointment._id}`,
         {
           method: "PATCH",
           headers: {
@@ -107,7 +107,7 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
     
     try {
       const jwt = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}appointments/${appointmentId}`, {
+      const res = await fetch(`${BASE_URL}/appointments/${appointmentId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${jwt}`,

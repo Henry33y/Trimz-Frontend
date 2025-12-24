@@ -36,7 +36,7 @@ const AuthCallback = () => {
 
         let userData = null;
         if (userId) {
-          const res = await fetch(`${BASE_URL}users/${userId}`);
+          const res = await fetch(`${BASE_URL}/users/${userId}`);
           const json = await res.json();
           if (res.ok) {
             userData = json.data;

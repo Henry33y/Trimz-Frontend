@@ -28,7 +28,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
             }
 
             const token = localStorage.getItem('token');
-            const res = await fetch(`${BASE_URL}reviews/${id}`, {
+            const res = await fetch(`${BASE_URL}/reviews/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

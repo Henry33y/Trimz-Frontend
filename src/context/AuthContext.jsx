@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useReducer, useContext, useCallback, useRef } from "react";
 import { io } from 'socket.io-client';
-import { BASE_URL } from "../config";
+import { BASE_URL } from "../config"; // use BASE_URL directly
 
 // Initial state setup
 const initialState = {
@@ -19,38 +19,16 @@ export const AuthContext = createContext(initialState);
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'LOGIN_START':
-            return {
-                ...state,
-                user: null,
-                role: null,
-                token: null,
-            };
+            return { ...state, user: null, role: null, token: null };
         case 'LOGIN_SUCCESS':
-            return {
-                ...state,
-                user: action.payload.user,
-                token: action.payload.token,
-                role: action.payload.role,
-            };
+            return { ...state, user: action.payload.user, token: action.payload.token, role: action.payload.role };
         case 'LOGOUT':
-            localStorage.clear(); // Clear all localStorage items
-            return {
-                ...state,
-                user: null,
-                role: null,
-                token: null,
-                unreadNotifications: 0
-            };
+            localStorage.clear();
+            return { ...state, user: null, role: null, token: null, unreadNotifications: 0 };
         case 'UPDATE_USER':
-            return {
-                ...state,
-                user: action.payload,
-            };
+            return { ...state, user: action.payload };
         case 'SET_NOTIFICATION_COUNT':
-            return {
-                ...state,
-                unreadNotifications: action.payload
-            };
+            return { ...state, unreadNotifications: action.payload };
         default:
             return state;
     }
@@ -61,25 +39,16 @@ export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const socketRef = useRef(null);
 
-    // Update localStorage when state changes
+    // Sync localStorage with state
     useEffect(() => {
-        if (state.user) {
-            localStorage.setItem('user', JSON.stringify(state.user));
-        } else {
-            localStorage.removeItem('user');
-        }
+        if (state.user) localStorage.setItem('user', JSON.stringify(state.user));
+        else localStorage.removeItem('user');
 
-        if (state.role) {
-            localStorage.setItem('role', state.role);
-        } else {
-            localStorage.removeItem('role');
-        }
+        if (state.role) localStorage.setItem('role', state.role);
+        else localStorage.removeItem('role');
 
-        if (state.token) {
-            localStorage.setItem('token', state.token);
-        } else {
-            localStorage.removeItem('token');
-        }
+        if (state.token) localStorage.setItem('token', state.token);
+        else localStorage.removeItem('token');
     }, [state.user, state.role, state.token]);
 
     // Notification refresh function
@@ -90,12 +59,9 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         try {
-            const res = await fetch(`${BASE_URL}notifications/count`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${state.token}`,
-                },
+            const token = localStorage.getItem('token'); // read token dynamically
+            const res = await fetch(`${BASE_URL}/users/${state.user._id}`, {
+                headers: { Authorization: `Bearer ${token}` },
             });
 
             if (!res.ok) throw new Error("Failed to fetch notifications");
@@ -105,43 +71,29 @@ export const AuthContextProvider = ({ children }) => {
             dispatch({ type: 'SET_NOTIFICATION_COUNT', payload: unread });
         } catch (err) {
             console.error("Error fetching notification count:", err);
-            // Don't update the count if there's an error
         }
-    }, [state.user, state.token, state.role]);
+    }, [state.user, state.role]);
 
-    // Fetch notifications on login
+    // Initialize socket and notifications
     useEffect(() => {
         if (state.user && state.user._id && state.role === "provider" && state.token) {
             refreshNotifications();
 
-            // Initialize socket if not already
             if (!socketRef.current) {
-                socketRef.current = io((import.meta.env.VITE_API_URL || 'http://localhost:5000'), {
+                socketRef.current = io(BASE_URL.replace('/api/v1', ''), { // remove /api/v1 for socket
                     auth: { token: state.token },
                     transports: ['websocket']
                 });
 
                 socketRef.current.on('connect', () => {
-                    // console.log('Socket connected');
+                    console.log('Socket connected');
                 });
 
-                // New notification event
-                socketRef.current.on('notification:new', () => {
-                    refreshNotifications();
-                });
-
-                // Updates (status changes)
-                socketRef.current.on('notification:update', () => {
-                    refreshNotifications();
-                });
-
-                // Deletions
-                socketRef.current.on('notification:delete', () => {
-                    refreshNotifications();
+                ['notification:new', 'notification:update', 'notification:delete'].forEach(event => {
+                    socketRef.current.on(event, refreshNotifications);
                 });
             }
         } else {
-            // If user logs out or not provider, cleanup socket
             if (socketRef.current) {
                 socketRef.current.disconnect();
                 socketRef.current = null;

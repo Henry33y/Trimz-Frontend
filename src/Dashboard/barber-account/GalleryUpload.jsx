@@ -3,17 +3,14 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-// import { BASE_URL } from '../../config'; // UNCOMMENT FOR PRODUCTION
-import { 
-  Upload, 
-  Trash2, 
-  Image as ImageIcon, 
-  Loader2, 
-  Plus 
+import { BASE_URL } from '../../config';
+import {
+  Upload,
+  Trash2,
+  Image as ImageIcon,
+  Loader2,
+  Plus
 } from 'lucide-react';
-
-// MOCK CONSTANT FOR PREVIEW (Remove this when using in your project)
-const BASE_URL = "http://localhost:5000/api/v1/";
 
 const GalleryUpload = ({ providerId }) => {
   const [images, setImages] = useState([]); // For newly uploaded images (previews)
@@ -34,7 +31,7 @@ const GalleryUpload = ({ providerId }) => {
   const fetchGalleryImages = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}users/${providerId}`, {
+      const res = await fetch(`${BASE_URL}/users/${providerId}`, {
         method: 'GET',
       });
       if (res.ok) {
@@ -91,7 +88,7 @@ const GalleryUpload = ({ providerId }) => {
   const deleteGalleryImage = async (publicId) => {
     try {
       console.log('Public ID: ', JSON.stringify({ imageIds: [publicId] }));
-      const res = await fetch(`${BASE_URL}users/gallery/${providerId}`, {
+      const res = await fetch(`${BASE_URL}/users/gallery/${providerId}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -99,6 +96,8 @@ const GalleryUpload = ({ providerId }) => {
         },
         body: JSON.stringify({ imageIds: [publicId] }),
       });
+
+
       if (res.ok) {
         setGalleryImages((prevImages) =>
           prevImages.filter((image) => image.public_id !== publicId)
@@ -128,13 +127,14 @@ const GalleryUpload = ({ providerId }) => {
 
     try {
       console.log("Provider: ", providerId);
-      const res = await fetch(`${BASE_URL}users/gallery/${providerId}`, {
+      const res = await fetch(`${BASE_URL}/users/gallery/${providerId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
+
       if (res.ok) {
         toast.success('Gallery images uploaded successfully!');
         setImages([]); // Clear new images preview
@@ -167,7 +167,7 @@ const GalleryUpload = ({ providerId }) => {
           <Plus className="text-blue-600" size={20} />
           Add New Photos
         </h3>
-        
+
         <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 transition-colors hover:border-blue-500 hover:bg-blue-50/30 group text-center relative">
           <input
             type="file"
@@ -211,7 +211,7 @@ const GalleryUpload = ({ providerId }) => {
                 </div>
               ))}
             </div>
-            
+
             <div className="flex justify-end pt-2">
               <button
                 type="button"
@@ -232,7 +232,7 @@ const GalleryUpload = ({ providerId }) => {
           <ImageIcon className="text-blue-600" size={20} />
           Current Gallery
         </h3>
-        
+
         {loading ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-400">
             <Loader2 className="animate-spin mb-3 text-blue-600" size={32} />

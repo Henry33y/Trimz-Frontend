@@ -30,7 +30,7 @@ const Barbers = () => {
   // ============================================
   useEffect(() => {
     const fetchProviders = async () => {
-      const url = `${BASE_URL}users/providers`;
+      const url = `${BASE_URL}/users/providers`;
       try {
         const response = await fetch(url, { method: "GET" });
         if (!response.ok) {

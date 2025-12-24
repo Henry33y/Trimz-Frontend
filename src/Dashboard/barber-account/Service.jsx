@@ -2,25 +2,21 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
-// import ServiceEdit from './ServiceEdit'; // UNCOMMENT IN PRODUCTION
-import { 
-  Edit, 
-  Trash2, 
-  Plus, 
-  Save, 
-  Clock, 
-  DollarSign, 
-  CheckCircle2, 
+import { BASE_URL } from "../../config";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  Save,
+  Clock,
+  DollarSign,
+  CheckCircle2,
   XCircle,
   Image as ImageIcon,
   Loader2,
   AlertTriangle,
   Upload
 } from "lucide-react";
-
-// MOCK CONSTANTS (Remove in production)
-const BASE_URL = "http://localhost:5000/api/v1/";
 
 // MOCK ServiceEdit Component (Remove this if you have the real file)
 const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
@@ -44,38 +40,38 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">Service Name</label>
-            <input 
+            <input
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-              value={formData.name || ''} 
-              onChange={e => setFormData({...formData, name: e.target.value})} 
+              value={formData.name || ''}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Price</label>
-              <input 
+              <input
                 type="number"
                 className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                value={formData.price || ''} 
-                onChange={e => setFormData({...formData, price: e.target.value})} 
+                value={formData.price || ''}
+                onChange={e => setFormData({ ...formData, price: e.target.value })}
               />
             </div>
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Duration</label>
-              <input 
+              <input
                 className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                value={formData.duration || ''} 
-                onChange={e => setFormData({...formData, duration: e.target.value})} 
+                value={formData.duration || ''}
+                onChange={e => setFormData({ ...formData, duration: e.target.value })}
               />
             </div>
           </div>
-           <div>
+          <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
-            <textarea 
+            <textarea
               rows={3}
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
-              value={formData.description || ''} 
-              onChange={e => setFormData({...formData, description: e.target.value})} 
+              value={formData.description || ''}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
           <div className="flex justify-end gap-3 mt-6 pt-2 border-t border-gray-100">
@@ -118,15 +114,15 @@ const Service = () => {
     try {
       const jwt = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user"));
-      
+
       if (!jwt || !user?._id) {
         // toast.error("Authentication required");
         return;
       }
-      
-      const response = await fetch(`${BASE_URL}provider-services/provider/${user._id}`, {
+
+      const response = await fetch(`${BASE_URL}/provider-services/provider/${user._id}`, {
         method: 'GET',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${jwt}`,
           'Content-Type': 'application/json'
         },
@@ -149,15 +145,15 @@ const Service = () => {
     try {
       const jwt = localStorage.getItem("token");
       const formDataToSend = new FormData();
-      
+
       // Append updated service data
       Object.keys(updatedData).forEach(key => {
         formDataToSend.append(key, updatedData[key]);
       });
 
-      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+      const response = await fetch(`${BASE_URL}/provider-services/${serviceId}`, {
         method: 'PATCH',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${jwt}`
         },
         body: formDataToSend
@@ -179,9 +175,9 @@ const Service = () => {
   const deleteExistingService = async (serviceId) => {
     try {
       const jwt = localStorage.getItem("token");
-      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+      const response = await fetch(`${BASE_URL}/provider-services/${serviceId}`, {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${jwt}`,
           'Content-Type': 'application/json'
         },
@@ -279,6 +275,26 @@ const Service = () => {
       return;
     }
 
+    // Validate each service
+    for (let i = 0; i < formData.services.length; i++) {
+      const service = formData.services[i];
+
+      if (!service.name || service.name.trim() === "") {
+        toast.error(`Service #${i + 1}: Please enter a service name`);
+        return;
+      }
+
+      if (!service.price || parseFloat(service.price) <= 0) {
+        toast.error(`Service "${service.name}": Please enter a valid price`);
+        return;
+      }
+
+      if (!service.duration || parseInt(service.duration) <= 0) {
+        toast.error(`Service "${service.name}": Please enter a valid duration in minutes`);
+        return;
+      }
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("services", JSON.stringify(formData.services));
@@ -290,7 +306,7 @@ const Service = () => {
       });
 
       const jwt = localStorage.getItem("token");
-      const response = await fetch(`${BASE_URL}provider-services`, {
+      const response = await fetch(`${BASE_URL}/provider-services`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -326,13 +342,13 @@ const Service = () => {
       setSelectedServiceId(null);
     }
   };
-  
+
   return (
     <div className="space-y-10">
       {/* Modals */}
-      <ServiceEdit 
-        isOpen={editModalOpen} 
-        service={editingService} 
+      <ServiceEdit
+        isOpen={editModalOpen}
+        service={editingService}
         onClose={() => setEditModalOpen(false)}
         onUpdate={updateExistingService}
       />
@@ -392,16 +408,16 @@ const Service = () => {
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {existingServices.map((service) => (
-            <div 
-              key={service._id} 
+            <div
+              key={service._id}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden group"
             >
               {/* Service Image Area */}
               <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
                 {service.image ? (
-                  <img 
-                    src={service.image.url} 
-                    alt={service.name} 
+                  <img
+                    src={service.image.url}
+                    alt={service.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
@@ -411,7 +427,7 @@ const Service = () => {
                 )}
                 {/* Actions Overlay */}
                 <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <button 
+                  <button
                     onClick={() => {
                       setEditingService(service);
                       setEditModalOpen(true);
@@ -435,16 +451,15 @@ const Service = () => {
               <div className="p-5">
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="text-lg font-bold text-gray-900 line-clamp-1">{service.name}</h4>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide border ${
-                    service.availability 
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
-                      : 'bg-rose-50 text-rose-700 border-rose-100'
-                  }`}>
-                    {service.availability ? <CheckCircle2 size={12}/> : <XCircle size={12}/>}
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide border ${service.availability
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                    : 'bg-rose-50 text-rose-700 border-rose-100'
+                    }`}>
+                    {service.availability ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
                     {service.availability ? 'Active' : 'Inactive'}
                   </span>
                 </div>
-                
+
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2 min-h-[2.5rem]">
                   {service.description || "No description provided."}
                 </p>
@@ -497,9 +512,9 @@ const Service = () => {
                     <label className="block text-sm font-bold text-gray-700 mb-2">Service Image</label>
                     <div className="relative aspect-video md:aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-blue-500 hover:bg-blue-50/30 transition-all group-upload">
                       {service.imagePreview ? (
-                        <img 
-                          src={service.imagePreview} 
-                          alt="Preview" 
+                        <img
+                          src={service.imagePreview}
+                          alt="Preview"
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -533,13 +548,14 @@ const Service = () => {
 
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Duration</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Duration (minutes)</label>
                         <input
-                          type="text"
+                          type="number"
                           name="duration"
                           value={service.duration}
                           onChange={(e) => handleServiceChange(index, e)}
-                          placeholder="e.g. 45 mins"
+                          placeholder="e.g. 45"
+                          min="1"
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                         />
                       </div>
@@ -551,6 +567,8 @@ const Service = () => {
                           value={service.price}
                           onChange={(e) => handleServiceChange(index, e)}
                           placeholder="0.00"
+                          min="0.01"
+                          step="0.01"
                           className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                         />
                       </div>
@@ -569,10 +587,10 @@ const Service = () => {
 
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
                       <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                        <input 
-                          type="checkbox" 
-                          name="availability" 
-                          id={`toggle-${index}`} 
+                        <input
+                          type="checkbox"
+                          name="availability"
+                          id={`toggle-${index}`}
                           checked={service.availability}
                           onChange={(e) => handleServiceChange(index, { target: { name: "availability", value: e.target.checked } })}
                           className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out"

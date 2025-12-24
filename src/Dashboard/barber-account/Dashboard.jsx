@@ -15,7 +15,7 @@ import { AlertTriangle, Calendar, CheckCircle2, Grid, Settings, Scissors, Image 
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
-  const { data, loading, error } = useGetProfile(`${BASE_URL}users/${user._id}`);
+  const { data, loading, error } = useGetProfile(`users/${user._id}`);
   const [tab, setTab] = useState("overview");
   const [appointments, setAppointments] = useState([]);
 
@@ -25,7 +25,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("token");
       if (!token) return setAppointments([]);
 
-      const response = await fetch(`${BASE_URL}appointments/provider`, {
+      const response = await fetch(`${BASE_URL}/appointments/provider`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,10 +69,10 @@ const Dashboard = () => {
   return (
     <section className="bg-slate-50 min-h-screen py-10 transition-colors duration-300">
       <div className="max-w-[1170px] px-5 mx-auto">
-        
+
         {/* Main Grid Layout */}
         <div className="grid lg:grid-cols-12 gap-8">
-          
+
           {/* Sidebar Navigation */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sticky top-24">
@@ -82,7 +82,7 @@ const Dashboard = () => {
 
           {/* Main Content Area */}
           <div className="lg:col-span-9">
-            
+
             {/* Approval Notice */}
             {data?.isApproved === "pending" && (
               <div className="flex items-start gap-4 p-4 mb-6 text-amber-900 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl shadow-sm">
@@ -98,11 +98,11 @@ const Dashboard = () => {
 
             {/* Content Container */}
             <div className={`${tab !== 'settings' ? 'bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8' : ''}`}>
-              
+
               {/* ======================= */}
               {/* OVERVIEW TAB */}
               {/* ======================= */}
-              {tab === "overview" && (
+              {tab === "overview" && data && (
                 <div>
                   {/* Header Profile Card */}
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 pb-8 border-b border-slate-100">
@@ -116,7 +116,7 @@ const Dashboard = () => {
                       {/* Optional: Add a verification badge if approved */}
                       {data?.isApproved === "approved" && (
                         <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white p-1.5 rounded-full border-2 border-white shadow-sm" title="Verified">
-                           <CheckCircle2 size={16} strokeWidth={3} />
+                          <CheckCircle2 size={16} strokeWidth={3} />
                         </div>
                       )}
                     </figure>
@@ -124,11 +124,11 @@ const Dashboard = () => {
                     {/* Profile Details */}
                     <div className="flex-1 text-center md:text-left">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-bold uppercase tracking-wider mb-3">
-                        {data.specialization}
+                        {data?.specialization || "No specialization"}
                       </div>
 
                       <h3 className="text-3xl font-black text-slate-900 mb-2">
-                        {data.name}
+                        {data?.name || "Loading..."}
                       </h3>
 
                       <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
@@ -142,7 +142,7 @@ const Dashboard = () => {
                       </div>
 
                       <p className="text-slate-600 leading-relaxed max-w-xl mx-auto md:mx-0 font-medium">
-                        {data?.bio}
+                        {data?.bio || "No bio available"}
                       </p>
                     </div>
                   </div>
@@ -170,7 +170,7 @@ const Dashboard = () => {
                       </div>
                       <h2 className="text-xl font-bold text-slate-900 mb-2">No Appointments Yet</h2>
                       <p className="text-slate-500 max-w-sm">
-                         You have not made any appointments. Once clients book, they will appear here.
+                        You have not made any appointments. Once clients book, they will appear here.
                       </p>
                     </div>
                   )}
@@ -183,7 +183,7 @@ const Dashboard = () => {
               {/* Wrapper to handle Profile's internal styling */}
               {tab === "settings" && (
                 <div className="-m-4 sm:-m-6 lg:-m-8">
-                   <Profile barberData={data} />
+                  <Profile barberData={data} />
                 </div>
               )}
 
@@ -196,7 +196,7 @@ const Dashboard = () => {
               {/* GALLERY UPLOAD TAB */}
               {/* ======================= */}
               {tab === "galleryupload" && (
-                <GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))._id} />
+                <GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))?._id} />
               )}
             </div>
           </div>

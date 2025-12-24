@@ -22,7 +22,7 @@ const PaymentCallback = () => {
 
     (async () => {
       try {
-        const res = await fetch(`${BASE_URL}payments/verify`, {
+        const res = await fetch(`${BASE_URL}/payments/verify`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

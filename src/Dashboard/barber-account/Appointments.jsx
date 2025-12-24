@@ -28,7 +28,7 @@ const Appointments = ({ appointments, refreshAppointments }) => {
   const updateAppointmentStatus = async (appointmentId, updateFields) => {
     try {
       const jwt = localStorage.getItem("token");
-      const response = await fetch(`${BASE_URL}appointments/${appointmentId}`, {
+      const response = await fetch(`${BASE_URL}/appointments/${appointmentId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

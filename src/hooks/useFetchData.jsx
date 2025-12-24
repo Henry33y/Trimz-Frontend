@@ -1,51 +1,66 @@
 import { useEffect, useState } from "react";
+import { BASE_URL, token } from "../config"; // ensure getToken() is exported
 
-const useFetchData = (url) => {
-  const [data, setData] = useState(null); // Start with `null` to indicate no data yet
-  const [loading, setLoading] = useState(true);
+const useFetchData = (endpoint, options = {}) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Reset states
-    setError(null);
-    setLoading(true);
-
-    // Check if URL is valid
-    if (!url || url.includes("undefined")) {
-      setLoading(false);
-      setError({ message: "Invalid URL provided." });
+    if (!endpoint || typeof endpoint !== "string" || endpoint.includes("undefined")) {
+      setError({ message: "Invalid endpoint provided." });
       return;
     }
 
+    let isMounted = true;
+
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      const url = `${BASE_URL}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
+
       try {
         const response = await fetch(url, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token() && { Authorization: `Bearer ${token()}` }),
+          },
+          ...options,
         });
 
         if (!response.ok) {
-            let errorMessage = `Error: ${response.status} ${response.statusText}`;
-            try {
-              const errorBody = await response.json();
-              errorMessage = errorBody?.message || errorMessage;
-            // eslint-disable-next-line no-unused-vars
-            } catch (parseError) {
-              // If response is not JSON, use the default error message
-            }
-            throw new Error(errorMessage);
+          let errorMessage = `Request failed (${response.status})`;
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const errorBody = await response.json();
+            errorMessage = errorBody?.message || errorMessage;
           }
+          throw new Error(errorMessage);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Server did not return JSON");
+        }
 
         const result = await response.json();
-        setData(result.data || result); // Handle both `{ data: ... }` and direct array/object responses
+
+        if (isMounted) setData(result?.data ?? result);
       } catch (err) {
-        setError({ message: err.message, stack: err.stack });
+        if (isMounted) setError({ message: err.message || "Something went wrong" });
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchData();
-  }, [url]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [endpoint]);
 
   return { data, loading, error };
 };

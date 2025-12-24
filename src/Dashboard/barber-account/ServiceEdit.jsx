@@ -86,7 +86,7 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
 
       const jwt = localStorage.getItem("token");
       // Make API call to update service
-      const response = await fetch(`${BASE_URL}provider-services/${editingService._id}`, {
+      const response = await fetch(`${BASE_URL}/provider-services/${editingService._id}`, {
         method: 'PATCH',
         body: formData, // Use FormData for file uploads
         headers: {

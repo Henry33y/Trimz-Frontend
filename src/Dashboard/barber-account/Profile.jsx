@@ -12,13 +12,12 @@ import {
   Calendar,
   Save,
   Trash2,
-  Plus,
-  X
+  Plus
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 // Mock Config
-const BASE_URL = 'http://localhost:5000/api/v1/';
+const BASE_URL = 'http://localhost:5002/api/v1/';
 
 // ==========================================
 // SUB-COMPONENT: TimeSlotSection
@@ -265,7 +264,9 @@ const Profile = ({ barberData }) => {
     e.preventDefault();
     addItem('experience', {
       startingDate: '',
+      startingTime: '',
       endingDate: '',
+      endingTime: '',
       workplace: 'Ecutz Barbering Shop',
       role: '',
       description: '',
@@ -284,6 +285,13 @@ const Profile = ({ barberData }) => {
   // Submit the updated profile data
   const updateProfileHandler = async (e) => {
     e.preventDefault();
+    
+    // Safety check for ID
+    if (!barberData || !barberData._id) {
+        toast.error("Cannot update: User ID not found");
+        return;
+    }
+
     try {
       const updateData = new FormData();
       Object.keys(formData).forEach(key => {
@@ -300,7 +308,7 @@ const Profile = ({ barberData }) => {
       }
 
       const token = localStorage.getItem('token');
-      const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
+      const res = await fetch(`${BASE_URL}/users/${barberData._id}`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -312,12 +320,18 @@ const Profile = ({ barberData }) => {
       if (!res.ok) {
         throw new Error(result.message);
       }
+      
+      // Update local storage
       localStorage.setItem('user', JSON.stringify(result.data));
-      localStorage.setItem('role', result.data.role);
-      localStorage.setItem('token', token);
-
+      // localStorage.setItem('role', result.data.role); // Role usually doesn't change on profile update, but safe to keep
+      
       toast.success(result.message);
-      window.location.reload();
+      
+      // Optional: Delay reload to show toast, or remove reload if state updates automatically
+      setTimeout(() => {
+          window.location.reload();
+      }, 1000);
+      
     } catch (error) {
       toast.error(error.message);
     }

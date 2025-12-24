@@ -128,7 +128,7 @@ const Signup = () => {
     try {
       const token = localStorage.getItem('token');
       
-      const res = await fetch(`${BASE_URL}users`, {
+      const res = await fetch(`${BASE_URL}/users`, {
         method: 'POST',
         headers: { 
           "Content-Type": "application/json",

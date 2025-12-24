@@ -54,7 +54,7 @@ const MyAccount = () => {
             const { id } = decodedToken;
             console.log('Decoded token:', decodedToken);
   
-            const response = await fetch(`${BASE_URL}users/${id}`);
+            const response = await fetch(`${BASE_URL}/users/${id}`);
             const userData = await response.json();
             console.log(userData);
   
@@ -104,7 +104,7 @@ const MyAccount = () => {
       const fetchUserProfile = async () => {
         setLoading(true);
         try {
-          const response = await fetch(`${BASE_URL}users/${userData._id}`);
+          const response = await fetch(`${BASE_URL}/users/${userData._id}`);
           const profileData = await response.json();
   
           if (response.ok) {

@@ -58,7 +58,7 @@ const Notifications = () => {
   // Mark a notification as read
   const markAsRead = async (notificationId) => {
     try {
-      const res = await fetch(`${BASE_URL}notifications/${notificationId}`, {
+      const res = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

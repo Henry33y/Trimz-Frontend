@@ -53,7 +53,7 @@ const BarberServices = ({ barberData }) => {
         return;
       }
 
-      const res = await fetch(`${BASE_URL}provider-services/provider/${barberData._id}`, {
+      const res = await fetch(`${BASE_URL}/provider-services/provider/${barberData._id}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -165,7 +165,7 @@ const BarberServices = ({ barberData }) => {
       console.log("DAte: ",selectedDate);
       console.log("time: ",selectedTime);
 
-      const res = await fetch(`${BASE_URL}appointments`, {
+      const res = await fetch(`${BASE_URL}/appointments`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
