@@ -1,9 +1,7 @@
-// NotificationIcon.jsx
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { BellIcon } from "lucide-react";
 import { useEffect } from "react";
-// import { BASE_URL } from "../../config";
 
 const NotificationIcon = () => {
   const { user, unreadCount, refreshNotifications } = useAuth();
@@ -20,14 +18,27 @@ const NotificationIcon = () => {
     navigate("/notifications");
   };
 
+  // Color coding logic based on unread count
+  const getBadgeColor = (count) => {
+    if (count <= 0) return '';
+    if (count <= 5) return 'bg-blue-500'; // 1-5: Blue
+    if (count <= 10) return 'bg-orange-500'; // 6-10: Orange
+    return 'bg-red-500'; // 11+: Red
+  };
+
   return (
     isProvider && (
-      <div className="relative cursor-pointer" onClick={handleIconClick}>
-        <BellIcon className="text-gray-600 hover:text-black" />
+      <div className="relative cursor-pointer group" onClick={handleIconClick}>
+        <BellIcon className="w-6 h-6 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
+          <>
+            {/* Badge */}
+            <span className={`absolute -top-1 -right-1 ${getBadgeColor(unreadCount)} text-white rounded-full text-xs min-w-[20px] h-5 flex items-center justify-center px-1 font-bold shadow-lg animate-fadeIn`}>
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+            {/* Pulse animation ring */}
+            <span className={`absolute -top-1 -right-1 ${getBadgeColor(unreadCount)} rounded-full min-w-[20px] h-5 animate-ping opacity-75`}></span>
+          </>
         )}
       </div>
     )

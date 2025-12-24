@@ -12,6 +12,10 @@ import BookingSteps from './BookingSteps';
 import { useNavigate } from 'react-router-dom';
 import { BsCheckCircle } from 'react-icons/bs'; // Import a checkmark icon
 import { initAppointmentPayment, redirectToPaystack } from '../../../utils/paystack';
+import LoginPromptModal from '../../../components/LoginPromptModal';
+import GuestInfoBanner from '../../../components/GuestInfoBanner';
+import { useContext } from 'react';
+import { AuthContext } from '../../../context/AuthContext';
 
 const BarberServices = ({ barberData }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -21,7 +25,9 @@ const BarberServices = ({ barberData }) => {
   const [providerServices, setProviderServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const { user, token } = useContext(AuthContext);
 
   const formatTime = (timeStr) => {
     const [hour, minute] = timeStr.split(':');
@@ -48,17 +54,25 @@ const BarberServices = ({ barberData }) => {
   const fetchServices = async () => {
     try {
       const jwt = localStorage.getItem('token');
-      if (!jwt || !barberData?._id) {
-        toast.warn('Please login to view services');
+
+      if (!barberData?._id) {
+        setError('Provider information not available');
+        setLoading(false);
         return;
+      }
+
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add auth header only if token exists
+      if (jwt) {
+        headers.Authorization = `Bearer ${jwt}`;
       }
 
       const res = await fetch(`${BASE_URL}/provider-services/provider/${barberData._id}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (!res.ok) {
@@ -104,6 +118,15 @@ const BarberServices = ({ barberData }) => {
     setSelectedServices((prev) => prev.filter((service) => service.id !== serviceId));
   };
 
+  // Check authentication before proceeding to booking
+  const handleProceedClick = () => {
+    if (!user || !token) {
+      setShowLoginModal(true);
+      return;
+    }
+    setCurrentStep(2);
+  };
+
   // Handle date selection
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -118,7 +141,7 @@ const BarberServices = ({ barberData }) => {
   const handlePayCash = async () => {
     try {
       await handleConfirmBooking('cash'); // Ensure booking is confirmed
-        
+
       // Redirect to the Thank You page after a short delay
       setTimeout(() => {
         navigate('/thank-you'); // Update with your actual route
@@ -161,9 +184,9 @@ const BarberServices = ({ barberData }) => {
         paymentMethod: paymentMethod || 'cash',
       };
 
-      console.log("Booking: ",bookingData);
-      console.log("DAte: ",selectedDate);
-      console.log("time: ",selectedTime);
+      console.log("Booking: ", bookingData);
+      console.log("DAte: ", selectedDate);
+      console.log("time: ", selectedTime);
 
       const res = await fetch(`${BASE_URL}/appointments`, {
         method: 'POST',
@@ -191,7 +214,8 @@ const BarberServices = ({ barberData }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <BookingSteps currentStep={currentStep} />
+      {!user && <GuestInfoBanner message="Login to book services" />}
+      {user && <BookingSteps currentStep={currentStep} />}
       {currentStep === 1 && (
         <ServiceSelection
           providerServices={providerServices}
@@ -204,6 +228,8 @@ const BarberServices = ({ barberData }) => {
           loading={loading}
           error={error}
           setCurrentStep={setCurrentStep}
+          onProceedClick={handleProceedClick}
+          isGuest={!user}
         />
       )}
       {currentStep === 2 && (
@@ -235,6 +261,13 @@ const BarberServices = ({ barberData }) => {
           ← Back to previous step
         </button>
       )}
+
+      {/* Login Prompt Modal */}
+      <LoginPromptModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        action="book this service"
+      />
     </div>
   );
 };

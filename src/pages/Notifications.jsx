@@ -5,15 +5,15 @@ import { useAuth } from "../context/AuthContext";
 import { BASE_URL } from "../config";
 import { formateDate } from "../utils/formateDate";
 import convertTime from "../utils/convertTime";
-import { 
-  CheckCircle2, 
-  Bell, 
-  Clock, 
-  Calendar, 
-  CheckCheck, 
-  User, 
+import {
+  CheckCircle2,
+  Bell,
+  Clock,
+  Calendar,
+  CheckCheck,
+  User,
   Scissors,
-  Loader2 
+  Loader2
 } from "lucide-react";
 
 const Notifications = () => {
@@ -121,6 +121,33 @@ const Notifications = () => {
     }
   };
 
+  // Mark all notifications as unread
+  const markAllAsUnread = async () => {
+    try {
+      await fetch(`${BASE_URL}/notifications/unread-all`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Update local state
+      setNotifications(
+        notifications.map((notification) => ({
+          ...notification,
+          notificationStatus: "unread",
+        }))
+      );
+
+      // Refresh the unread count
+      refreshNotifications();
+    } catch (err) {
+      console.error("Error marking all notifications as unread:", err);
+      // Optionally show an error message to the user
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
       {/* Header */}
@@ -132,16 +159,28 @@ const Notifications = () => {
           </h1>
           <p className="text-slate-500 text-sm mt-1">Stay updated with your latest appointments and alerts.</p>
         </div>
-        
-        {notifications.some(n => n.notificationStatus === "unread") && (
-          <button
-            onClick={markAllAsRead}
-            className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all text-sm font-medium"
-          >
-            <CheckCheck size={16} />
-            Mark all as read
-          </button>
-        )}
+
+        <div className="flex gap-2">
+          {notifications.some(n => n.notificationStatus === "unread") && (
+            <button
+              onClick={markAllAsRead}
+              className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all text-sm font-medium"
+            >
+              <CheckCheck size={16} />
+              Mark all as read
+            </button>
+          )}
+
+          {notifications.some(n => n.notificationStatus === "read") && (
+            <button
+              onClick={markAllAsUnread}
+              className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all text-sm font-medium"
+            >
+              <Bell size={16} />
+              Mark all as unread
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Content */}
@@ -151,7 +190,7 @@ const Notifications = () => {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         )}
-        
+
         {error && (
           <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 text-center">
             Error: {error.message}
@@ -163,11 +202,10 @@ const Notifications = () => {
             {notifications.map((notification) => (
               <li
                 key={notification._id}
-                className={`relative group p-5 rounded-2xl border transition-all duration-200 ${
-                  notification.notificationStatus === "unread"
+                className={`relative group p-5 rounded-2xl border transition-all duration-200 ${notification.notificationStatus === "unread"
                     ? "bg-white border-blue-200 shadow-md shadow-blue-50"
                     : "bg-slate-50 border-slate-200 opacity-90 hover:opacity-100"
-                }`}
+                  }`}
               >
                 {/* Unread Indicator Dot */}
                 {notification.notificationStatus === "unread" && (

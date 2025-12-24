@@ -1,32 +1,37 @@
 /* eslint-disable react/prop-types */
-import { useContext, useState, useEffect, useRef, createContext } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { AuthContext } from '../../context/AuthContext'; // UNCOMMENT FOR PRODUCTION
-import { 
-  LayoutGrid, 
-  Calendar, 
-  User, 
-  Scissors, 
-  Image as ImageIcon, 
-  Menu, 
-  LogOut, 
-  Trash2,
-  ChevronRight
+import { AuthContext } from '../../context/AuthContext';
+import { BASE_URL } from '../../config';
+import { toast } from 'react-toastify';
+import { createPortal } from 'react-dom';
+import {
+    LayoutGrid,
+    Calendar,
+    User,
+    Scissors,
+    Image as ImageIcon,
+    Menu,
+    LogOut,
+    Trash2,
+    ChevronRight
 } from 'lucide-react';
-
-// TEMPORARY MOCK FOR PREVIEW (Remove this and uncomment the import above in your project)
-const AuthContext = createContext({ dispatch: () => {} });
+import DeleteAccountModal from '../../components/DeleteAccountModal';
 
 const Tabs = ({ tab, setTab }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
     const menuRef = useRef(null);
-    const { dispatch } = useContext(AuthContext);
+    const buttonRef = useRef(null);
+    const { dispatch, token } = useContext(AuthContext);
     const navigate = useNavigate();
 
     // Close menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
+            if (menuRef.current && !menuRef.current.contains(event.target) &&
+                buttonRef.current && !buttonRef.current.contains(event.target)) {
                 setIsMenuOpen(false);
             }
         };
@@ -34,6 +39,18 @@ const Tabs = ({ tab, setTab }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Update menu position when opened
+    useEffect(() => {
+        if (isMenuOpen && buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            setMenuPosition({
+                top: rect.bottom + 12,
+                left: rect.left,
+                width: rect.width
+            });
+        }
+    }, [isMenuOpen]);
 
     const handleLogout = () => {
         dispatch({ type: 'LOGOUT' });
@@ -45,6 +62,31 @@ const Tabs = ({ tab, setTab }) => {
         setIsMenuOpen(false);
     };
 
+    const handleDeleteAccount = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/users/account`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) throw new Error('Failed to delete account');
+
+            toast.success('Account deleted successfully');
+            setIsDeleteModalOpen(false);
+
+            // Logout and redirect
+            setTimeout(() => {
+                dispatch({ type: 'LOGOUT' });
+                navigate('/login', { replace: true });
+            }, 1000);
+        } catch (err) {
+            console.error('Error deleting account:', err);
+            toast.error('Failed to delete account');
+        }
+    };
+
     const menuItems = [
         { id: 'overview', label: 'Overview', icon: LayoutGrid },
         { id: 'appointments', label: 'Appointments', icon: Calendar },
@@ -54,10 +96,10 @@ const Tabs = ({ tab, setTab }) => {
     ];
 
     return (
-        <div className="relative z-50" ref={menuRef}>
+        <div className="relative z-[9999]" ref={menuRef}>
             {/* Mobile Menu Button */}
-            <div className='lg:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-2'>
-                <button 
+            <div className='lg:hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-2' ref={buttonRef}>
+                <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="flex items-center justify-between w-full px-4 py-3 text-slate-700 font-bold transition-colors hover:bg-slate-50 rounded-xl group"
                 >
@@ -73,9 +115,17 @@ const Tabs = ({ tab, setTab }) => {
                 </button>
             </div>
 
-            {/* Mobile Menu Dropdown */}
-            {isMenuOpen && (
-                <div className='lg:hidden absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transform origin-top animate-in fade-in slide-in-from-top-2 duration-200'>
+            {/* Mobile Menu Dropdown - Rendered with Portal */}
+            {isMenuOpen && createPortal(
+                <div
+                    ref={menuRef}
+                    className='lg:hidden fixed bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transform origin-top animate-in fade-in slide-in-from-top-2 duration-200 z-[99999]'
+                    style={{
+                        top: `${menuPosition.top}px`,
+                        left: `${menuPosition.left}px`,
+                        width: `${menuPosition.width}px`
+                    }}
+                >
                     <div className="p-2 space-y-1">
                         {menuItems.map((item) => (
                             <button
@@ -84,8 +134,8 @@ const Tabs = ({ tab, setTab }) => {
                                 className={`
                                     w-full px-4 py-3.5 rounded-xl text-left transition-all duration-200
                                     flex items-center justify-between text-sm font-bold group
-                                    ${tab === item.id 
-                                        ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20' 
+                                    ${tab === item.id
+                                        ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
                                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
                                 `}
                             >
@@ -97,7 +147,7 @@ const Tabs = ({ tab, setTab }) => {
                             </button>
                         ))}
                     </div>
-                    
+
                     <div className="p-2 border-t border-slate-100 bg-slate-50/50 space-y-1">
                         <button
                             onClick={handleLogout}
@@ -106,14 +156,16 @@ const Tabs = ({ tab, setTab }) => {
                             <LogOut size={18} />
                             Logout
                         </button>
-                        <button 
+                        <button
+                            onClick={() => setIsDeleteModalOpen(true)}
                             className="w-full px-4 py-3 rounded-xl text-left transition-all duration-200 flex items-center gap-3 text-sm font-bold text-red-500 hover:bg-red-50"
                         >
                             <Trash2 size={18} />
                             Delete Account
                         </button>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Desktop Menu */}
@@ -127,8 +179,8 @@ const Tabs = ({ tab, setTab }) => {
                                 className={`
                                     w-full px-4 py-3.5 rounded-xl text-left transition-all duration-200
                                     flex items-center justify-between text-sm font-bold group
-                                    ${tab === item.id 
-                                        ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 translate-x-1' 
+                                    ${tab === item.id
+                                        ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20 translate-x-1'
                                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1'}
                                 `}
                             >
@@ -152,7 +204,8 @@ const Tabs = ({ tab, setTab }) => {
                             <LogOut size={18} className="text-slate-400 group-hover:text-slate-900 transition-colors" />
                             Logout
                         </button>
-                        <button 
+                        <button
+                            onClick={() => setIsDeleteModalOpen(true)}
                             className="w-full px-4 py-3 rounded-xl text-left transition-all duration-200
                             flex items-center gap-3 text-sm font-bold text-red-500 hover:bg-red-50 group"
                         >
@@ -162,6 +215,14 @@ const Tabs = ({ tab, setTab }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Account Modal */}
+            <DeleteAccountModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDeleteAccount}
+                userType="provider account"
+            />
         </div>
     );
 };

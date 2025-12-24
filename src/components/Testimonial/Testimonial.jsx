@@ -20,16 +20,16 @@ import { Quote } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    name: "Michael Chen",
+    name: "Kwame Asante",
     title: "Best Haircut on Campus",
     review: "I've been using Trimz for 6 months now. The barbers are skilled, the booking is super easy, and I never have to wait long. Definitely recommend to anyone looking for quality grooming!",
     rating: 5,
-    avatar: "https://i.pravatar.cc/150?img=12",
+    avatar: "https://i.pravatar.cc/150?img=60",
   },
   {
     id: 2,
-    name: "Sarah Johnson",
-    title: "Professional & Convenient",
+    name: "Sarah Martinez",
+    title: "Professional & Convenient Service",
     review: "As someone with a busy schedule, Trimz is a lifesaver! I can book appointments between classes and the stylists always deliver exactly what I ask for. Love the convenience!",
     rating: 5,
     avatar: "https://i.pravatar.cc/150?img=45",
@@ -44,19 +44,19 @@ const testimonials = [
   },
   {
     id: 4,
-    name: "Emily Rodriguez",
-    title: "Consistently Great Service",
+    name: "Jessica Chen",
+    title: "Consistently Great Results",
     review: "What I love most about Trimz is the consistency. Every stylist I've worked with has been amazing. The app makes it so easy to find someone available when I need them!",
     rating: 5,
     avatar: "https://i.pravatar.cc/150?img=47",
   },
   {
     id: 5,
-    name: "James Anderson",
+    name: "Kofi Owusu",
     title: "Game Changer for Students",
     review: "Trimz changed the game for campus grooming. No more expensive off-campus trips or long waits. Quick, affordable, and professional service right where I need it. Highly recommended!",
     rating: 5,
-    avatar: "https://i.pravatar.cc/150?img=68",
+    avatar: "https://i.pravatar.cc/150?img=51",
   },
   {
     id: 6,
@@ -68,7 +68,7 @@ const testimonials = [
   },
   {
     id: 7,
-    name: "Chris Thompson",
+    name: "Michael Johnson",
     title: "Worth Every Penny",
     review: "I appreciate the transparency and professionalism. You can see ratings, book easily, and the barbers always show up on time. Quality service at student-friendly prices!",
     rating: 5,
@@ -77,7 +77,7 @@ const testimonials = [
   {
     id: 8,
     name: "Nadia Hassan",
-    title: "My Weekly Treat",
+    title: "My Weekly Self-Care Ritual",
     review: "Getting my hair done used to be such a hassle. With Trimz, it's become something I actually look forward to. The stylists are talented and friendly, and I always leave satisfied!",
     rating: 5,
     avatar: "https://i.pravatar.cc/150?img=32",
@@ -93,9 +93,8 @@ const StarRating = ({ rating }) => {
       {[...Array(5)].map((_, index) => (
         <HiStar
           key={index}
-          className={`w-5 h-5 ${
-            index < rating ? 'text-yellow-400' : 'text-gray-300'
-          }`}
+          className={`w-5 h-5 ${index < rating ? 'text-yellow-400' : 'text-gray-300'
+            }`}
         />
       ))}
     </div>
@@ -112,9 +111,9 @@ const TestimonialCard = ({ testimonial }) => {
       <div className='bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl 
             transition-all duration-300 h-full flex flex-col
             border border-gray-100 dark:border-slate-700 hover:border-primaryColor/20'>
-        
+
         {/* Quote Icon */}
-          <div className='absolute top-6 right-6 opacity-10 group-hover:opacity-20 
+        <div className='absolute top-6 right-6 opacity-10 group-hover:opacity-20 
                       transition-opacity duration-300'>
           <Quote className='w-16 h-16 sm:w-20 sm:h-20 text-primaryColor dark:text-primaryColor' />
         </div>
@@ -126,8 +125,8 @@ const TestimonialCard = ({ testimonial }) => {
             <div className='w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden 
                           ring-4 ring-primaryColor/10 group-hover:ring-primaryColor/30 
                           transition-all duration-300'>
-              <img 
-                src={testimonial.avatar} 
+              <img
+                src={testimonial.avatar}
                 alt={testimonial.name}
                 className='w-full h-full object-cover'
               />
@@ -158,7 +157,7 @@ const TestimonialCard = ({ testimonial }) => {
         </p>
 
         {/* Bottom Accent Line */}
-          <div className='mt-6 pt-6 border-t border-gray-100 dark:border-slate-700'>
+        <div className='mt-6 pt-6 border-t border-gray-100 dark:border-slate-700'>
           <div className='h-1 w-12 bg-gradient-to-r from-primaryColor to-primaryColor/50 
                         rounded-full group-hover:w-20 transition-all duration-300' />
         </div>
@@ -183,7 +182,7 @@ const Testimonial = () => {
         modules={[Pagination, Autoplay]}
         spaceBetween={24}
         slidesPerView={1}
-        pagination={{ 
+        pagination={{
           clickable: true,
           dynamicBullets: true,
         }}

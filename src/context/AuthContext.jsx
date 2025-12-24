@@ -60,17 +60,29 @@ export const AuthContextProvider = ({ children }) => {
 
         try {
             const token = localStorage.getItem('token'); // read token dynamically
-            const res = await fetch(`${BASE_URL}/users/${state.user._id}`, {
+
+            if (!token) {
+                console.warn('No token found for notification count fetch');
+                dispatch({ type: 'SET_NOTIFICATION_COUNT', payload: 0 });
+                return;
+            }
+
+            const res = await fetch(`${BASE_URL}/notifications/count`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            if (!res.ok) throw new Error("Failed to fetch notifications");
+            if (!res.ok) {
+                console.error(`Notification count fetch failed: ${res.status} ${res.statusText}`);
+                throw new Error("Failed to fetch notifications");
+            }
 
             const data = await res.json();
+            console.log('Notification count response:', data);
             const unread = typeof data?.unread === 'number' ? data.unread : 0;
             dispatch({ type: 'SET_NOTIFICATION_COUNT', payload: unread });
         } catch (err) {
             console.error("Error fetching notification count:", err);
+            // Don't set to 0 on error - keep existing count
         }
     }, [state.user, state.role]);
 

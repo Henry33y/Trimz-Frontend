@@ -138,14 +138,14 @@ const OwnerDashboard = () => {
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-                        <p className="text-slate-500 mt-1">{user?.email}</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Admin Dashboard</h1>
+                        <p className="text-slate-500 mt-1 text-sm sm:text-base">{user?.email}</p>
                     </div>
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition w-full sm:w-auto"
                     >
                         <LogOut size={18} />
                         Logout
@@ -153,26 +153,26 @@ const OwnerDashboard = () => {
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="flex gap-4 mb-6 border-b border-gray-200">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 border-b border-gray-200">
                     <button
                         onClick={() => setActiveTab('providers')}
-                        className={`flex items-center gap-2 px-4 py-3 font-bold transition ${activeTab === 'providers'
+                        className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-bold transition ${activeTab === 'providers'
                             ? 'text-blue-600 border-b-2 border-blue-600'
                             : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         <Users size={20} />
-                        Provider Management
+                        <span className="text-sm sm:text-base">Provider Management</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('admins')}
-                        className={`flex items-center gap-2 px-4 py-3 font-bold transition ${activeTab === 'admins'
+                        className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-bold transition ${activeTab === 'admins'
                             ? 'text-blue-600 border-b-2 border-blue-600'
                             : 'text-gray-600 hover:text-gray-900'
                             }`}
                     >
                         <Shield size={20} />
-                        Add Admin
+                        <span className="text-sm sm:text-base">Add Admin</span>
                     </button>
                 </div>
 
@@ -180,14 +180,14 @@ const OwnerDashboard = () => {
                 {activeTab === 'providers' ? (
                     <div>
                         {/* Status Filters */}
-                        <div className="flex gap-2 mb-6">
+                        <div className="flex flex-wrap gap-2 mb-6">
                             {['pending', 'approved', 'rejected', 'all'].map((status) => (
                                 <button
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
-                                    className={`px-4 py-2 rounded-lg font-bold text-sm capitalize transition ${statusFilter === status
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-white text-slate-600 border border-gray-200 hover:border-gray-300'
+                                    className={`px-3 sm:px-4 py-2 rounded-lg font-bold text-xs sm:text-sm capitalize transition ${statusFilter === status
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-white text-slate-600 border border-gray-200 hover:border-gray-300'
                                         }`}
                                 >
                                     {status}
@@ -201,7 +201,7 @@ const OwnerDashboard = () => {
                                 <table className="w-full text-left text-sm">
                                     <thead className="bg-gray-50 border-b border-gray-200">
                                         <tr>
-                                            <th className="px-6 py-4 font-bold text-slate-700">Name</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 sticky left-0 z-10 bg-gray-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Name</th>
                                             <th className="px-6 py-4 font-bold text-slate-700">Email</th>
                                             <th className="px-6 py-4 font-bold text-slate-700">Status</th>
                                             <th className="px-6 py-4 font-bold text-slate-700">Date Joined</th>
@@ -219,7 +219,7 @@ const OwnerDashboard = () => {
                                         ) : (
                                             providers.map((provider) => (
                                                 <tr key={provider._id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-4 font-medium text-slate-900">
+                                                    <td className="px-6 py-4 font-medium text-slate-900 sticky left-0 z-10 bg-white shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                                         {provider.name}
                                                     </td>
                                                     <td className="px-6 py-4 text-slate-600">
@@ -227,8 +227,8 @@ const OwnerDashboard = () => {
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <span className={`px-2 py-1 rounded-full text-xs font-bold ${provider.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                                provider.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                                                    'bg-yellow-100 text-yellow-700'
+                                                            provider.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                                'bg-yellow-100 text-yellow-700'
                                                             }`}>
                                                             {provider.status}
                                                         </span>

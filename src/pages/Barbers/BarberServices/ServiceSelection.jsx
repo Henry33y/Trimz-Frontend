@@ -1,18 +1,21 @@
 /* eslint-disable react/prop-types */
 import { ShoppingCart, X } from 'lucide-react';
 
-const ServiceSelection = ({ providerServices, selectedServices, handleServiceSelect, handleRemoveService, calculateTotalDuration, calculateTotalPrice, formatPrice, loading, error, setCurrentStep }) => {
+const ServiceSelection = ({ providerServices, selectedServices, handleServiceSelect, handleRemoveService, calculateTotalDuration, calculateTotalPrice, formatPrice, loading, error, setCurrentStep, onProceedClick, isGuest = false }) => {
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
-      <ServiceCart
-        selectedServices={selectedServices}
-        handleRemoveService={handleRemoveService}
-        calculateTotalDuration={calculateTotalDuration}
-        calculateTotalPrice={calculateTotalPrice}
-        formatPrice={formatPrice}
-        setCurrentStep={setCurrentStep}
-      />
+      <h2 className="text-2xl font-bold mb-6 px-2">Services</h2>
+      {!isGuest && (
+        <ServiceCart
+          selectedServices={selectedServices}
+          handleRemoveService={handleRemoveService}
+          calculateTotalDuration={calculateTotalDuration}
+          calculateTotalPrice={calculateTotalPrice}
+          formatPrice={formatPrice}
+          setCurrentStep={setCurrentStep}
+          onProceedClick={onProceedClick}
+        />
+      )}
       {loading ? (
         <div className="text-center py-8">Loading services...</div>
       ) : error ? (
@@ -23,11 +26,10 @@ const ServiceSelection = ({ providerServices, selectedServices, handleServiceSel
             <div
               key={service.id}
               onClick={() => handleServiceSelect(service)}
-              className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
-                selectedServices.some((s) => s.id === service.id)
-                  ? 'border-blue-500 bg-blue-50 dark:bg-slate-700'
-                  : 'hover:border-blue-500'
-              }`}
+              className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${selectedServices.some((s) => s.id === service.id)
+                ? 'border-blue-500 bg-blue-50 dark:bg-slate-700'
+                : 'hover:border-blue-500'
+                }`}
             >
               <img
                 src={service.image}
@@ -50,7 +52,7 @@ const ServiceSelection = ({ providerServices, selectedServices, handleServiceSel
   );
 };
 
-const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDuration, calculateTotalPrice, formatPrice, setCurrentStep }) => (
+const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDuration, calculateTotalPrice, formatPrice, setCurrentStep, onProceedClick }) => (
   <div className="bg-gray-50 dark:bg-slate-800 p-4 rounded-lg mb-6">
     <div className="flex items-center justify-between mb-4">
       <h3 className="font-semibold flex items-center">
@@ -82,7 +84,7 @@ const ServiceCart = ({ selectedServices, handleRemoveService, calculateTotalDura
           <span className="font-bold">{formatPrice(calculateTotalPrice())}</span>
         </div>
         <button
-          onClick={() => setCurrentStep(2)}
+          onClick={onProceedClick || (() => setCurrentStep(2))}
           className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
         >
           Proceed to Date & Time

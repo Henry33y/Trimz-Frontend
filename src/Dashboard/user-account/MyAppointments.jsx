@@ -13,7 +13,7 @@ const Appointments = ({ appointments }) => (
       <div key={app._id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <div className="flex justify-between items-start">
           <div>
-            <h4 className="font-bold text-slate-900">Appointment with {app.barber}</h4>
+            <h4 className="font-bold text-slate-900">Appointment with {app.provider?.name || 'Provider'}</h4>
             <p className="text-sm text-slate-500">{new Date(app.date).toDateString()}</p>
           </div>
           <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold uppercase">{app.status}</span>

@@ -1,9 +1,24 @@
 /* eslint-disable react/prop-types */
-import { Star, User, Calendar } from 'lucide-react';
+import { Star, User, Calendar, MessageCircle } from 'lucide-react';
 import { formateDate } from '../../utils/formateDate';
 import FeedbackForm from './Feedback';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import LoginPromptModal from '../../components/LoginPromptModal';
+import GuestInfoBanner from '../../components/GuestInfoBanner';
 
 const FeedbackDisplay = ({ reviews = [], totalRating, loading, error, onReviewAdded }) => {
+    const { user } = useContext(AuthContext);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+
+    const handleWriteReviewClick = () => {
+        if (!user) {
+            setShowLoginModal(true);
+            return;
+        }
+        setShowReviewForm(true);
+    };
 
     // Calculate average rating
     const averageRating = reviews.length > 0
@@ -27,8 +42,8 @@ const FeedbackDisplay = ({ reviews = [], totalRating, loading, error, onReviewAd
                                     key={star}
                                     size={16}
                                     className={`${star <= Math.round(averageRating)
-                                            ? 'fill-yellow-400 text-yellow-400'
-                                            : 'fill-slate-200 text-slate-200'
+                                        ? 'fill-yellow-400 text-yellow-400'
+                                        : 'fill-slate-200 text-slate-200'
                                         }`}
                                 />
                             ))}
@@ -38,9 +53,31 @@ const FeedbackDisplay = ({ reviews = [], totalRating, loading, error, onReviewAd
             </div>
 
             {/* Feedback Form */}
-            <div>
-                <h3 className="text-xl font-bold text-slate-900 mb-4">Leave Your Feedback</h3>
-                <FeedbackForm onSuccess={onReviewAdded} />
+            <div className="mb-8">
+                {!user && <GuestInfoBanner message="Login to leave a review" />}
+
+                {user && !showReviewForm && (
+                    <button
+                        onClick={() => setShowReviewForm(true)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                    >
+                        <MessageCircle size={20} />
+                        Write a Review
+                    </button>
+                )}
+
+                {user && showReviewForm && (
+                    <>
+                        <h3 className="text-xl font-bold text-slate-900 mb-4">Leave Your Feedback</h3>
+                        <FeedbackForm
+                            onSuccess={(review) => {
+                                onReviewAdded(review);
+                                setShowReviewForm(false);
+                            }}
+                            onCancel={() => setShowReviewForm(false)}
+                        />
+                    </>
+                )}
             </div>
 
             {/* Reviews List */}
@@ -110,8 +147,8 @@ const FeedbackDisplay = ({ reviews = [], totalRating, loading, error, onReviewAd
                                                 key={star}
                                                 size={18}
                                                 className={`${star <= review.rating
-                                                        ? 'fill-yellow-400 text-yellow-400'
-                                                        : 'fill-slate-200 text-slate-200'
+                                                    ? 'fill-yellow-400 text-yellow-400'
+                                                    : 'fill-slate-200 text-slate-200'
                                                     }`}
                                             />
                                         ))}
@@ -125,6 +162,13 @@ const FeedbackDisplay = ({ reviews = [], totalRating, loading, error, onReviewAd
                     </div>
                 )}
             </div>
+
+            {/* Login Prompt Modal */}
+            <LoginPromptModal
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                action="leave a review"
+            />
         </div>
     );
 };

@@ -10,16 +10,18 @@ import { BASE_URL } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import Error from '../../components/Error/Error';
 import { jwtDecode } from 'jwt-decode';
-import { 
-  LogOut, 
-  Trash2, 
-  Calendar, 
-  Settings, 
-  User, 
-  Mail, 
-  Phone, 
-  Info 
+import {
+  LogOut,
+  Trash2,
+  Calendar,
+  Settings,
+  User,
+  Mail,
+  Phone,
+  Info
 } from 'lucide-react';
+import DeleteAccountModal from '../../components/DeleteAccountModal';
+import { toast } from 'react-toastify';
 
 const MyAccount = () => {
   const { dispatch } = useContext(AuthContext);
@@ -29,6 +31,7 @@ const MyAccount = () => {
   const [userData, setUserData] = useState(null); // State to store user data
   const [loading, setLoading] = useState(false); // State for loading
   const [error, setError] = useState(null); // State for error
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     // Prefer search params, but fall back to hash params for hash-based redirects
@@ -47,20 +50,20 @@ const MyAccount = () => {
     if (urlParams.get('method') === 'googleoauth') {
       const initializeAuth = async () => {
         const jwtToken = urlParams.get('token');
-  
+
         if (jwtToken) {
           try {
             const decodedToken = jwtDecode(jwtToken);
             const { id } = decodedToken;
             console.log('Decoded token:', decodedToken);
-  
+
             const response = await fetch(`${BASE_URL}/users/${id}`);
             const userData = await response.json();
             console.log(userData);
-  
+
             if (response.ok) {
               const { role } = userData.data;
-  
+
               dispatch({
                 type: 'LOGIN',
                 payload: {
@@ -69,13 +72,13 @@ const MyAccount = () => {
                   role,
                 },
               });
-  
+
               setUserData(userData.data);
               console.log(userData);
               localStorage.setItem('token', jwtToken);
               localStorage.setItem('user', JSON.stringify(userData.data));
               localStorage.setItem('role', role);
-  
+
               window.history.replaceState({}, document.title, window.location.pathname);
               window.location.reload()
             } else {
@@ -88,17 +91,17 @@ const MyAccount = () => {
           }
         }
       };
-  
+
       initializeAuth();
     } else {
       const storedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
-  
+
       if (storedUser) {
         setUserData((prev) => (prev ? prev : storedUser)); // Avoid resetting if already set
       }
     }
   }, [dispatch]);
-  
+
   useEffect(() => {
     if (userData && userData._id) {
       const fetchUserProfile = async () => {
@@ -106,7 +109,7 @@ const MyAccount = () => {
         try {
           const response = await fetch(`${BASE_URL}/users/${userData._id}`);
           const profileData = await response.json();
-  
+
           if (response.ok) {
             setUserData((prev) => (prev?._id === profileData.data._id ? prev : profileData.data)); // Avoid redundant updates
           } else {
@@ -118,17 +121,42 @@ const MyAccount = () => {
           setLoading(false);
         }
       };
-  
+
       fetchUserProfile();
     }
   }, [userData]);
-  
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
     // With HashRouter, use navigate to avoid full-page reload and 404s
     navigate('/login', { replace: true });
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/users/account`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Failed to delete account');
+
+      toast.success('Account deleted successfully');
+      setIsDeleteModalOpen(false);
+
+      // Logout and redirect
+      setTimeout(() => {
+        dispatch({ type: 'LOGOUT' });
+        navigate('/login', { replace: true });
+      }, 1000);
+    } catch (err) {
+      console.error('Error deleting account:', err);
+      toast.error('Failed to delete account');
+    }
   };
 
   return (
@@ -141,13 +169,13 @@ const MyAccount = () => {
 
         {!loading && !error && (
           <div className="grid lg:grid-cols-12 gap-8">
-            
+
             {/* ==================== */}
             {/* SIDEBAR SECTION      */}
             {/* ==================== */}
             <div className="lg:col-span-4 xl:col-span-3">
               <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 sticky top-24">
-                
+
                 {/* Profile Image */}
                 <div className="flex flex-col items-center text-center">
                   <figure className="w-32 h-32 rounded-full p-1 border-2 border-dashed border-blue-200 mb-4 bg-slate-50 overflow-hidden">
@@ -164,7 +192,7 @@ const MyAccount = () => {
                       </div>
                     )}
                   </figure>
-                  
+
                   <div className="mt-2 space-y-1">
                     {userData && userData.name && (
                       <h3 className="text-xl font-bold text-slate-900">{userData.name}</h3>
@@ -191,7 +219,7 @@ const MyAccount = () => {
                           <span className="font-medium">{userData.phone}</span>
                         </div>
                       )}
-                      
+
                       {userData && userData.bio && (
                         <div className="flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl text-left">
                           <div className="p-2 bg-white rounded-lg shadow-sm text-blue-500 shrink-0">
@@ -215,7 +243,8 @@ const MyAccount = () => {
                     <LogOut size={18} />
                     Logout
                   </button>
-                  <button 
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
                     className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 py-3.5 rounded-xl font-bold transition-colors"
                   >
                     <Trash2 size={18} />
@@ -229,15 +258,15 @@ const MyAccount = () => {
             {/* MAIN CONTENT SECTION */}
             {/* ==================== */}
             <div className="lg:col-span-8 xl:col-span-9">
-              
+
               {/* Tab Navigation */}
               <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 mb-6 flex overflow-x-auto">
                 <button
                   onClick={() => { console.log('My Bookings button clicked'); setTab('bookings'); }}
                   className={`
                     flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
-                    ${tab === 'bookings' 
-                      ? 'bg-blue-600 text-white shadow-md' 
+                    ${tab === 'bookings'
+                      ? 'bg-blue-600 text-white shadow-md'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
                   `}
                 >
@@ -249,8 +278,8 @@ const MyAccount = () => {
                   onClick={() => setTab('settings')}
                   className={`
                     flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
-                    ${tab === 'settings' 
-                      ? 'bg-blue-600 text-white shadow-md' 
+                    ${tab === 'settings'
+                      ? 'bg-blue-600 text-white shadow-md'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
                   `}
                 >
@@ -268,6 +297,14 @@ const MyAccount = () => {
             </div>
           </div>
         )}
+
+        {/* Delete Account Modal */}
+        <DeleteAccountModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteAccount}
+          userType="customer account"
+        />
       </div>
     </section>
   );
