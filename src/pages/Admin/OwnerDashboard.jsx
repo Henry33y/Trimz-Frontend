@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, UserPlus, LogOut, Users, Shield, History, RefreshCw } from 'lucide-react';
+import { Loader2, UserPlus, LogOut, Users, Shield, History, RefreshCw, Moon, Sun } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
+import { useTheme } from '../../context/ThemeContext';
 
 const OwnerDashboard = () => {
     const { user, token, role } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const [providers, setProviders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -135,30 +137,40 @@ const OwnerDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-6 md:p-12 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-                        <p className="text-slate-500 mt-1 text-sm sm:text-base">{user?.email}</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-gray-100">Admin Dashboard</h1>
+                        <p className="text-slate-500 dark:text-gray-400 mt-1 text-sm sm:text-base">{user?.email}</p>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition w-full sm:w-auto"
-                    >
-                        <LogOut size={18} />
-                        Logout
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {/* Dark Mode Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-gray-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+                            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                        >
+                            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 dark:bg-red-500 text-white font-bold rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition w-full sm:w-auto"
+                        >
+                            <LogOut size={18} />
+                            Logout
+                        </button>
+                    </div>
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 border-b border-gray-200">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6 border-b border-gray-200 dark:border-slate-700">
                     <button
                         onClick={() => setActiveTab('providers')}
                         className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-bold transition ${activeTab === 'providers'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-600 hover:text-gray-900'
+                            ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                     >
                         <Users size={20} />
@@ -167,8 +179,8 @@ const OwnerDashboard = () => {
                     <button
                         onClick={() => setActiveTab('admins')}
                         className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-bold transition ${activeTab === 'admins'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
-                            : 'text-gray-600 hover:text-gray-900'
+                            ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                     >
                         <Shield size={20} />
@@ -186,8 +198,8 @@ const OwnerDashboard = () => {
                                     key={status}
                                     onClick={() => setStatusFilter(status)}
                                     className={`px-3 sm:px-4 py-2 rounded-lg font-bold text-xs sm:text-sm capitalize transition ${statusFilter === status
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-slate-600 border border-gray-200 hover:border-gray-300'
+                                        ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:bg-slate-700'
                                         }`}
                                 >
                                     {status}
@@ -196,44 +208,44 @@ const OwnerDashboard = () => {
                         </div>
 
                         {/* Providers Table */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
-                                    <thead className="bg-gray-50 border-b border-gray-200">
+                                    <thead className="bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700">
                                         <tr>
-                                            <th className="px-6 py-4 font-bold text-slate-700 sticky left-0 z-10 bg-gray-50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Name</th>
-                                            <th className="px-6 py-4 font-bold text-slate-700">Email</th>
-                                            <th className="px-6 py-4 font-bold text-slate-700">Status</th>
-                                            <th className="px-6 py-4 font-bold text-slate-700">Date Joined</th>
-                                            <th className="px-6 py-4 font-bold text-slate-700">History</th>
-                                            <th className="px-6 py-4 font-bold text-slate-700 text-right">Actions</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300 sticky left-0 z-10 bg-gray-50 dark:bg-slate-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">Name</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300">Email</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300">Status</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300">Date Joined</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300">History</th>
+                                            <th className="px-6 py-4 font-bold text-slate-700 dark:text-gray-300 text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100">
+                                    <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
                                         {providers.length === 0 ? (
                                             <tr>
-                                                <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                                                <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-gray-400">
                                                     No providers found for this filter.
                                                 </td>
                                             </tr>
                                         ) : (
                                             providers.map((provider) => (
-                                                <tr key={provider._id} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-6 py-4 font-medium text-slate-900 sticky left-0 z-10 bg-white shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                                                <tr key={provider._id} className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">
+                                                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-gray-100 sticky left-0 z-10 bg-white dark:bg-slate-800 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                                                         {provider.name}
                                                     </td>
-                                                    <td className="px-6 py-4 text-slate-600">
+                                                    <td className="px-6 py-4 text-slate-600 dark:text-gray-400">
                                                         {provider.email}
                                                     </td>
                                                     <td className="px-6 py-4">
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${provider.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                            provider.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                                                'bg-yellow-100 text-yellow-700'
+                                                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${provider.status === 'approved' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400' :
+                                                            provider.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400' :
+                                                                'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400'
                                                             }`}>
                                                             {provider.status}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 text-slate-500">
+                                                    <td className="px-6 py-4 text-slate-500 dark:text-gray-400">
                                                         {new Date(provider.createdAt).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4">
@@ -243,7 +255,7 @@ const OwnerDashboard = () => {
                                                                     ...showHistory,
                                                                     [provider._id]: !showHistory[provider._id]
                                                                 })}
-                                                                className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-xs font-bold"
+                                                                className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-xs font-bold"
                                                             >
                                                                 <History size={14} />
                                                                 {provider.approvalHistory.length}
@@ -335,49 +347,49 @@ const OwnerDashboard = () => {
                     </div>
                 ) : (
                     /* Add Admin Form */
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-2xl">
-                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Create New Admin</h2>
-                        <p className="text-slate-500 mb-6">Add a new administrator to the platform</p>
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 max-w-2xl">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-gray-100 mb-2">Create New Admin</h2>
+                        <p className="text-slate-500 dark:text-gray-400 mb-6">Add a new administrator to the platform</p>
 
                         <form onSubmit={handleAddAdmin} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Name</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Name</label>
                                 <input
                                     type="text"
                                     value={newAdmin.name}
                                     onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
                                     placeholder="Enter admin name"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Email</label>
                                 <input
                                     type="email"
                                     value={newAdmin.email}
                                     onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
                                     placeholder="Enter admin email"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Password</label>
                                 <input
                                     type="password"
                                     value={newAdmin.password}
                                     onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
                                     required
                                     minLength={6}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
                                     placeholder="Enter admin password (min 6 characters)"
                                 />
                             </div>
                             <button
                                 type="submit"
                                 disabled={addingAdmin}
-                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {addingAdmin ? (
                                     <>

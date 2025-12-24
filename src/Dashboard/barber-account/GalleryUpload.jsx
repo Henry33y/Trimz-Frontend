@@ -151,24 +151,24 @@ const GalleryUpload = ({ providerId }) => {
 
   return (
     <div className="space-y-10">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-5">
+      <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-700 pb-5">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Gallery Management</h2>
-          <p className="text-gray-500 text-sm mt-1">Showcase your best work to attract more clients</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Gallery Management</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Showcase your best work to attract more clients</p>
         </div>
-        <div className="hidden sm:block text-sm text-gray-400 font-medium">
+        <div className="hidden sm:block text-sm text-gray-400 dark:text-gray-500 font-medium">
           {galleryImages.length} images uploaded
         </div>
       </div>
 
       {/* Upload Section */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-          <Plus className="text-blue-600" size={20} />
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+          <Plus className="text-blue-600 dark:text-blue-400" size={20} />
           Add New Photos
         </h3>
 
-        <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 transition-colors hover:border-blue-500 hover:bg-blue-50/30 group text-center relative">
+        <div className="border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-2xl p-8 transition-colors hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 group text-center relative">
           <input
             type="file"
             accept="image/*"
@@ -177,12 +177,12 @@ const GalleryUpload = ({ providerId }) => {
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
           />
           <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="p-4 bg-blue-50 text-blue-600 rounded-full group-hover:bg-blue-100 group-hover:scale-110 transition-all">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 group-hover:scale-110 transition-all">
               <Upload size={32} />
             </div>
             <div>
-              <p className="text-lg font-semibold text-gray-700">Click or drag images here</p>
-              <p className="text-sm text-gray-500 mt-1">Supports JPG, PNG, WEBP</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">Click or drag images here</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Supports JPG, PNG, WEBP</p>
             </div>
           </div>
         </div>
@@ -192,7 +192,7 @@ const GalleryUpload = ({ providerId }) => {
           <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {images.map((imageObj, index) => (
-                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 bg-white">
+                <div key={index} className="relative group aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
                   <img
                     src={imageObj.preview}
                     alt={`Preview ${index}`}

@@ -11,8 +11,7 @@ export const ThemeProvider = ({ children }) => {
     try {
       const saved = localStorage.getItem('theme');
       if (saved) return saved;
-      // fallback to system preference
-      if (window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches) return 'dark';
+      // Default to light mode
       return 'light';
     } catch (e) {
       return 'light';
@@ -42,7 +41,7 @@ export const ThemeProvider = ({ children }) => {
 
     try {
       localStorage.setItem('theme', theme);
-    } catch (e) {}
+    } catch (e) { }
 
     // if theme is system, listen for system changes
     if (mmRef.current) {

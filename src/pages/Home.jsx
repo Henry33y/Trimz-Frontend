@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // HOME PAGE COMPONENT - Trimz Grooming Services
 // ============================================
 // Main landing page featuring hero section, services overview,
@@ -48,7 +48,7 @@ const Home = () => {
       <section className='hero__section pt-[60px] lg:pt-[100px] bg-gradient-to-b from-white to-gray-50 dark:from-slate-900 dark:to-slate-800' id="hero">
         <div className="container mx-auto px-4">
           <div className='flex flex-col lg:flex-row gap-12 lg:gap-[90px] items-center justify-between'>
-            
+
             {/* Hero Content */}
             <div className='flex-1 text-center lg:text-left'>
               <div className='lg:max-w-[620px]'>
@@ -63,7 +63,7 @@ const Home = () => {
                 </h1>
 
                 <p className='text-[18px] leading-8 text-textColor dark:text-gray-300 mb-10 max-w-[540px] mx-auto lg:mx-0'>
-                  Trimz offers expert grooming for everyone. Our professional barbers and stylists 
+                  Trimz offers expert grooming for everyone. Our professional barbers and stylists
                   deliver precision haircuts, beard grooming, and modern styles right to your campus.
                 </p>
               </div>
@@ -86,23 +86,23 @@ const Home = () => {
             {/* Hero Gallery */}
             <div className='flex-1 flex flex-wrap gap-4 lg:gap-6 justify-center lg:justify-end'>
               <div data-aos="fade-up" data-aos-delay="100">
-                <img 
+                <img
                   className='w-[160px] h-[240px] sm:w-[220px] sm:h-[340px] md:w-[260px] 
-                    md:h-[400px] rounded-[2rem] object-cover shadow-2xl ring-4 ring-white' 
-                  src={heroImg01} 
-                  alt="Professional styling" 
+                    md:h-[400px] rounded-[2rem] object-cover shadow-2xl ring-4 ring-white'
+                  src={heroImg01}
+                  alt="Professional styling"
                 />
               </div>
 
               <div className='mt-8 sm:mt-12 space-y-4 lg:space-y-6' data-aos="fade-up" data-aos-delay="300">
-                <img 
-                  src={heroImg02} 
-                  alt="Shop" 
-                  className='w-[140px] h-[120px] sm:w-[200px] sm:h-[180px] rounded-3xl object-cover shadow-xl' 
+                <img
+                  src={heroImg02}
+                  alt="Shop"
+                  className='w-[140px] h-[120px] sm:w-[200px] sm:h-[180px] rounded-3xl object-cover shadow-xl'
                 />
-                <img 
-                  src={heroImg03} 
-                  alt="Tools" 
+                <img
+                  src={heroImg03}
+                  alt="Tools"
                   className='w-[140px] h-[120px] sm:w-[200px] sm:h-[180px] rounded-3xl object-cover shadow-xl'
                 />
               </div>
@@ -178,7 +178,7 @@ const Home = () => {
       {/* INTEGRATED ABOUT & FEATURES COMPONENTS */}
       {/* ============================================ */}
       <About />
-      
+
       {/* Features handles both Services List and Feature (Benefits) blocks */}
       <Features />
 
@@ -191,17 +191,17 @@ const Home = () => {
             <div className='w-full md:w-[45%] hidden md:block'>
               <div className="relative group">
                 <div className="absolute -inset-4 bg-primaryColor/5 rounded-[2.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
-                <img 
-                  src={faqImg} 
-                  alt="FAQ" 
+                <img
+                  src={faqImg}
+                  alt="FAQ"
                   className='relative rounded-[2rem] shadow-2xl w-full'
                 />
               </div>
             </div>
 
             <div className='w-full md:w-[50%]'>
-              <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-8 leading-tight tracking-tight'>
-                Everything you need to <br className="hidden lg:block" /> 
+              <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor dark:text-gray-100 mb-8 leading-tight tracking-tight'>
+                Everything you need to <br className="hidden lg:block" />
                 know <span className="text-primaryColor">about Trimz</span>
               </h2>
               <FaqList />
@@ -213,16 +213,16 @@ const Home = () => {
       {/* ============================================ */}
       {/* TESTIMONIALS SECTION */}
       {/* ============================================ */}
-      <section className='py-[60px] lg:py-[100px] bg-gray-50'>
+      <section className='py-[60px] lg:py-[100px] bg-gray-50 dark:bg-slate-900'>
         <div className="container mx-auto px-4">
           <div className='max-w-[500px] mx-auto mb-[60px] text-center'>
-            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor mb-4 tracking-tight'>What our clients say</h2>
+            <h2 className='text-[32px] lg:text-[40px] font-[800] text-headingColor dark:text-gray-100 mb-4 tracking-tight'>What our clients say</h2>
             <div className="w-20 h-1.5 bg-primaryColor mx-auto rounded-full mb-6" />
-            <p className='text-[16px] leading-7 text-textColor'>
+            <p className='text-[16px] leading-7 text-textColor dark:text-gray-300'>
               Don&apos;t just take our word for it. Join thousands of satisfied customers who trust Trimz for their everyday grooming.
             </p>
           </div>
-          
+
           <Testimonial />
         </div>
       </section>

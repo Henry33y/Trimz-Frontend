@@ -108,9 +108,9 @@ const TestimonialCard = ({ testimonial }) => {
   return (
     <div className='group relative h-full'>
       {/* Card Container */}
-      <div className='bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl 
+      <div className='bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl dark:shadow-dark-lg
             transition-all duration-300 h-full flex flex-col
-            border border-gray-100 dark:border-slate-700 hover:border-primaryColor/20'>
+            border border-gray-100 dark:border-slate-700 hover:border-primaryColor/20 dark:hover:border-primaryColor/40'>
 
         {/* Quote Icon */}
         <div className='absolute top-6 right-6 opacity-10 group-hover:opacity-20 
@@ -136,7 +136,7 @@ const TestimonialCard = ({ testimonial }) => {
           {/* Name and Rating */}
           <div className='flex-1 min-w-0'>
             <h4 className='text-lg sm:text-xl font-bold text-headingColor dark:text-gray-100 mb-2 
-                         group-hover:text-primaryColor transition-colors duration-300
+                         group-hover:text-primaryColor dark:group-hover:text-blue-400 transition-colors duration-300
                          truncate'>
               {testimonial.name}
             </h4>
@@ -145,13 +145,13 @@ const TestimonialCard = ({ testimonial }) => {
         </div>
 
         {/* Title */}
-        <h5 className='text-base sm:text-lg font-semibold text-slate-900 dark:text-gray-100 mb-3 
+        <h5 className='text-base sm:text-lg font-semibold text-slate-900 dark:text-blue-300 mb-3 
                      relative z-10'>
           &quot;{testimonial.title}&quot;
         </h5>
 
         {/* Review Text */}
-        <p className='text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-300 
+        <p className='text-sm sm:text-base leading-relaxed text-gray-600 dark:text-gray-100 
                     flex-grow relative z-10'>
           {testimonial.review}
         </p>

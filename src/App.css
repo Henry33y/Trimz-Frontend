@@ -1,21 +1,22 @@
         /* Importing a Google Font called 'Manrope' with weights ranging from 200 to 800 */
-        
+
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
         /* Applying a universal reset to remove margin and padding for all elements, 
    and setting box-sizing to border-box for consistent sizing */
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
         }
+
         /* Styling the body element with the 'Manrope' font as the primary font */
-        
+
         body {
             font-family: "Manrope", sans-serif;
         }
-        
+
         .swiper-pagination-bullet {
             width: 12px !important;
             height: 12px !important;
@@ -23,30 +24,31 @@
             opacity: 100% !important;
             background: #fff !important;
         }
-        
+
         .swiper-pagination-bullet-active {
             background: #0067ff !important;
             border: none !important;
         }
-        
+
         .swiper {
             padding-bottom: 70px !important;
         }
-        
+
         .swiper-slide.swiper-slide-next {
             background: #0067ff;
             border-radius: 12px;
             box-shadow: 0px 20px 70px rgba(0, 103, 255, 0.3) !important;
         }
-        
+
         .swiper-slide.swiper-slide-next h4,
         .swiper-slide.swiper-slide-next p {
             color: #fff !important;
         }
-        
+
         .swiper-pagination {
             top: 90% !important;
         }
+
         /* Header base styling */
         .header {
             background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
@@ -58,7 +60,7 @@
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             border-bottom-color: #374151;
         }
-        
+
         .header.sticky__header {
             /* Switch to fixed positioning to guarantee sticky behavior */
             position: fixed;
@@ -77,6 +79,7 @@
                 transform: translateY(-100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -87,66 +90,100 @@
             background: rgba(17, 24, 39, 0.98);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
+
         /* Media query for screens that are 768px wide or less (typically tablets and mobile devices) */
-        
+
         @media only screen and (max-width:768px) {
+
             /* Mobile nav overlay/backdrop */
             .mobile-nav-backdrop {
                 /* Ensure the mobile nav backdrop sits above all page content */
                 @apply fixed inset-0;
                 background: rgba(0, 0, 0, 0.5);
                 backdrop-filter: blur(4px);
-                z-index: 99999; /* explicit high z-index so it won't be hidden behind other elements */
+                z-index: 99999;
+                /* explicit high z-index so it won't be hidden behind other elements */
                 animation: fadeIn 200ms ease forwards;
             }
 
             /* Mobile nav sliding panel */
             .mobile-nav-panel {
                 /* Make the panel fixed to the viewport and ensure a higher stacking order */
-                @apply right-0 top-0 h-full overflow-y-auto;
-                width: 280px;
-                background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
-                box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+                background: white;
                 position: fixed;
-                z-index: 100000; /* even higher than the backdrop so panel content is on top */
+                top: 0;
+                right: 0;
+                width: 280px;
+                height: 100vh;
+                overflow-y: auto;
+                box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
                 animation: slideInRight 280ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-                -webkit-overflow-scrolling: touch;
             }
 
-            .mobile-nav-panel.dark {
-                background: linear-gradient(to bottom, #1f2937 0%, #111827 100%);
-                box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
+            /* Dark mode for mobile nav panel */
+            .dark .mobile-nav-panel {
+                background: #1e293b;
+                /* slate-800 */
+                box-shadow: -4px 0 15px rgba(0, 0, 0, 0.5);
             }
 
-            /* Slight padding when the header is taller; handled inline in JS as well */
             .mobile-nav-panel__content {
-                @apply flex flex-col py-2;
+                padding: 0;
+                list-style: none;
             }
 
             .mobile-nav-panel__content li a {
-                @apply px-5 py-3 transition-all duration-200;
-                border-left: 3px solid transparent;
+                display: block;
+                padding: 1rem 1.5rem;
+                color: #1e293b;
+                /* slate-900 */
+                transition: all 0.2s;
+            }
+
+            /* Dark mode for mobile nav links */
+            .dark .mobile-nav-panel__content li a {
+                color: #f1f5f9;
+                /* gray-100 */
             }
 
             .mobile-nav-panel__content li a:hover {
-                background: rgba(0, 103, 255, 0.08);
-                border-left-color: #0067ff;
-                padding-left: 22px;
+                background-color: #f3f4f6;
+                /* gray-100 */
+                padding-left: 2rem;
+            }
+
+            /* Dark mode for mobile nav link hover */
+            .dark .mobile-nav-panel__content li a:hover {
+                background-color: #334155;
+                /* slate-700 */
             }
 
             .mobile-nav-panel__content li a.active {
-                background: rgba(0, 103, 255, 0.12);
-                border-left-color: #0067ff;
-                padding-left: 22px;
+                background-color: #3b82f6;
+                /* blue-600 */
+                color: white;
             }
 
             @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to   { transform: translateX(0);    opacity: 1; }
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
             }
 
             @keyframes fadeIn {
-                from { opacity: 0; }
-                to   { opacity: 1; }
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
             }
         }

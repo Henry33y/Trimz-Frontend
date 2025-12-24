@@ -68,7 +68,7 @@ const BarbersDetails = () => {
   }, [id]);
 
   return (
-    <section className="bg-slate-50 min-h-screen py-10">
+    <section className="bg-slate-50 dark:bg-slate-900 min-h-screen py-10">
       <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
 
         {loading && <Loader />}
@@ -81,7 +81,7 @@ const BarbersDetails = () => {
             <div className="lg:col-span-2 space-y-8">
 
               {/* Profile Header Card */}
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-8 items-start">
+              <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row gap-8 items-start">
                 {/* Profile Image */}
                 <figure className="relative w-full sm:w-48 sm:h-48 shrink-0 group">
                   <img
@@ -109,27 +109,27 @@ const BarbersDetails = () => {
                 {/* Profile Info */}
                 <div className="flex-1 w-full">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
-                    <span className="bg-blue-50 text-blue-700 py-1.5 px-4 text-xs font-bold uppercase tracking-wider rounded-full border border-blue-100">
+                    <span className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 py-1.5 px-4 text-xs font-bold uppercase tracking-wider rounded-full border border-blue-100 dark:border-blue-800">
                       {specialization}
                     </span>
-                    <span className="flex items-center gap-1.5 bg-yellow-50 text-yellow-700 py-1.5 px-3 rounded-full text-xs font-bold border border-yellow-100">
+                    <span className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 py-1.5 px-3 rounded-full text-xs font-bold border border-yellow-100 dark:border-yellow-800">
                       <img src={starIcon} alt="star" className="w-3.5 h-3.5" />
-                      {averageRating} <span className="text-yellow-600/70 font-medium">({totalRating})</span>
+                      {averageRating} <span className="text-yellow-600/70 dark:text-yellow-500/70 font-medium">({totalRating})</span>
                     </span>
                   </div>
 
-                  <h3 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">
+                  <h3 className="text-3xl font-black text-slate-900 dark:text-gray-100 mb-3 tracking-tight">
                     {name}
                   </h3>
 
-                  <p className="text-slate-600 text-base leading-relaxed mb-6 font-medium">
+                  <p className="text-slate-600 dark:text-gray-300 text-base leading-relaxed mb-6 font-medium">
                     {bio}
                   </p>
                 </div>
               </div>
 
               {/* Navigation Tabs */}
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 flex overflow-x-auto">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-2 flex overflow-x-auto">
                 {['about', 'feedback', 'services']
                   .filter(tabName => {
                     // Hide feedback tab for providers
@@ -145,8 +145,8 @@ const BarbersDetails = () => {
                       className={`
                       flex-1 py-3 px-6 rounded-xl text-sm font-bold capitalize transition-all whitespace-nowrap
                       ${tab === tabName
-                          ? 'bg-slate-900 text-white shadow-md'
-                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                          ? 'bg-slate-900 dark:bg-slate-700 text-white shadow-md'
+                          : 'text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-gray-100'}
                     `}
                     >
                       {tabName === 'services'
@@ -157,7 +157,7 @@ const BarbersDetails = () => {
               </div>
 
               {/* Tab Content Area */}
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 min-h-[400px]">
+              <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-700 min-h-[400px]">
                 {tab === 'about' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <BarberAbout
@@ -205,9 +205,9 @@ const BarbersDetails = () => {
 
         {/* Gallery Section - Fixed Visibility Condition */}
         {!loading && !error && (
-          <div className="mt-16 pt-16 border-t border-slate-200 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-            <h3 className="text-2xl font-bold text-slate-900 mb-8 px-4 border-l-4 border-blue-600 flex items-center gap-3">
-              <ImageIcon className="text-slate-400" /> Work Gallery
+          <div className="mt-16 pt-16 border-t border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-gray-100 mb-8 px-4 border-l-4 border-blue-600 dark:border-blue-400 flex items-center gap-3">
+              <ImageIcon className="text-slate-400 dark:text-gray-500" /> Work Gallery
             </h3>
             {/* Always render BarberGallery to allow it to show its empty state */}
             <BarberGallery gallery={gallery} />

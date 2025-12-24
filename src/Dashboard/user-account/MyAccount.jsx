@@ -160,7 +160,7 @@ const MyAccount = () => {
   };
 
   return (
-    <section className="bg-slate-50 min-h-screen py-10 font-sans transition-colors duration-300">
+    <section className="bg-slate-50 dark:bg-slate-900 min-h-screen py-10 font-sans transition-colors duration-300">
       <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
 
         {loading && !error && <Loading />}
@@ -174,11 +174,11 @@ const MyAccount = () => {
             {/* SIDEBAR SECTION      */}
             {/* ==================== */}
             <div className="lg:col-span-4 xl:col-span-3">
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 sticky top-24">
+              <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 sm:p-8 sticky top-24">
 
                 {/* Profile Image */}
                 <div className="flex flex-col items-center text-center">
-                  <figure className="w-32 h-32 rounded-full p-1 border-2 border-dashed border-blue-200 mb-4 bg-slate-50 overflow-hidden">
+                  <figure className="w-32 h-32 rounded-full p-1 border-2 border-dashed border-blue-200 dark:border-blue-800 mb-4 bg-slate-50 dark:bg-slate-700 overflow-hidden">
                     {userData && userData.profilePicture ? (
                       <img
                         src={userData.profilePicture.url}
@@ -187,7 +187,7 @@ const MyAccount = () => {
                         onError={(e) => { e.currentTarget.src = "/default-avatar.png"; }}
                       />
                     ) : (
-                      <div className="w-full h-full rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                      <div className="w-full h-full rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-slate-400 dark:text-gray-500">
                         <User size={48} />
                       </div>
                     )}
@@ -195,10 +195,10 @@ const MyAccount = () => {
 
                   <div className="mt-2 space-y-1">
                     {userData && userData.name && (
-                      <h3 className="text-xl font-bold text-slate-900">{userData.name}</h3>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-gray-100">{userData.name}</h3>
                     )}
                     {userData && userData.email && (
-                      <div className="flex items-center justify-center gap-2 text-slate-500 text-sm font-medium">
+                      <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-gray-400 text-sm font-medium">
                         <Mail size={14} />
                         <span>{userData.email}</span>
                       </div>
@@ -207,13 +207,13 @@ const MyAccount = () => {
                 </div>
 
                 {/* User Details Info */}
-                <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 space-y-4">
                   <div className="text-center">
-                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Info</h4>
+                    <h4 className="text-xs font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-3">Info</h4>
                     <div className="space-y-3">
                       {userData && userData.phone && (
-                        <div className="flex items-center gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl">
-                          <div className="p-2 bg-white rounded-lg shadow-sm text-blue-500">
+                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-gray-300 bg-slate-50 dark:bg-slate-700 p-3 rounded-xl">
+                          <div className="p-2 bg-white dark:bg-slate-600 rounded-lg shadow-sm text-blue-500 dark:text-blue-400">
                             <Phone size={16} />
                           </div>
                           <span className="font-medium">{userData.phone}</span>
@@ -221,11 +221,11 @@ const MyAccount = () => {
                       )}
 
                       {userData && userData.bio && (
-                        <div className="flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl text-left">
-                          <div className="p-2 bg-white rounded-lg shadow-sm text-blue-500 shrink-0">
+                        <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-gray-300 bg-slate-50 dark:bg-slate-700 p-3 rounded-xl text-left">
+                          <div className="p-2 bg-white dark:bg-slate-600 rounded-lg shadow-sm text-blue-500 dark:text-blue-400 shrink-0">
                             <Info size={16} />
                           </div>
-                          <p className="italic leading-relaxed text-slate-500 text-xs">
+                          <p className="italic leading-relaxed text-slate-500 dark:text-gray-400 text-xs">
                             {userData.bio}
                           </p>
                         </div>
@@ -238,14 +238,14 @@ const MyAccount = () => {
                 <div className="mt-8 space-y-3">
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-slate-900/10 active:scale-95"
+                    className="w-full flex items-center justify-center gap-2 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-slate-900/10 active:scale-95"
                   >
                     <LogOut size={18} />
                     Logout
                   </button>
                   <button
                     onClick={() => setIsDeleteModalOpen(true)}
-                    className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 py-3.5 rounded-xl font-bold transition-colors"
+                    className="w-full flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 py-3.5 rounded-xl font-bold transition-colors"
                   >
                     <Trash2 size={18} />
                     Delete Account
@@ -260,14 +260,14 @@ const MyAccount = () => {
             <div className="lg:col-span-8 xl:col-span-9">
 
               {/* Tab Navigation */}
-              <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 mb-6 flex overflow-x-auto">
+              <div className="bg-white dark:bg-slate-800 p-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 flex overflow-x-auto">
                 <button
                   onClick={() => { console.log('My Bookings button clicked'); setTab('bookings'); }}
                   className={`
                     flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
                     ${tab === 'bookings'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-md'
+                      : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-100 hover:bg-slate-50 dark:hover:bg-slate-700'}
                   `}
                 >
                   <Calendar size={18} />
@@ -279,8 +279,8 @@ const MyAccount = () => {
                   className={`
                     flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold transition-all whitespace-nowrap
                     ${tab === 'settings'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}
+                      ? 'bg-blue-600 dark:bg-blue-500 text-white shadow-md'
+                      : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-100 hover:bg-slate-50 dark:hover:bg-slate-700'}
                   `}
                 >
                   <Settings size={18} />

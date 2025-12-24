@@ -68,18 +68,18 @@ const Aboutus = () => {
       {/* ============================================ */}
       {/* HERO SECTION */}
       {/* ============================================ */}
-      <div className="bg-yellow-50/50 py-16 lg:py-24 relative overflow-hidden">
+      <div className="bg-yellow-50/50 dark:bg-slate-800 py-16 lg:py-24 relative overflow-hidden">
         {/* Decorative Blur Elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-200/20 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-irisBlueColor/5 rounded-full blur-3xl -ml-32 -mb-32" />
-        
+
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl lg:text-6xl font-extrabold text-headingColor mb-6 tracking-tight leading-tight">
+          <h1 className="text-4xl lg:text-6xl font-extrabold text-headingColor dark:text-gray-100 mb-6 tracking-tight leading-tight">
             Connecting Clients with <br className="hidden lg:block" />
             <span className="text-primaryColor">Top Barbers & Stylists</span>
           </h1>
-          <p className="text-lg lg:text-xl text-textColor max-w-2xl mx-auto leading-relaxed">
-            The leading marketplace for beauty and wellness services. We bridge the gap 
+          <p className="text-lg lg:text-xl text-textColor dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            The leading marketplace for beauty and wellness services. We bridge the gap
             between world-class talent and clients seeking perfection.
           </p>
         </div>
@@ -94,7 +94,7 @@ const Aboutus = () => {
             <div className="order-2 lg:order-1">
               <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-6">Our Mission</h2>
               <p className="text-lg text-textColor dark:text-gray-300 mb-8 leading-relaxed">
-                To revolutionize how people book and manage their beauty and wellness appointments, 
+                To revolutionize how people book and manage their beauty and wellness appointments,
                 while helping local professionals grow their business through cutting-edge technology.
               </p>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
@@ -109,9 +109,9 @@ const Aboutus = () => {
             <div className="order-1 lg:order-2">
               <div className="relative group">
                 <div className="absolute -inset-4 bg-primaryColor/10 rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-500" />
-                <img 
-                  src={trimzImg} 
-                  alt="Platform showcase" 
+                <img
+                  src={trimzImg}
+                  alt="Platform showcase"
                   className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/3] transform group-hover:scale-[1.01] transition-transform duration-500"
                 />
               </div>
@@ -123,13 +123,13 @@ const Aboutus = () => {
       {/* ============================================ */}
       {/* BENEFITS SECTION */}
       {/* ============================================ */}
-      <div className="bg-gray-50 py-20 lg:py-32">
+      <div className="bg-gray-50 dark:bg-slate-800 py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-headingColor mb-4">Why Choose Our Platform</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">Why Choose Our Platform</h2>
             <div className="h-1.5 w-24 bg-primaryColor mx-auto rounded-full" />
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <div key={index} className="p-8 bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
@@ -157,10 +157,10 @@ const Aboutus = () => {
       <div className="py-20 lg:py-32 bg-white dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-                <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">Awards & Recognition</h2>
-                <p className="text-textColor dark:text-gray-300">Trusted and recognized by industry leaders worldwide.</p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-headingColor dark:text-gray-100 mb-4">Awards & Recognition</h2>
+            <p className="text-textColor dark:text-gray-300">Trusted and recognized by industry leaders worldwide.</p>
           </div>
-          
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {awards.map((award, index) => (
               <div key={index} className="group bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:border-primaryColor transition-all text-center">

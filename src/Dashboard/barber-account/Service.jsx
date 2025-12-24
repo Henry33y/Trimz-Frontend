@@ -355,24 +355,24 @@ const Service = () => {
 
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4 animate-in fade-in">
-          <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm border border-gray-100 scale-100 animate-in zoom-in-95">
-            <div className="flex items-center gap-3 text-red-600 mb-2">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl w-full max-w-sm border border-gray-100 dark:border-slate-700 scale-100 animate-in zoom-in-95">
+            <div className="flex items-center gap-3 text-red-600 dark:text-red-400 mb-2">
               <AlertTriangle size={24} />
               <h2 className="text-lg font-bold">Confirm Deletion</h2>
             </div>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
               Are you sure you want to delete this service? This action cannot be undone.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 rounded-xl border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors shadow-md shadow-red-600/20"
+                className="px-4 py-2 rounded-xl bg-red-600 dark:bg-red-500 text-white font-medium hover:bg-red-700 dark:hover:bg-red-600 transition-colors shadow-md shadow-red-600/20"
               >
                 Delete Service
               </button>
@@ -382,15 +382,15 @@ const Service = () => {
       )}
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-slate-700 pb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Services Category</h2>
-          <p className="text-gray-500 text-sm mt-1">Manage the services you offer to clients</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Services Category</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Manage the services you offer to clients</p>
         </div>
         <button
           type="button"
           onClick={handleAddService}
-          className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-slate-900/10 transition-all active:scale-95"
+          className="flex items-center gap-2 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-slate-900/10 transition-all active:scale-95"
         >
           <Plus size={18} /> Add New Service
         </button>
@@ -410,10 +410,10 @@ const Service = () => {
           {existingServices.map((service) => (
             <div
               key={service._id}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden group"
+              className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-all duration-300 overflow-hidden group"
             >
               {/* Service Image Area */}
-              <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
+              <div className="h-48 w-full bg-gray-100 dark:bg-slate-700 relative overflow-hidden">
                 {service.image ? (
                   <img
                     src={service.image.url}
@@ -450,27 +450,27 @@ const Service = () => {
               {/* Content Area */}
               <div className="p-5">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-lg font-bold text-gray-900 line-clamp-1">{service.name}</h4>
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100 line-clamp-1">{service.name}</h4>
                   <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide border ${service.availability
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                    : 'bg-rose-50 text-rose-700 border-rose-100'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900'
+                    : 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-900'
                     }`}>
                     {service.availability ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
                     {service.availability ? 'Active' : 'Inactive'}
                   </span>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2 min-h-[2.5rem]">
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 min-h-[2.5rem]">
                   {service.description || "No description provided."}
                 </p>
 
-                <div className="flex items-center gap-4 text-sm font-medium pt-4 border-t border-gray-50">
-                  <div className="flex items-center gap-1.5 text-gray-700">
-                    <DollarSign size={16} className="text-gray-400" />
+                <div className="flex items-center gap-4 text-sm font-medium pt-4 border-t border-gray-50 dark:border-slate-700">
+                  <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <DollarSign size={16} className="text-gray-400 dark:text-gray-500" />
                     <span>{service.price} Cedis</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-gray-700">
-                    <Clock size={16} className="text-gray-400" />
+                  <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
+                    <Clock size={16} className="text-gray-400 dark:text-gray-500" />
                     <span>{service.duration}</span>
                   </div>
                 </div>
@@ -482,25 +482,25 @@ const Service = () => {
 
       {/* Add New Services Section */}
       {formData.services.length > 0 && (
-        <div className="pt-8 border-t border-gray-100">
+        <div className="pt-8 border-t border-gray-100 dark:border-slate-700">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Plus className="text-blue-600" size={20} />
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Plus className="text-blue-600 dark:text-blue-400" size={20} />
               New Service Drafts
             </h3>
-            <span className="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
+            <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-xs font-bold px-3 py-1 rounded-full">
               {formData.services.length} Unsaved
             </span>
           </div>
 
           <div className="space-y-6">
             {formData.services.map((service, index) => (
-              <div key={service.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden relative group">
+              <div key={service.id} className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden relative group">
                 {/* Remove Draft Button */}
                 <button
                   type="button"
                   onClick={() => removeService(service.id)}
-                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors z-10"
+                  className="absolute top-4 right-4 p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors z-10"
                   title="Discard Draft"
                 >
                   <Trash2 size={20} />
@@ -509,8 +509,8 @@ const Service = () => {
                 <div className="p-6 md:p-8 grid md:grid-cols-12 gap-8">
                   {/* Image Upload Area */}
                   <div className="md:col-span-4">
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Service Image</label>
-                    <div className="relative aspect-video md:aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden hover:border-blue-500 hover:bg-blue-50/30 transition-all group-upload">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Service Image</label>
+                    <div className="relative aspect-video md:aspect-square bg-gray-50 dark:bg-slate-700 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-all group-upload">
                       {service.imagePreview ? (
                         <img
                           src={service.imagePreview}
@@ -518,8 +518,8 @@ const Service = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                          <Upload size={32} className="mb-2 group-hover:text-blue-500 transition-colors" />
+                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
+                          <Upload size={32} className="mb-2 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
                           <span className="text-xs font-medium">Click to upload</span>
                         </div>
                       )}
@@ -535,20 +535,20 @@ const Service = () => {
                   {/* Form Fields */}
                   <div className="md:col-span-8 space-y-5">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">Service Name</label>
+                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Service Name</label>
                       <input
                         type="text"
                         name="name"
                         value={service.name}
                         onChange={(e) => handleServiceChange(index, e)}
                         placeholder="e.g. Premium Haircut"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Duration (minutes)</label>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Duration (minutes)</label>
                         <input
                           type="number"
                           name="duration"
@@ -556,11 +556,11 @@ const Service = () => {
                           onChange={(e) => handleServiceChange(index, e)}
                           placeholder="e.g. 45"
                           min="1"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Price (Cedis)</label>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Price (Cedis)</label>
                         <input
                           type="number"
                           name="price"
@@ -569,19 +569,19 @@ const Service = () => {
                           placeholder="0.00"
                           min="0.01"
                           step="0.01"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
+                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Description</label>
                       <textarea
                         name="description"
                         value={service.description}
                         onChange={(e) => handleServiceChange(index, e)}
                         placeholder="Briefly describe what this service includes..."
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all h-24 resize-none"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all h-24 resize-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                       />
                     </div>
 

@@ -2,7 +2,7 @@ import { BsCalendar2Check, BsClock, BsScissors } from 'react-icons/bs';
 
 const BottomCTA = () => {
   return (
-    <div className="relative bg-white text-gray-800 py-16 mt-16 overflow-hidden shadow-lg">
+    <div className="relative bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-100 py-16 mt-16 overflow-hidden shadow-lg dark:shadow-dark-lg">
       {/* Decorative Elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute transform rotate-12 -right-24 -top-24">
@@ -36,12 +36,12 @@ const BottomCTA = () => {
                 },
               ].map((item, index) => (
                 <div key={index} className="flex items-center space-x-3">
-                  <div className="bg-gray-100 p-2 rounded-lg">
+                  <div className="bg-gray-100 dark:bg-slate-700 p-2 rounded-lg">
                     {item.icon}
                   </div>
                   <div>
                     <h3 className="font-semibold">{item.title}</h3>
-                    <p className="text-gray-600 text-sm">{item.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm">{item.description}</p>
                   </div>
                 </div>
               ))}
@@ -49,24 +49,24 @@ const BottomCTA = () => {
           </div>
 
           {/* Right Content */}
-        <div className="text-center md:text-right space-y-6">
-        <p className="text-[18px] leading-7 md:max-w-md ml-auto">
-            Discover the art of grooming with our skilled barbers who are dedicated to 
-            enhancing your personal style. Experience luxury and comfort with every visit! 
-        </p>
+          <div className="text-center md:text-right space-y-6">
+            <p className="text-[18px] leading-7 md:max-w-md ml-auto">
+              Discover the art of grooming with our skilled barbers who are dedicated to
+              enhancing your personal style. Experience luxury and comfort with every visit!
+            </p>
 
-        <div className="flex items-center justify-center md:justify-end gap-4 text-sm">
-            <span className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            Now Accepting Appointments
-            </span>
-            <span className="text-yellow-500">★★★★★ 4.9/5</span>
+            <div className="flex items-center justify-center md:justify-end gap-4 text-sm">
+              <span className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                Now Accepting Appointments
+              </span>
+              <span className="text-yellow-500">★★★★★ 4.9/5</span>
+            </div>
+          </div>
         </div>
-    </div>
-</div>
 
         {/* Trust Indicators */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-700">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
               { number: '5000+', label: 'Happy Clients' },
@@ -76,7 +76,7 @@ const BottomCTA = () => {
             ].map((stat, index) => (
               <div key={index} className="space-y-2">
                 <div className="text-[24px] font-bold">{stat.number}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">{stat.label}</div>
               </div>
             ))}
           </div>

@@ -67,7 +67,7 @@ const Dashboard = () => {
   if (error) return <Error errMessage={error.message} />;
 
   return (
-    <section className="bg-slate-50 min-h-screen py-10 transition-colors duration-300">
+    <section className="bg-slate-50 dark:bg-slate-900 min-h-screen py-10 transition-colors duration-300">
       <div className="max-w-[1170px] px-5 mx-auto">
 
         {/* Main Grid Layout */}
@@ -75,7 +75,7 @@ const Dashboard = () => {
 
           {/* Sidebar Navigation */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sticky top-24">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 sticky top-24">
               <Tabs tab={tab} setTab={setTab} />
             </div>
           </div>
@@ -85,7 +85,7 @@ const Dashboard = () => {
 
             {/* Approval Notice */}
             {data?.isApproved === "pending" && (
-              <div className="flex items-start gap-4 p-4 mb-6 text-amber-900 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl shadow-sm">
+              <div className="flex items-start gap-4 p-4 mb-6 text-amber-900 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-r-xl shadow-sm">
                 <AlertTriangle className="w-6 h-6 shrink-0 text-amber-600" />
                 <div>
                   <h4 className="font-bold text-sm uppercase tracking-wide mb-1">Approval Pending</h4>
@@ -97,7 +97,7 @@ const Dashboard = () => {
             )}
 
             {/* Content Container */}
-            <div className={`${tab !== 'settings' ? 'bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8' : ''}`}>
+            <div className={`${tab !== 'settings' ? 'bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 sm:p-8' : ''}`}>
 
               {/* ======================= */}
               {/* OVERVIEW TAB */}
@@ -105,7 +105,7 @@ const Dashboard = () => {
               {tab === "overview" && data && (
                 <div>
                   {/* Header Profile Card */}
-                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 pb-8 border-b border-slate-100">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 pb-8 border-b border-slate-100 dark:border-slate-700">
                     {/* Profile Image */}
                     <figure className="w-32 h-32 md:w-40 md:h-40 shrink-0 relative">
                       <img
@@ -123,11 +123,11 @@ const Dashboard = () => {
 
                     {/* Profile Details */}
                     <div className="flex-1 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-bold uppercase tracking-wider mb-3">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 dark:bg-slate-700 text-white text-xs font-bold uppercase tracking-wider mb-3">
                         {data?.specialization || "No specialization"}
                       </div>
 
-                      <h3 className="text-3xl font-black text-slate-900 mb-2">
+                      <h3 className="text-3xl font-black text-slate-900 dark:text-gray-100 mb-2">
                         {data?.name || "Loading..."}
                       </h3>
 
@@ -136,12 +136,12 @@ const Dashboard = () => {
                           <img src={starIcon} alt="star" className="w-4 h-4" />
                           <span className="text-slate-900 font-bold text-sm">{data.averageRating}</span>
                         </div>
-                        <span className="text-slate-500 text-sm font-medium">
+                        <span className="text-slate-500 dark:text-gray-400 text-sm font-medium">
                           ({data.totalRating} reviews)
                         </span>
                       </div>
 
-                      <p className="text-slate-600 leading-relaxed max-w-xl mx-auto md:mx-0 font-medium">
+                      <p className="text-slate-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto md:mx-0 font-medium">
                         {data?.bio || "No bio available"}
                       </p>
                     </div>

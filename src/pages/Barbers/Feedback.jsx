@@ -65,11 +65,11 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
     };
 
     return (
-        <form onSubmit={handleSubmitReview} className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 animate-in fade-in slide-in-from-bottom-2">
+        <form onSubmit={handleSubmitReview} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-bottom-2">
             <div className="mb-8">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-gray-100 mb-4 flex items-center justify-between">
                     How would you rate your experience?
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded">Required</span>
+                    <span className="text-xs font-medium text-slate-400 dark:text-gray-500 uppercase tracking-wide bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Required</span>
                 </h3>
 
                 <div className="flex flex-col items-start gap-2">
@@ -92,8 +92,8 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                                     <Star
                                         size={32}
                                         className={`transition-all duration-200 ${index <= (hover || rating)
-                                                ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
-                                                : 'fill-slate-50 text-slate-200 group-hover:text-slate-300'
+                                            ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
+                                            : 'fill-slate-50 text-slate-200 group-hover:text-slate-300'
                                             }`}
                                     />
                                 </button>
@@ -101,7 +101,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                         })}
                     </div>
                     {rating > 0 && (
-                        <p className="text-sm font-semibold text-yellow-600 animate-in fade-in">
+                        <p className="text-sm font-semibold text-yellow-600 dark:text-yellow-400 animate-in fade-in">
                             {rating === 5 && "Excellent! 😍"}
                             {rating === 4 && "Good! 🙂"}
                             {rating === 3 && "Average 😐"}
@@ -113,13 +113,13 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
             </div>
 
             <div className="mb-8">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-gray-100 mb-4 flex items-center justify-between">
                     Share your feedback
-                    <span className="text-xs font-medium text-slate-400 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded">Required</span>
+                    <span className="text-xs font-medium text-slate-400 dark:text-gray-500 uppercase tracking-wide bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Required</span>
                 </h3>
                 <div className="relative">
                     <textarea
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none text-slate-700 placeholder:text-slate-400 min-h-[140px]"
+                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/10 outline-none transition-all resize-none text-slate-700 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 min-h-[140px]"
                         rows="5"
                         placeholder="What did you like? What could we improve?"
                         value={reviewText}
@@ -132,7 +132,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full sm:w-auto px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-8 py-3 bg-slate-900 dark:bg-slate-700 text-white font-bold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 transition-all shadow-lg shadow-slate-900/20 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {loading ? (
                         <>
@@ -152,7 +152,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                         type="button"
                         onClick={onCancel}
                         disabled={loading}
-                        className="w-full sm:w-auto px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors disabled:opacity-50"
+                        className="w-full sm:w-auto px-6 py-3 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-gray-300 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-gray-100 transition-colors disabled:opacity-50"
                     >
                         Cancel
                     </button>

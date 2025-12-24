@@ -134,7 +134,7 @@ const Header = () => {
   };
 
   return (
-    <header className="header flex items-center z-[12] py-3" ref={headerRef}>
+    <header className="header flex items-center z-[12] py-3 dark:bg-slate-900 dark:border-b dark:border-slate-800" ref={headerRef}>
       <div className="container">
         <div className="flex items-center justify-between h-full">
           {/* Logo */}
@@ -166,47 +166,47 @@ const Header = () => {
           </div>
 
           {/* Right section with profile/login, notification, and menu button */}
-<div className="flex items-center gap-5">
-  <ThemeToggle />
-  <NotificationIcon/>
+          <div className="flex items-center gap-5">
+            <ThemeToggle />
+            <NotificationIcon />
 
-  {token && user ? (
-    <div>
-      <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
-        <figure className="w-[44px] h-[44px] rounded-full cursor-pointer overflow-hidden ring-2 ring-primaryColor/20 hover:ring-primaryColor/40 transition-all duration-200">
-          <img
-            src={user.profilePicture?.url}
-            className="w-full h-full rounded-full object-cover block"
-            alt="User"
-          />
-        </figure>
-      </Link>
-    </div>
-  ) : (
-    <Link to="/login">
-      <button className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
-        Login
-      </button>
-    </Link>
-  )}
+            {token && user ? (
+              <div>
+                <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
+                  <figure className="w-[44px] h-[44px] rounded-full cursor-pointer overflow-hidden ring-2 ring-primaryColor/20 hover:ring-primaryColor/40 transition-all duration-200">
+                    <img
+                      src={user.profilePicture?.url}
+                      className="w-full h-full rounded-full object-cover block"
+                      alt="User"
+                    />
+                  </figure>
+                </Link>
+              </div>
+            ) : (
+              <Link to="/login">
+                <button className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg">
+                  Login
+                </button>
+              </Link>
+            )}
 
-  {/* Mobile menu button */}
-  <button
-    className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
-    onClick={toggleMenu}
-    aria-expanded={isMenuOpen}
-    aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-  >
-    {isMenuOpen ? (
-      <BiX className="w-6 h-6 cursor-pointer text-textColor dark:text-gray-200" aria-hidden="true" />
-    ) : (
-      <BiMenu className="w-6 h-6 cursor-pointer text-textColor dark:text-gray-200" aria-hidden="true" />
-    )}
-  </button>
-</div>
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors duration-200"
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen}
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            >
+              {isMenuOpen ? (
+                <BiX className="w-6 h-6 cursor-pointer text-textColor dark:text-gray-200" aria-hidden="true" />
+              ) : (
+                <BiMenu className="w-6 h-6 cursor-pointer text-textColor dark:text-gray-200" aria-hidden="true" />
+              )}
+            </button>
+          </div>
 
         </div>
-        
+
 
         {/* Mobile Navigation Menu (fixed overlay) */}
         {isMenuOpen && (

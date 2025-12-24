@@ -4,7 +4,7 @@ import { X, ZoomIn, Loader2, Image as ImageIcon } from 'lucide-react';
 
 const BarberGallery = ({ gallery }) => {
   const INITIAL_DISPLAY_COUNT = 8;
-  
+
   const [images, setImages] = useState(gallery || []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -65,9 +65,9 @@ const BarberGallery = ({ gallery }) => {
   );
 
   return (
-    <div className="w-full bg-slate-50 min-h-[400px] py-12">
+    <div className="w-full bg-slate-50 dark:bg-slate-900 min-h-[400px] py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header Section */}
         {/* <div className="text-center mb-16 max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">
@@ -80,12 +80,12 @@ const BarberGallery = ({ gallery }) => {
 
         {/* Gallery Grid */}
         {images.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ImageIcon className="w-8 h-8 text-slate-400" />
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ImageIcon className="w-8 h-8 text-slate-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No images yet</h3>
-            <p className="text-slate-500 mt-1">Check back later to see our latest work.</p>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-gray-100">No images yet</h3>
+            <p className="text-slate-500 dark:text-gray-400 mt-1">Check back later to see our latest work.</p>
           </div>
         ) : (
           <>
@@ -105,14 +105,14 @@ const BarberGallery = ({ gallery }) => {
                     onMouseLeave={() => setHoveredIndex(null)}
                     onClick={() => openModal(index)}
                   >
-                    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-md hover:shadow-xl transition-shadow duration-300">
                       <img
                         src={imageUrl}
                         alt={caption}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         loading="lazy"
                       />
-                      
+
                       {/* Overlay */}
                       <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent 
                         transition-opacity duration-300 flex flex-col justify-end p-6
@@ -141,8 +141,8 @@ const BarberGallery = ({ gallery }) => {
               <div className="flex justify-center mt-16">
                 <button
                   onClick={handleShowMore}
-                  className="px-8 py-3.5 bg-white text-slate-900 font-bold rounded-xl border border-slate-200 
-                    shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
+                  className="px-8 py-3.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-gray-100 font-bold rounded-xl border border-slate-200 dark:border-slate-700 
+                    shadow-sm hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Load More Photos
                 </button>
@@ -177,7 +177,7 @@ const BarberGallery = ({ gallery }) => {
                   alt="Gallery View"
                   className="max-h-[85vh] w-auto object-contain bg-black"
                 />
-                
+
                 {/* Caption Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6 md:p-8">
                   <h3 className="text-white text-xl md:text-2xl font-bold">
@@ -197,7 +197,7 @@ const BarberGallery = ({ gallery }) => {
                     onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
                     className={`w-2 h-2 rounded-full transition-all ${idx === currentIndex ? 'bg-white w-6' : 'bg-white/30 hover:bg-white/50'}`}
                   />
-                )).slice(0, Math.min(images.length, 10))} 
+                )).slice(0, Math.min(images.length, 10))}
                 {/* Limit dots to 10 for neatness */}
               </div>
             </div>

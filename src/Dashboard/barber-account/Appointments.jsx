@@ -81,8 +81,8 @@ const Appointments = ({ appointments, refreshAppointments }) => {
   return (
     <div className="w-full space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Appointments</h2>
-        <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-semibold">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-gray-100 tracking-tight">Appointments</h2>
+        <span className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-gray-300 px-3 py-1 rounded-full text-sm font-semibold">
           {appointments?.length || 0} Total
         </span>
       </div>
@@ -90,22 +90,22 @@ const Appointments = ({ appointments, refreshAppointments }) => {
       {/* ==================== */}
       {/* DESKTOP TABLE VIEW   */}
       {/* ==================== */}
-      <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="hidden md:block bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Client Details</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Schedule</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Services</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Payment</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Client Details</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Schedule</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Services</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider text-right">Payment</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
               {appointments?.map((item) => (
-                <tr key={item._id} className="hover:bg-slate-50/50 transition-colors group">
+                <tr key={item._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors group">
                   {/* Client Column */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
@@ -117,11 +117,11 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                         />
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900">{item.customer.name}</div>
-                        <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                        <div className="font-bold text-slate-900 dark:text-gray-100">{item.customer.name}</div>
+                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                           <Mail size={12} /> {item.customer.email}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                           <Phone size={12} /> {item.customer.phone}
                         </div>
                       </div>
@@ -131,12 +131,12 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   {/* Schedule Column */}
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
-                        <Calendar size={14} className="text-slate-400" />
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-gray-100">
+                        <Calendar size={14} className="text-slate-400 dark:text-gray-500" />
                         {formateDate(item.date)}
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
-                        <Clock size={14} className="text-slate-400" />
+                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-gray-400">
+                        <Clock size={14} className="text-slate-400 dark:text-gray-500" />
                         {(new Date(item.startTime)).toLocaleTimeString("en-GB", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -148,8 +148,8 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   {/* Services Column */}
                   <td className="px-6 py-4">
                     <div className="flex items-start gap-2">
-                      <Scissors size={14} className="text-slate-400 mt-1 shrink-0" />
-                      <div className="text-sm text-slate-600 font-medium">
+                      <Scissors size={14} className="text-slate-400 dark:text-gray-500 mt-1 shrink-0" />
+                      <div className="text-sm text-slate-600 dark:text-gray-300 font-medium">
                         {item.providerServices.map((i) => i.name).join(", ")}
                       </div>
                     </div>
@@ -165,10 +165,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   {/* Payment Column */}
                   <td className="px-6 py-4 text-right">
                     <div className="flex flex-col items-end gap-1">
-                      <span className="font-bold text-slate-900">${item.totalPrice}</span>
+                      <span className="font-bold text-slate-900 dark:text-gray-100">${item.totalPrice}</span>
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${item.paymentStatus === "paid"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                          : "bg-rose-50 text-rose-700 border-rose-100"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                        : "bg-rose-50 text-rose-700 border-rose-100"
                         }`}>
                         {item.paymentStatus === "paid" ? <CheckCircle2 size={10} /> : <XCircle size={10} />}
                         {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
@@ -181,8 +181,8 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                     <button
                       onClick={() => toggleDropdown(item._id)}
                       className={`p-2 rounded-lg transition-all ${dropdownOpenId === item._id
-                          ? 'bg-slate-200 text-slate-900'
-                          : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                        ? 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-gray-100'
+                        : 'text-slate-400 dark:text-gray-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-gray-300'
                         }`}
                     >
                       <MoreVertical size={18} />
@@ -190,11 +190,11 @@ const Appointments = ({ appointments, refreshAppointments }) => {
 
                     {/* Dropdown Menu */}
                     {dropdownOpenId === item._id && (
-                      <div className="absolute right-0 top-12 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                      <div className="absolute right-0 top-12 w-48 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-xl dark:shadow-dark-lg z-20 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                         {item.status !== "cancelled" && item.status !== "completed" && (
                           <button
                             onClick={() => handleComplete(item._id)}
-                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-emerald-600 hover:bg-emerald-50 flex items-center gap-2"
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 flex items-center gap-2"
                           >
                             <CheckCircle2 size={16} /> Complete
                           </button>
@@ -203,7 +203,7 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                         {item.paymentStatus !== "paid" && (
                           <button
                             onClick={() => handleMarkAsPaid(item._id)}
-                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-blue-50 flex items-center gap-2"
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center gap-2"
                           >
                             <DollarSign size={16} /> Mark as Paid
                           </button>
@@ -212,7 +212,7 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                         {item.status !== "cancelled" && item.status !== "completed" && (
                           <button
                             onClick={() => handleCancel(item._id)}
-                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2 border-t border-slate-50"
+                            className="w-full text-left px-4 py-2.5 text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-2 border-t border-slate-50 dark:border-slate-700"
                           >
                             <XCircle size={16} /> Cancel
                           </button>
@@ -232,10 +232,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
       {/* ==================== */}
       <div className="md:hidden space-y-4">
         {appointments?.map((item) => (
-          <div key={item._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+          <div key={item._id} className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden">
             {/* Status Bar */}
             <div className={`absolute top-0 left-0 w-1.5 h-full ${item.status === 'completed' ? 'bg-emerald-500' :
-                item.status === 'cancelled' ? 'bg-rose-500' : 'bg-amber-500'
+              item.status === 'cancelled' ? 'bg-rose-500' : 'bg-amber-500'
               }`}></div>
 
             <div className="flex justify-between items-start mb-4 pl-3">
@@ -246,15 +246,18 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   alt="Client"
                 />
                 <div>
-                  <h3 className="font-bold text-slate-900 text-lg">{item.customer.name}</h3>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusColor(item.status)} uppercase tracking-wide`}>
+                  <h3 className="font-bold text-slate-900 dark:text-gray-100 text-lg">{item.customer.name}</h3>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${item.status === 'completed' ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-900' :
+                    item.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-900' :
+                      'bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900'
+                    } uppercase tracking-wide`}>
                     {item.status}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => toggleDropdown(item._id)}
-                className="p-2 -mr-2 text-slate-400 hover:text-slate-600"
+                className="p-2 -mr-2 text-slate-400 dark:text-gray-500 hover:text-slate-600 dark:hover:text-gray-300"
               >
                 <MoreVertical size={20} />
               </button>
@@ -262,20 +265,20 @@ const Appointments = ({ appointments, refreshAppointments }) => {
 
             {/* Dropdown Mobile */}
             {dropdownOpenId === item._id && (
-              <div className="bg-slate-50 rounded-xl p-2 mb-4 animate-in slide-in-from-top-2">
+              <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-2 mb-4 animate-in slide-in-from-top-2">
                 <div className="grid grid-cols-1 gap-1">
                   {item.status !== "cancelled" && item.status !== "completed" && (
-                    <button onClick={() => handleComplete(item._id)} className="w-full py-2 px-3 text-sm font-bold text-emerald-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                    <button onClick={() => handleComplete(item._id)} className="w-full py-2 px-3 text-sm font-bold text-emerald-700 dark:text-emerald-400 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm flex items-center gap-2">
                       <CheckCircle2 size={16} /> Mark Complete
                     </button>
                   )}
                   {item.paymentStatus !== "paid" && (
-                    <button onClick={() => handleMarkAsPaid(item._id)} className="w-full py-2 px-3 text-sm font-bold text-blue-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                    <button onClick={() => handleMarkAsPaid(item._id)} className="w-full py-2 px-3 text-sm font-bold text-blue-700 dark:text-blue-400 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm flex items-center gap-2">
                       <DollarSign size={16} /> Mark Paid
                     </button>
                   )}
                   {item.status !== "cancelled" && item.status !== "completed" && (
-                    <button onClick={() => handleCancel(item._id)} className="w-full py-2 px-3 text-sm font-bold text-rose-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                    <button onClick={() => handleCancel(item._id)} className="w-full py-2 px-3 text-sm font-bold text-rose-700 dark:text-rose-400 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm flex items-center gap-2">
                       <XCircle size={16} /> Cancel
                     </button>
                   )}
@@ -284,43 +287,43 @@ const Appointments = ({ appointments, refreshAppointments }) => {
             )}
 
             <div className="grid grid-cols-2 gap-4 pl-3 text-sm">
-              <div className="col-span-2 flex items-center gap-2 text-slate-600 bg-slate-50 p-2 rounded-lg">
-                <Scissors size={16} className="text-slate-400" />
+              <div className="col-span-2 flex items-center gap-2 text-slate-600 dark:text-gray-400 bg-slate-50 dark:bg-slate-700 p-2 rounded-lg">
+                <Scissors size={16} className="text-slate-400 dark:text-gray-500" />
                 <span className="font-medium truncate">{item.providerServices.map((i) => i.name).join(", ")}</span>
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-bold text-slate-400 uppercase">Date & Time</p>
-                <div className="flex items-center gap-2 font-medium text-slate-700">
+                <p className="text-xs font-bold text-slate-400 dark:text-gray-500 uppercase">Date & Time</p>
+                <div className="flex items-center gap-2 font-medium text-slate-700 dark:text-gray-300">
                   <Calendar size={14} /> {formateDate(item.date)}
                 </div>
-                <div className="flex items-center gap-2 font-medium text-slate-700">
+                <div className="flex items-center gap-2 font-medium text-slate-700 dark:text-gray-300">
                   <Clock size={14} /> {(new Date(item.startTime)).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                 </div>
               </div>
 
               <div className="space-y-1 text-right">
-                <p className="text-xs font-bold text-slate-400 uppercase">Total</p>
-                <p className="text-xl font-black text-slate-900">${item.totalPrice}</p>
+                <p className="text-xs font-bold text-slate-400 dark:text-gray-500 uppercase">Total</p>
+                <p className="text-xl font-black text-slate-900 dark:text-gray-100">${item.totalPrice}</p>
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${item.paymentStatus === "paid"
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                    : "bg-rose-50 text-rose-700 border-rose-100"
+                  ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900"
+                  : "bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-900"
                   }`}>
                   {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
                 </span>
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center pl-3">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center pl-3">
               <div className="flex gap-4">
-                <a href={`mailto:${item.customer.email}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                <a href={`mailto:${item.customer.email}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <Mail size={14} /> Email
                 </a>
-                <a href={`tel:${item.customer.phone}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                <a href={`tel:${item.customer.phone}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   <Phone size={14} /> Call
                 </a>
               </div>
-              <span className="text-xs font-bold text-slate-400">{item.duration} min session</span>
+              <span className="text-xs font-bold text-slate-400 dark:text-gray-500">{item.duration} min session</span>
             </div>
           </div>
         ))}

@@ -10,13 +10,13 @@ const Error = ({ errMessage }) => <div className="p-4 bg-red-50 text-red-600 rou
 const Appointments = ({ appointments }) => (
   <div className="space-y-4">
     {appointments.map(app => (
-      <div key={app._id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div key={app._id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div className="flex justify-between items-start">
           <div>
-            <h4 className="font-bold text-slate-900">Appointment with {app.provider?.name || 'Provider'}</h4>
-            <p className="text-sm text-slate-500">{new Date(app.date).toDateString()}</p>
+            <h4 className="font-bold text-slate-900 dark:text-gray-100">Appointment with {app.provider?.name || 'Provider'}</h4>
+            <p className="text-sm text-slate-500 dark:text-gray-400">{new Date(app.date).toDateString()}</p>
           </div>
-          <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold uppercase">{app.status}</span>
+          <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-full font-bold uppercase">{app.status}</span>
         </div>
       </div>
     ))}
@@ -106,17 +106,17 @@ const MyAppointments = () => {
 
       {/* Header */}
       {!loading && !error && (
-        <div className="mb-8 flex items-center justify-between border-b border-slate-100 pb-5">
+        <div className="mb-8 flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-5">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-              <div className="p-2 bg-slate-900 rounded-lg text-white">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-gray-100 flex items-center gap-3">
+              <div className="p-2 bg-slate-900 dark:bg-slate-700 rounded-lg text-white">
                 <Calendar size={20} />
               </div>
               My Bookings
             </h2>
-            <p className="text-slate-500 text-sm mt-1 ml-12">Manage and view your upcoming sessions</p>
+            <p className="text-slate-500 dark:text-gray-400 text-sm mt-1 ml-12">Manage and view your upcoming sessions</p>
           </div>
-          <div className="hidden sm:block text-sm font-medium text-slate-600 bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
+          <div className="hidden sm:block text-sm font-medium text-slate-600 dark:text-gray-300 bg-slate-50 dark:bg-slate-700 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-600">
             {appointments.length} Appointments
           </div>
         </div>
@@ -128,25 +128,25 @@ const MyAppointments = () => {
       {error && !loading && <Error errMessage={error.message} />}
 
       {!loading && !error && appointments.length > 0 && (
-        <div className="bg-slate-50 rounded-2xl p-4 sm:p-6 border border-slate-200">
+        <div className="bg-slate-50 dark:bg-slate-700 rounded-2xl p-4 sm:p-6 border border-slate-200 dark:border-slate-600">
           <Appointments appointments={appointments} refreshAppointments={fetchAppointments} />
         </div>
       )}
 
       {/* Empty State */}
       {!loading && !error && isNoAppointments && (
-        <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
-          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-sm">
-            <CalendarX className="text-slate-400 w-10 h-10" />
+        <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-slate-800 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+          <div className="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mb-6 shadow-sm">
+            <CalendarX className="text-slate-400 dark:text-gray-500 w-10 h-10" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-gray-100 mb-2">
             No Appointments Yet
           </h2>
-          <p className="text-slate-500 max-w-sm mb-8 leading-relaxed">
+          <p className="text-slate-500 dark:text-gray-400 max-w-sm mb-8 leading-relaxed">
             You haven't booked any services yet. Find a professional and schedule your first appointment today.
           </p>
           {/* Optional Call to Action */}
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95">
             Find a Professional
           </button>
         </div>

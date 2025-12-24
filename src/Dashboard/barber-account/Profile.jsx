@@ -57,14 +57,14 @@ const TimeSlotSection = ({ formData, setFormData }) => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 dark:bg-slate-700 rounded-xl border border-gray-200 dark:border-slate-600">
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Day</label>
+          <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Day</label>
           <select
             name="day"
             value={newSlot.day}
             onChange={handleTimeChange}
-            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
           >
             <option value="Sunday">Sunday</option>
             <option value="Monday">Monday</option>
@@ -76,28 +76,28 @@ const TimeSlotSection = ({ formData, setFormData }) => {
           </select>
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Start Time</label>
+          <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Start Time</label>
           <input
             type="time"
             name="startingTime"
             value={newSlot.startingTime}
             onChange={handleTimeChange}
-            className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+            className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
           />
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">End Time</label>
+          <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">End Time</label>
           <div className="flex gap-2">
             <input
               type="time"
               name="endingTime"
               value={newSlot.endingTime}
               onChange={handleTimeChange}
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+              className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
             />
             <button
               onClick={addTimeSlot}
-              className="bg-slate-900 text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
+              className="bg-slate-900 dark:bg-slate-700 text-white p-2 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors"
               title="Add Slot"
             >
               <Plus size={20} />
@@ -109,10 +109,10 @@ const TimeSlotSection = ({ formData, setFormData }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {formData.timeSlots?.length > 0 ? (
           formData.timeSlots.map((item, index) => (
-            <div key={index} className="flex justify-between items-center p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all group">
+            <div key={index} className="flex justify-between items-center p-4 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-sm hover:shadow-md dark:hover:shadow-dark-md transition-all group">
               <div>
-                <p className="font-bold text-gray-800">{item.day}</p>
-                <p className="text-sm text-gray-500 font-medium">{item.startingTime} - {item.endingTime}</p>
+                <p className="font-bold text-gray-800 dark:text-gray-100">{item.day}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{item.startingTime} - {item.endingTime}</p>
               </div>
               <button
                 onClick={() => removeTimeSlot(index)}
@@ -336,16 +336,16 @@ const Profile = ({ barberData }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-slate-900 min-h-screen">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Profile Settings</h2>
-          <p className="text-gray-500 mt-1">Manage your public profile and account details</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Profile Settings</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your public profile and account details</p>
         </div>
         <button
           type="button"
           onClick={updateProfileHandler}
-          className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all active:scale-95"
+          className="flex items-center gap-2 bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 dark:hover:bg-slate-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all active:scale-95"
         >
           <Save size={18} />
           Save Changes
@@ -357,20 +357,20 @@ const Profile = ({ barberData }) => {
         {/* ======================= */}
         {/* SECTION 1: BASIC INFO */}
         {/* ======================= */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-            <User className="text-blue-600" size={20} />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+            <User className="text-blue-600 dark:text-blue-400" size={20} />
             Basic Information
           </h3>
 
           {/* Profile Picture Upload */}
           <div className="flex items-center gap-6 mb-8">
             <div className="relative group">
-              <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-100">
+              <div className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-700 shadow-lg overflow-hidden bg-gray-100 dark:bg-slate-700">
                 {previewURL ? (
                   <img src={previewURL} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
                     <User size={40} />
                   </div>
                 )}
@@ -378,7 +378,7 @@ const Profile = ({ barberData }) => {
               <div className="absolute bottom-0 right-0">
                 <label
                   htmlFor="customFile"
-                  className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-md border-2 border-white"
+                  className="w-8 h-8 bg-blue-600 dark:bg-blue-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-md border-2 border-white dark:border-slate-700"
                 >
                   <Upload size={14} />
                   <input
@@ -393,65 +393,65 @@ const Profile = ({ barberData }) => {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900">Profile Photo</h4>
-              <p className="text-sm text-gray-500 mt-1">Allowed JPG, JPEG or PNG. Max size of 5MB</p>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Profile Photo</h4>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Allowed JPG, JPEG or PNG. Max size of 5MB</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Full Name</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="John Doe"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Email Address</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-gray-500 dark:text-gray-400 cursor-not-allowed"
                   disabled
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Phone Number</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Phone Number</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
                 <input
                   type="number"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Gender</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Gender</label>
               <div className="relative">
                 <select
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all appearance-none"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all appearance-none text-gray-900 dark:text-gray-100"
                 >
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
@@ -459,20 +459,20 @@ const Profile = ({ barberData }) => {
                   <option value="other">Other</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Specialization</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Specialization</label>
               <div className="relative">
-                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
                 <select
                   name="specialization"
                   value={formData.specialization}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all appearance-none"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all appearance-none text-gray-900 dark:text-gray-100"
                 >
                   <option value="">Select Specialization</option>
                   <option value="Shaving">Shaving</option>
@@ -480,13 +480,13 @@ const Profile = ({ barberData }) => {
                   <option value="Hairstyling">Hair Styling</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
               </div>
             </div>
 
             <div className="col-span-1 md:col-span-2 space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Short Bio</label>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Short Bio</label>
               <input
                 type="text"
                 name="bio"
@@ -494,9 +494,9 @@ const Profile = ({ barberData }) => {
                 onChange={handleInputChange}
                 placeholder="A brief introduction..."
                 maxLength={100}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
-              <p className="text-xs text-right text-gray-400">{formData.bio.length}/100</p>
+              <p className="text-xs text-right text-gray-400 dark:text-gray-500">{formData.bio.length}/100</p>
             </div>
           </div>
         </div>
@@ -504,20 +504,20 @@ const Profile = ({ barberData }) => {
         {/* ======================= */}
         {/* SECTION 2: ABOUT */}
         {/* ======================= */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-            <FileText className="text-blue-600" size={20} />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+            <FileText className="text-blue-600 dark:text-blue-400" size={20} />
             About Me
           </h3>
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700">Biography</label>
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Biography</label>
             <textarea
               name="about"
               rows={6}
               value={formData.about}
               placeholder="Tell clients about your journey, style, and what makes your service unique..."
               onChange={handleInputChange}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all resize-none text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             ></textarea>
           </div>
         </div>
@@ -525,16 +525,16 @@ const Profile = ({ barberData }) => {
         {/* ======================= */}
         {/* SECTION 3: ACHIEVEMENTS */}
         {/* ======================= */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Award className="text-blue-600" size={20} />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Award className="text-blue-600 dark:text-blue-400" size={20} />
               Achievements
             </h3>
             <button
               type="button"
               onClick={addAchievements}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
             >
               <Plus size={16} /> Add New
             </button>
@@ -542,17 +542,17 @@ const Profile = ({ barberData }) => {
 
           <div className="space-y-6">
             {formData.achievements.length === 0 && (
-              <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+              <div className="text-center py-8 text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-slate-700 rounded-xl border border-dashed border-gray-200 dark:border-slate-600">
                 No achievements added yet.
               </div>
             )}
 
             {formData.achievements?.map((item, index) => (
-              <div key={index} className="bg-gray-50 p-5 rounded-xl border border-gray-200 relative group transition-all hover:shadow-md">
+              <div key={index} className="bg-gray-50 dark:bg-slate-700 p-5 rounded-xl border border-gray-200 dark:border-slate-600 relative group transition-all hover:shadow-md dark:hover:shadow-dark-md">
                 <button
                   type="button"
                   onClick={() => removeItem('achievements', index)}
-                  className="absolute -top-3 -right-3 w-8 h-8 bg-white text-red-500 rounded-full shadow-md border border-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                  className="absolute -top-3 -right-3 w-8 h-8 bg-white dark:bg-slate-800 text-red-500 dark:text-red-400 rounded-full shadow-md border border-gray-200 dark:border-slate-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-900/20"
                   title="Remove Item"
                 >
                   <Trash2 size={16} />
@@ -560,32 +560,32 @@ const Profile = ({ barberData }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Title</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Title</label>
                     <input
                       type="text"
                       name="title"
                       value={item.title}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleAchievementsChange(e, index)}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Date</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Date</label>
                     <input
                       type="date"
                       name="date"
                       value={item.date ? new Date(item.date).toISOString().split('T')[0] : ''}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleAchievementsChange(e, index)}
                     />
                   </div>
                   <div className="md:col-span-2 space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Description</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Description</label>
                     <input
                       type="text"
                       name="description"
                       value={item.description}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleAchievementsChange(e, index)}
                     />
                   </div>
@@ -598,16 +598,16 @@ const Profile = ({ barberData }) => {
         {/* ======================= */}
         {/* SECTION 4: EXPERIENCE */}
         {/* ======================= */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Clock className="text-blue-600" size={20} />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8">
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Clock className="text-blue-600 dark:text-blue-400" size={20} />
               Experience
             </h3>
             <button
               type="button"
               onClick={addExperience}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
             >
               <Plus size={16} /> Add New
             </button>
@@ -615,17 +615,17 @@ const Profile = ({ barberData }) => {
 
           <div className="space-y-6">
             {formData.experience.length === 0 && (
-              <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+              <div className="text-center py-8 text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-slate-700 rounded-xl border border-dashed border-gray-200 dark:border-slate-600">
                 No experience added yet.
               </div>
             )}
 
             {formData.experience?.map((item, index) => (
-              <div key={index} className="bg-gray-50 p-5 rounded-xl border border-gray-200 relative group transition-all hover:shadow-md">
+              <div key={index} className="bg-gray-50 dark:bg-slate-700 p-5 rounded-xl border border-gray-200 dark:border-slate-600 relative group transition-all hover:shadow-md dark:hover:shadow-dark-md">
                 <button
                   type="button"
                   onClick={() => removeItem('experience', index)}
-                  className="absolute -top-3 -right-3 w-8 h-8 bg-white text-red-500 rounded-full shadow-md border border-gray-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50"
+                  className="absolute -top-3 -right-3 w-8 h-8 bg-white dark:bg-slate-800 text-red-500 dark:text-red-400 rounded-full shadow-md border border-gray-200 dark:border-slate-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 dark:hover:bg-red-900/20"
                   title="Remove Item"
                 >
                   <Trash2 size={16} />
@@ -633,52 +633,52 @@ const Profile = ({ barberData }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Workplace</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Workplace</label>
                     <input
                       type="text"
                       name="workplace"
                       value={item.workplace}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleExperienceChange(e, index)}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Role</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Role</label>
                     <input
                       type="text"
                       name="role"
                       value={item.role}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleExperienceChange(e, index)}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Start Date</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Start Date</label>
                     <input
                       type="date"
                       name="startingDate"
                       value={item.startingDate ? new Date(item.startingDate).toISOString().split('T')[0] : ''}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleExperienceChange(e, index)}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">End Date</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">End Date</label>
                     <input
                       type="date"
                       name="endingDate"
                       value={item.endingDate ? new Date(item.endingDate).toISOString().split('T')[0] : ''}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleExperienceChange(e, index)}
                     />
                   </div>
                   <div className="md:col-span-2 space-y-1.5">
-                    <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Description</label>
+                    <label className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">Description</label>
                     <input
                       type="text"
                       name="description"
                       value={item.description}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-lg focus:border-blue-500 dark:focus:border-blue-400 outline-none text-gray-900 dark:text-gray-100"
                       onChange={(e) => handleExperienceChange(e, index)}
                     />
                   </div>
@@ -691,9 +691,9 @@ const Profile = ({ barberData }) => {
         {/* ======================= */}
         {/* SECTION 5: TIME SLOTS */}
         {/* ======================= */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-            <Calendar className="text-blue-600" size={20} />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6 md:p-8">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+            <Calendar className="text-blue-600 dark:text-blue-400" size={20} />
             Availability & Slots
           </h3>
           <TimeSlotSection formData={formData} setFormData={setFormData} />

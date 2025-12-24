@@ -1,0 +1,44 @@
+/* ============================================
+   GLOBAL DARK MODE STYLES
+   ============================================
+   Add smooth transitions and premium dark mode styling
+*/
+
+@layer base {
+
+    /* Smooth dark mode transitions */
+    * {
+        @apply transition-colors duration-200;
+    }
+
+    /* Dark mode body styling */
+    .dark {
+        color-scheme: dark;
+    }
+
+    /* Custom scrollbar for dark mode */
+    .dark::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    .dark::-webkit-scrollbar-track {
+        @apply bg-dark-bg-secondary;
+    }
+
+    .dark::-webkit-scrollbar-thumb {
+        @apply bg-dark-bg-elevated rounded-lg;
+    }
+
+    .dark::-webkit-scrollbar-thumb:hover {
+        @apply bg-dark-border-accent;
+    }
+}
+
+/* Input autofill dark mode fix */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #1A2035 inset !important;
+    -webkit-text-fill-color: #F1F5F9 !important;
+    caret-color: #F1F5F9 !important;
+}
