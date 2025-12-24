@@ -1,11 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
+import { BASE_URL } from "../../config";
 import { X, Upload, Image as ImageIcon, Save, Loader2 } from "lucide-react";
-
-// MOCK CONSTANT FOR PREVIEW (Remove this when using in your project)
-const BASE_URL = "http://localhost:5000/api/v1/";
 
 const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
   const [editingService, setEditingService] = useState(null);
@@ -15,10 +12,10 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
   useEffect(() => {
     if (isOpen) {
       // use centralized scroll lock helper to allow multiple locks
-      import('../../utils/scrollLock').then(({ lockScroll }) => lockScroll()).catch(() => {});
+      import('../../utils/scrollLock').then(({ lockScroll }) => lockScroll()).catch(() => { });
       // Cleanup function to re-enable scrolling via helper
       return () => {
-        import('../../utils/scrollLock').then(({ unlockScroll }) => unlockScroll()).catch(() => {});
+        import('../../utils/scrollLock').then(({ unlockScroll }) => unlockScroll()).catch(() => { });
       };
     }
   }, [isOpen]);
@@ -154,7 +151,7 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="grid md:grid-cols-12 gap-8">
-            
+
             {/* Image Section */}
             <div className="md:col-span-5 space-y-3">
               <label className="block text-sm font-bold text-gray-700">Service Image</label>
@@ -171,7 +168,7 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
                     <span className="text-xs">No image</span>
                   </div>
                 )}
-                
+
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="text-white text-center">
                     <Upload className="w-8 h-8 mx-auto mb-1" />

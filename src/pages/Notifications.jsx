@@ -7,7 +7,7 @@ import convertTime from "../utils/convertTime";
 
 const Notifications = () => {
   const { user, token, refreshNotifications } = useAuth();
-  
+
   const formatStartTime = (iso) => {
     try {
       const d = new Date(iso);
@@ -24,22 +24,22 @@ const Notifications = () => {
 
   useEffect(() => {
     if (!user || !user._id) return;
-    
+
 
     // Fetching Notification from the backend
     const fetchNotifications = async () => {
       try {
         const params = new URLSearchParams({ status: 'all', page: '1', limit: '20' });
-        const res = await fetch(`${BASE_URL}notifications?${params.toString()}`, {
+        const res = await fetch(`${BASE_URL}/notifications?${params.toString()}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         if (!res.ok) throw new Error("Failed to fetch notifications");
-        
+
         const data = await res.json();
         const fetchedNotifications = Array.isArray(data?.data) ? data.data : [];
         setNotifications(fetchedNotifications);
@@ -65,9 +65,9 @@ const Notifications = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (!res.ok) throw new Error("Failed to mark notification as read");
-      
+
       // Update local state to reflect the change
       setNotifications(
         notifications.map((notification) =>
@@ -76,7 +76,7 @@ const Notifications = () => {
             : notification
         )
       );
-      
+
       // Refresh the unread count
       refreshNotifications();
     } catch (err) {
@@ -88,14 +88,14 @@ const Notifications = () => {
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      await fetch(`${BASE_URL}notifications/read-all`, {
+      await fetch(`${BASE_URL}/notifications/read-all`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       // Update local state
       setNotifications(
         notifications.map((notification) => ({
@@ -103,7 +103,7 @@ const Notifications = () => {
           notificationStatus: "read",
         }))
       );
-      
+
       // Refresh the unread count
       refreshNotifications();
     } catch (err) {
@@ -125,20 +125,19 @@ const Notifications = () => {
           </button>
         )}
       </div>
-      
+
       {loading && <p>Loading notifications...</p>}
       {error && <p className="text-red-500">Error: {error.message}</p>}
-      
+
       {!loading && !error && notifications.length > 0 ? (
         <ul>
           {notifications.map((notification) => (
             <li
               key={notification._id}
-              className={`p-4 mb-4 rounded-lg shadow-md border ${
-                notification.notificationStatus === "unread"
+              className={`p-4 mb-4 rounded-lg shadow-md border ${notification.notificationStatus === "unread"
                   ? "bg-blue-50 border-blue-200"
                   : "bg-white"
-              }`}
+                }`}
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -165,7 +164,7 @@ const Notifications = () => {
                     {notification.notificationStatus}
                   </p>
                 </div>
-                
+
                 {notification.notificationStatus === "unread" && (
                   <button
                     onClick={() => markAsRead(notification._id)}

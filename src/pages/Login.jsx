@@ -8,9 +8,9 @@
 
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  Mail, 
-  Lock, 
+import {
+  Mail,
+  Lock,
   ArrowRight,
   Loader2,
   Eye,
@@ -34,11 +34,11 @@ const loginVisual = 'https://images.unsplash.com/photo-1585747860715-2ba37e788b7
 // ============================================
 const GoogleIcon = () => (
   <svg width="24" height="24" viewBox="0 0 48 48">
-    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
-    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-    <path fill="none" d="M0 0h48v48H0z"/>
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z" />
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    <path fill="none" d="M0 0h48v48H0z" />
   </svg>
 );
 
@@ -116,13 +116,13 @@ const Login = () => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      
+
       if (err.message.includes('fetch') || err.name === 'TypeError') {
         toast.error('Unable to connect to server. Please make sure the backend is running.');
       } else {
         toast.error(err.message || 'Login failed. Please try again.');
       }
-      
+
       console.error('Login error:', err);
     }
   };
@@ -132,7 +132,7 @@ const Login = () => {
   // ============================================
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email) {
       toast.error('Please enter your email address');
       return;
@@ -141,7 +141,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}auth/forgot-password`, {
+      const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Login = () => {
   // ============================================
   const handleOauth = async () => {
     try {
-      window.location.href = `${BASE_URL}auth/google`;
+      window.location.href = `${BASE_URL}/auth/google`;
     } catch (err) {
       toast.error(err.message || 'OAuth failed');
     }
@@ -178,18 +178,18 @@ const Login = () => {
   return (
     <section className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-900 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl w-full bg-white rounded-3xl sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-col lg:flex-row-reverse">
-        
+
         {/* ============================================ */}
         {/* RIGHT SIDE - Visual/Branding */}
         {/* ============================================ */}
         <div className="hidden lg:block lg:w-1/2 relative">
-          <img 
-            src={loginVisual} 
-            alt="Professional Grooming" 
+          <img
+            src={loginVisual}
+            alt="Professional Grooming"
             className="absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
-          
+
           {/* Branding Content */}
           <div className="absolute bottom-12 left-12 right-12 text-white">
             <h2 className="text-5xl font-black mb-4 tracking-tight">
@@ -198,7 +198,7 @@ const Login = () => {
             <p className="text-xl text-slate-200 leading-relaxed font-medium mb-8">
               &quot;Looking good isn&apos;t self-importance; it&apos;s self-respect.&quot;
             </p>
-            
+
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4">
               <div>
@@ -225,9 +225,9 @@ const Login = () => {
             {/* Logo Section */}
             <div className="flex justify-center mb-6 sm:mb-8">
               <Link to="/home" className="group transition-transform duration-300 hover:scale-105">
-                <img 
-                  src={logo} 
-                  alt="Trimz Logo" 
+                <img
+                  src={logo}
+                  alt="Trimz Logo"
                   className="h-24 sm:h-28 w-auto object-contain"
                 />
               </Link>
@@ -247,7 +247,7 @@ const Login = () => {
             {/* LOGIN FORM */}
             {/* ============================================ */}
             <form onSubmit={submitHandler} className="space-y-5">
-              
+
               {/* ============================================ */}
               {/* EMAIL INPUT */}
               {/* ============================================ */}
@@ -282,7 +282,7 @@ const Login = () => {
                   className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50 dark:bg-slate-700 border-2 border-transparent rounded-2xl focus:bg-white dark:focus:bg-slate-700 focus:border-primaryColor focus:ring-4 focus:ring-primaryColor/10 outline-none transition-all font-medium text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-400"
                   required
                 />
-                <button 
+                <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primaryColor transition-colors"
@@ -359,7 +359,7 @@ const Login = () => {
                 </div>
 
                 {/* Google OAuth Button */}
-                <button 
+                <button
                   type="button"
                   onClick={handleOauth}
                   className="w-full py-3.5 sm:py-4 bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-gray-100 font-bold rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-600 hover:border-slate-300 transition-all shadow-sm hover:shadow-md"

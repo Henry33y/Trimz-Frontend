@@ -14,14 +14,14 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       return toast.error('Passwords do not match');
     }
 
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}auth/reset-password/${token}`, {
+      const res = await fetch(`${BASE_URL}/auth/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,16 +87,16 @@ const ResetPassword = () => {
           </div>
 
           <div className='mt-7 flex justify-center'>
-            <button 
-              type='submit' 
+            <button
+              type='submit'
               className='w-64 bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'
             >
-              {loading ? <HashLoader size={25} color='#fff'/> : 'Reset Password'}
+              {loading ? <HashLoader size={25} color='#fff' /> : 'Reset Password'}
             </button>
           </div>
 
           <p className='mt-5 text-textColor text-center'>
-            Remember your password? 
+            Remember your password?
             <Link to='/login' className='text-primaryColor font-medium ml-1'>
               Login
             </Link>

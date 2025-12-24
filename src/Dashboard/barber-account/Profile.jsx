@@ -1,23 +1,21 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Briefcase, 
-  FileText, 
-  Award, 
-  Clock, 
-  Upload, 
+import {
+  User,
+  Mail,
+  Phone,
+  Briefcase,
+  FileText,
+  Award,
+  Clock,
+  Upload,
   Calendar,
   Save,
   Trash2,
   Plus
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-
-// Mock Config
-const BASE_URL = 'http://localhost:5002/api/v1/';
+import { BASE_URL } from '../../config';
 
 // ==========================================
 // SUB-COMPONENT: TimeSlotSection
@@ -40,12 +38,12 @@ const TimeSlotSection = ({ formData, setFormData }) => {
       toast.error("Please select both start and end times");
       return;
     }
-    
+
     setFormData(prev => ({
       ...prev,
       timeSlots: [...(prev.timeSlots || []), newSlot]
     }));
-    
+
     // Reset time inputs but keep day for convenience
     setNewSlot(prev => ({ ...prev, startingTime: '', endingTime: '' }));
   };
@@ -62,8 +60,8 @@ const TimeSlotSection = ({ formData, setFormData }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
         <div className="space-y-1.5">
           <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Day</label>
-          <select 
-            name="day" 
+          <select
+            name="day"
             value={newSlot.day}
             onChange={handleTimeChange}
             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
@@ -79,9 +77,9 @@ const TimeSlotSection = ({ formData, setFormData }) => {
         </div>
         <div className="space-y-1.5">
           <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Start Time</label>
-          <input 
-            type="time" 
-            name="startingTime" 
+          <input
+            type="time"
+            name="startingTime"
             value={newSlot.startingTime}
             onChange={handleTimeChange}
             className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
@@ -90,14 +88,14 @@ const TimeSlotSection = ({ formData, setFormData }) => {
         <div className="space-y-1.5">
           <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">End Time</label>
           <div className="flex gap-2">
-            <input 
-              type="time" 
-              name="endingTime" 
+            <input
+              type="time"
+              name="endingTime"
               value={newSlot.endingTime}
               onChange={handleTimeChange}
               className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:border-blue-500 outline-none"
             />
-            <button 
+            <button
               onClick={addTimeSlot}
               className="bg-slate-900 text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
               title="Add Slot"
@@ -116,7 +114,7 @@ const TimeSlotSection = ({ formData, setFormData }) => {
                 <p className="font-bold text-gray-800">{item.day}</p>
                 <p className="text-sm text-gray-500 font-medium">{item.startingTime} - {item.endingTime}</p>
               </div>
-              <button 
+              <button
                 onClick={() => removeTimeSlot(index)}
                 className="text-gray-400 hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg transition-all"
               >
@@ -176,7 +174,7 @@ const Profile = ({ barberData }) => {
       if (barberData.profilePicture?.url) {
         const url = barberData.profilePicture.url.startsWith('http')
           ? barberData.profilePicture.url
-          : `${BASE_URL}${barberData.profilePicture.url}`;
+          : `${BASE_URL}/${barberData.profilePicture.url}`;
         setPreviewURL(url);
       } else if (typeof barberData.profilePicture === 'string') {
         const url = barberData.profilePicture.startsWith('http')
@@ -285,11 +283,11 @@ const Profile = ({ barberData }) => {
   // Submit the updated profile data
   const updateProfileHandler = async (e) => {
     e.preventDefault();
-    
+
     // Safety check for ID
     if (!barberData || !barberData._id) {
-        toast.error("Cannot update: User ID not found");
-        return;
+      toast.error("Cannot update: User ID not found");
+      return;
     }
 
     try {
@@ -320,18 +318,18 @@ const Profile = ({ barberData }) => {
       if (!res.ok) {
         throw new Error(result.message);
       }
-      
+
       // Update local storage
       localStorage.setItem('user', JSON.stringify(result.data));
       // localStorage.setItem('role', result.data.role); // Role usually doesn't change on profile update, but safe to keep
-      
+
       toast.success(result.message);
-      
+
       // Optional: Delay reload to show toast, or remove reload if state updates automatically
       setTimeout(() => {
-          window.location.reload();
+        window.location.reload();
       }, 1000);
-      
+
     } catch (error) {
       toast.error(error.message);
     }
@@ -355,7 +353,7 @@ const Profile = ({ barberData }) => {
       </div>
 
       <form onSubmit={updateProfileHandler} className="space-y-8">
-        
+
         {/* ======================= */}
         {/* SECTION 1: BASIC INFO */}
         {/* ======================= */}
@@ -378,12 +376,12 @@ const Profile = ({ barberData }) => {
                 )}
               </div>
               <div className="absolute bottom-0 right-0">
-                <label 
+                <label
                   htmlFor="customFile"
                   className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-colors shadow-md border-2 border-white"
                 >
                   <Upload size={14} />
-                  <input 
+                  <input
                     type="file"
                     name="profilePicture"
                     id="customFile"
@@ -405,12 +403,12 @@ const Profile = ({ barberData }) => {
               <label className="text-sm font-semibold text-gray-700">Full Name</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <input 
+                <input
                   type="text"
-                  name="name" 
-                  value={formData.name} 
-                  onChange={handleInputChange} 
-                  placeholder="John Doe" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="John Doe"
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                 />
               </div>
@@ -435,12 +433,12 @@ const Profile = ({ barberData }) => {
               <label className="text-sm font-semibold text-gray-700">Phone Number</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <input 
+                <input
                   type="number"
-                  name="phone" 
-                  value={formData.phone} 
-                  onChange={handleInputChange} 
-                  placeholder="+1 (555) 000-0000" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="+1 (555) 000-0000"
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                 />
               </div>
@@ -449,9 +447,9 @@ const Profile = ({ barberData }) => {
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Gender</label>
               <div className="relative">
-                <select 
-                  name="gender" 
-                  value={formData.gender} 
+                <select
+                  name="gender"
+                  value={formData.gender}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all appearance-none"
                 >
@@ -470,9 +468,9 @@ const Profile = ({ barberData }) => {
               <label className="text-sm font-semibold text-gray-700">Specialization</label>
               <div className="relative">
                 <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <select 
-                  name="specialization" 
-                  value={formData.specialization} 
+                <select
+                  name="specialization"
+                  value={formData.specialization}
                   onChange={handleInputChange}
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all appearance-none"
                 >
@@ -489,11 +487,11 @@ const Profile = ({ barberData }) => {
 
             <div className="col-span-1 md:col-span-2 space-y-2">
               <label className="text-sm font-semibold text-gray-700">Short Bio</label>
-              <input 
+              <input
                 type="text"
-                name="bio" 
-                value={formData.bio} 
-                onChange={handleInputChange} 
+                name="bio"
+                value={formData.bio}
+                onChange={handleInputChange}
                 placeholder="A brief introduction..."
                 maxLength={100}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
@@ -513,12 +511,12 @@ const Profile = ({ barberData }) => {
           </h3>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-700">Biography</label>
-            <textarea 
-              name="about" 
-              rows={6} 
-              value={formData.about} 
+            <textarea
+              name="about"
+              rows={6}
+              value={formData.about}
               placeholder="Tell clients about your journey, style, and what makes your service unique..."
-              onChange={handleInputChange} 
+              onChange={handleInputChange}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
             ></textarea>
           </div>
@@ -548,7 +546,7 @@ const Profile = ({ barberData }) => {
                 No achievements added yet.
               </div>
             )}
-            
+
             {formData.achievements?.map((item, index) => (
               <div key={index} className="bg-gray-50 p-5 rounded-xl border border-gray-200 relative group transition-all hover:shadow-md">
                 <button
@@ -559,7 +557,7 @@ const Profile = ({ barberData }) => {
                 >
                   <Trash2 size={16} />
                 </button>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Title</label>
@@ -632,7 +630,7 @@ const Profile = ({ barberData }) => {
                 >
                   <Trash2 size={16} />
                 </button>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold uppercase text-gray-500 tracking-wider">Workplace</label>

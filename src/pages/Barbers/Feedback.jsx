@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Star, Loader2, Send } from "lucide-react";
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
-
-// MOCK CONSTANT FOR PREVIEW (Remove in production)
-const BASE_URL = "http://localhost:5000/api/v1/";
+import { BASE_URL } from "../../config";
 
 const FeedbackForm = ({ onSuccess, onCancel }) => {
     const [rating, setRating] = useState(0);
@@ -25,7 +22,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                 setLoading(false);
                 return toast.error('Rating and Review Fields are required');
             }
-            
+
             const token = localStorage.getItem('token');
             // API request for a single provider reviews by id 
             const res = await fetch(`${BASE_URL}/reviews/${id}`, {
@@ -51,11 +48,11 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                 ...result.data,
                 customer: JSON.parse(localStorage.getItem('user')) || result.data.customer || null,
             };
-            
+
             if (typeof onSuccess === 'function') {
                 onSuccess(hydratedReview);
             }
-            
+
             // Reset form state
             setRating(0);
             setHover(0);
@@ -92,13 +89,12 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                                         setRating(0);
                                     }}
                                 >
-                                    <Star 
+                                    <Star
                                         size={32}
-                                        className={`transition-all duration-200 ${
-                                            index <= (hover || rating)
+                                        className={`transition-all duration-200 ${index <= (hover || rating)
                                                 ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                                                 : 'fill-slate-50 text-slate-200 group-hover:text-slate-300'
-                                        }`}
+                                            }`}
                                     />
                                 </button>
                             );
@@ -122,7 +118,7 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                     <span className="text-xs font-medium text-slate-400 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded">Required</span>
                 </h3>
                 <div className="relative">
-                    <textarea 
+                    <textarea
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none text-slate-700 placeholder:text-slate-400 min-h-[140px]"
                         rows="5"
                         placeholder="What did you like? What could we improve?"
@@ -133,8 +129,8 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     disabled={loading}
                     className="w-full sm:w-auto px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
@@ -150,11 +146,11 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                         </>
                     )}
                 </button>
-                
+
                 {onCancel && (
-                    <button 
-                        type="button" 
-                        onClick={onCancel} 
+                    <button
+                        type="button"
+                        onClick={onCancel}
                         disabled={loading}
                         className="w-full sm:w-auto px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors disabled:opacity-50"
                     >

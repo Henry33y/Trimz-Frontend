@@ -10,13 +10,15 @@ import { BASE_URL } from './../../config';
 import useFetchData from './../../hooks/useFetchData';
 import Loader from '../../components/Loading/Loading.jsx';
 import Error from '../../components/Error/Error';
+import { useAuth } from '../../context/AuthContext';
 
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { MapPin, ShieldCheck, Star, Image as ImageIcon } from 'lucide-react'; // Added ImageIcon
+import { MapPin, ShieldCheck, Star, Image as ImageIcon } from 'lucide-react';
 
 const BarbersDetails = () => {
   const [tab, setTab] = useState('about');
+  const { user, role } = useAuth();
 
   const { id } = useParams();
   const { data: provider, loading, error } = useFetchData(`users/${id}`);
@@ -87,11 +89,11 @@ const BarbersDetails = () => {
                         ? typeof profilePicture === 'string'
                           ? profilePicture.startsWith('http')
                             ? profilePicture
-                            : `${BASE_URL}${profilePicture}`
+                            : `${BASE_URL}/${profilePicture}`
                           : profilePicture.url
                             ? profilePicture.url.startsWith('http')
                               ? profilePicture.url
-                              : `${BASE_URL}${profilePicture.url}`
+                              : `${BASE_URL}/${profilePicture.url}`
                             : '/placeholder.jpg'
                         : '/placeholder.jpg'
                     }
@@ -127,20 +129,28 @@ const BarbersDetails = () => {
 
               {/* Navigation Tabs */}
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 flex overflow-x-auto">
-                {['about', 'feedback', 'services'].map((tabName) => (
-                  <button
-                    key={tabName}
-                    onClick={() => setTab(tabName)}
-                    className={`
+                {['about', 'feedback', 'services']
+                  .filter(tabName => {
+                    // Hide feedback tab for providers
+                    if (tabName === 'feedback' && role === 'provider') {
+                      return false;
+                    }
+                    return true;
+                  })
+                  .map((tabName) => (
+                    <button
+                      key={tabName}
+                      onClick={() => setTab(tabName)}
+                      className={`
                       flex-1 py-3 px-6 rounded-xl text-sm font-bold capitalize transition-all whitespace-nowrap
                       ${tab === tabName
-                        ? 'bg-slate-900 text-white shadow-md'
-                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
+                          ? 'bg-slate-900 text-white shadow-md'
+                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
                     `}
-                  >
-                    {tabName === 'services' ? 'Book Services' : tabName}
-                  </button>
-                ))}
+                    >
+                      {tabName === 'services' ? 'Book Services' : tabName}
+                    </button>
+                  ))}
               </div>
 
               {/* Tab Content Area */}
@@ -155,7 +165,7 @@ const BarbersDetails = () => {
                     />
                   </div>
                 )}
-                {tab === 'feedback' && (
+                {tab === 'feedback' && role !== 'provider' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <Feedback
                       reviews={reviews}

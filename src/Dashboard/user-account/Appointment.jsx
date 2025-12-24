@@ -1,17 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { toast } from "react-toastify";
-// import { formateDate } from "../../utils/formateDate"; // UNCOMMENT IN PRODUCTION
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
-// import { initAppointmentPayment, redirectToPaystack } from "../../utils/paystack"; // UNCOMMENT IN PRODUCTION
-import { 
-  Calendar, 
-  Clock, 
-  CreditCard, 
-  Trash2, 
-  Edit2, 
-  X, 
-  CheckCircle, 
+import { BASE_URL } from "../../config";
+import {
+  Calendar,
+  Clock,
+  CreditCard,
+  Trash2,
+  Edit2,
+  X,
+  CheckCircle,
   MoreVertical,
   Mail,
   Scissors,
@@ -21,7 +19,6 @@ import {
 // ==========================================
 // PREVIEW HELPERS (Remove/Comment out in production and use real imports)
 // ==========================================
-const BASE_URL = "http://localhost:5000/api/v1/";
 const formateDate = (date) => {
   try {
     return new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -30,7 +27,7 @@ const formateDate = (date) => {
   }
 };
 const initAppointmentPayment = async () => ({ authorization_url: '#' });
-const redirectToPaystack = () => {};
+const redirectToPaystack = () => { };
 // ==========================================
 
 const Appointments = ({ appointments = [], refreshAppointments }) => {
@@ -48,8 +45,8 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
   const handleEdit = (appointment) => {
     setEditingAppointment(appointment);
     setEditFormData({
-      date: appointment.date, 
-      startTime: appointment.startTime, 
+      date: appointment.date,
+      startTime: appointment.startTime,
       status: appointment.status,
       paymentStatus: appointment.paymentStatus,
     });
@@ -71,7 +68,7 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
         "T" +
         editFormData.startTime +
         ":00.000Z";
-      
+
       const updatedData = {
         date: editFormData.date,
         startTime: new Date(formattedTime),
@@ -103,8 +100,8 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
 
   // Handler to send a DELETE request for an appointment
   const handleDelete = async (appointmentId) => {
-    if(!window.confirm("Are you sure you want to delete this appointment?")) return;
-    
+    if (!window.confirm("Are you sure you want to delete this appointment?")) return;
+
     try {
       const jwt = localStorage.getItem("token");
       const res = await fetch(`${BASE_URL}/appointments/${appointmentId}`, {
@@ -283,7 +280,7 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
       <div className="md:hidden space-y-4">
         {safeAppointments.map((item) => (
           <div key={item._id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 relative">
-            
+
             {/* Mobile Header: Provider & Actions */}
             <div className="flex justify-between items-start mb-4 border-b border-gray-100 pb-4">
               <div className="flex items-center gap-3">
@@ -303,23 +300,23 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
                   </div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setActiveDropdown(activeDropdown === item._id ? null : item._id)}
                 className="p-2 text-gray-400 hover:bg-gray-100 rounded-full"
               >
                 <MoreVertical size={20} />
               </button>
-              
+
               {/* Mobile Dropdown Menu */}
               {activeDropdown === item._id && (
                 <div className="absolute right-4 top-14 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-20 overflow-hidden animate-in fade-in zoom-in-95">
-                  <button 
+                  <button
                     onClick={() => handleEdit(item)}
                     className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                   >
                     <Edit2 size={14} /> Edit
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDelete(item._id)}
                     className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-100"
                   >
@@ -340,7 +337,7 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
               <div className="space-y-1 text-right">
                 <p className="text-xs font-bold text-gray-400 uppercase">Time</p>
                 <div className="flex items-center justify-end gap-2 font-medium text-gray-700">
-                  <Clock size={14} /> 
+                  <Clock size={14} />
                   {new Date(item.startTime).toLocaleTimeString("en-GB", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -396,21 +393,21 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
           role="dialog"
         >
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={closeModal}
           ></div>
 
           {/* Modal Content */}
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            
+
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
               <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Edit2 size={18} className="text-blue-600" />
                 Reschedule Appointment
               </h2>
-              <button 
+              <button
                 onClick={closeModal}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
               >
@@ -449,9 +446,9 @@ const Appointments = ({ appointments = [], refreshAppointments }) => {
                       editFormData.startTime
                         ? editFormData.startTime.includes("T")
                           ? new Date(editFormData.startTime).toLocaleTimeString("en-GB", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
                           : editFormData.startTime
                         : ""
                     }

@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Star, MessageSquare, Loader2 } from "lucide-react";
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
-
-// MOCK CONSTANT FOR PREVIEW (Remove in production)
-const BASE_URL = "http://localhost:5000/api/v1/";
+import { BASE_URL } from "../../config";
 
 const FeedbackForm = ({ onSuccess, onCancel }) => {
     const [rating, setRating] = useState(0);
@@ -95,13 +92,12 @@ const FeedbackForm = ({ onSuccess, onCancel }) => {
                                         setRating(0);
                                     }}
                                 >
-                                    <Star 
-                                        size={32} 
-                                        className={`transition-colors duration-200 ${
-                                            index <= (hover || rating)
+                                    <Star
+                                        size={32}
+                                        className={`transition-colors duration-200 ${index <= (hover || rating)
                                                 ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
                                                 : 'fill-slate-100 text-slate-300'
-                                        }`}
+                                            }`}
                                     />
                                 </button>
                             );

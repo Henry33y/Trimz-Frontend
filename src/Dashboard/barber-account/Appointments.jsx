@@ -1,15 +1,14 @@
 /* eslint-disable react/prop-types */
-// import { formateDate } from "../../utils/formateDate"; // UNCOMMENT IN PRODUCTION
-// import { BASE_URL } from "../../config"; // UNCOMMENT IN PRODUCTION
+import { BASE_URL } from "../../config";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { 
-  Calendar, 
-  Clock, 
-  MoreVertical, 
-  CheckCircle2, 
-  XCircle, 
-  DollarSign, 
+import {
+  Calendar,
+  Clock,
+  MoreVertical,
+  CheckCircle2,
+  XCircle,
+  DollarSign,
   Phone,
   Mail,
   User,
@@ -17,7 +16,6 @@ import {
 } from "lucide-react";
 
 // MOCK CONSTANTS FOR PREVIEW (Remove these when using in your project)
-const BASE_URL = "http://localhost:5000/api/v1/";
 const formateDate = (date) => new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const Appointments = ({ appointments, refreshAppointments }) => {
@@ -168,11 +166,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   <td className="px-6 py-4 text-right">
                     <div className="flex flex-col items-end gap-1">
                       <span className="font-bold text-slate-900">${item.totalPrice}</span>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${
-                        item.paymentStatus === "paid" 
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${item.paymentStatus === "paid"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                           : "bg-rose-50 text-rose-700 border-rose-100"
-                      }`}>
+                        }`}>
                         {item.paymentStatus === "paid" ? <CheckCircle2 size={10} /> : <XCircle size={10} />}
                         {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
                       </span>
@@ -183,11 +180,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                   <td className="px-6 py-4 text-center relative">
                     <button
                       onClick={() => toggleDropdown(item._id)}
-                      className={`p-2 rounded-lg transition-all ${
-                        dropdownOpenId === item._id 
-                          ? 'bg-slate-200 text-slate-900' 
+                      className={`p-2 rounded-lg transition-all ${dropdownOpenId === item._id
+                          ? 'bg-slate-200 text-slate-900'
                           : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                      }`}
+                        }`}
                     >
                       <MoreVertical size={18} />
                     </button>
@@ -203,7 +199,7 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                             <CheckCircle2 size={16} /> Complete
                           </button>
                         )}
-                        
+
                         {item.paymentStatus !== "paid" && (
                           <button
                             onClick={() => handleMarkAsPaid(item._id)}
@@ -237,11 +233,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
       <div className="md:hidden space-y-4">
         {appointments?.map((item) => (
           <div key={item._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
-             {/* Status Bar */}
-             <div className={`absolute top-0 left-0 w-1.5 h-full ${
-                item.status === 'completed' ? 'bg-emerald-500' : 
+            {/* Status Bar */}
+            <div className={`absolute top-0 left-0 w-1.5 h-full ${item.status === 'completed' ? 'bg-emerald-500' :
                 item.status === 'cancelled' ? 'bg-rose-500' : 'bg-amber-500'
-             }`}></div>
+              }`}></div>
 
             <div className="flex justify-between items-start mb-4 pl-3">
               <div className="flex items-center gap-3">
@@ -269,21 +264,21 @@ const Appointments = ({ appointments, refreshAppointments }) => {
             {dropdownOpenId === item._id && (
               <div className="bg-slate-50 rounded-xl p-2 mb-4 animate-in slide-in-from-top-2">
                 <div className="grid grid-cols-1 gap-1">
-                   {item.status !== "cancelled" && item.status !== "completed" && (
+                  {item.status !== "cancelled" && item.status !== "completed" && (
                     <button onClick={() => handleComplete(item._id)} className="w-full py-2 px-3 text-sm font-bold text-emerald-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
-                      <CheckCircle2 size={16}/> Mark Complete
+                      <CheckCircle2 size={16} /> Mark Complete
                     </button>
-                   )}
-                   {item.paymentStatus !== "paid" && (
+                  )}
+                  {item.paymentStatus !== "paid" && (
                     <button onClick={() => handleMarkAsPaid(item._id)} className="w-full py-2 px-3 text-sm font-bold text-blue-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
-                      <DollarSign size={16}/> Mark Paid
+                      <DollarSign size={16} /> Mark Paid
                     </button>
-                   )}
-                   {item.status !== "cancelled" && item.status !== "completed" && (
+                  )}
+                  {item.status !== "cancelled" && item.status !== "completed" && (
                     <button onClick={() => handleCancel(item._id)} className="w-full py-2 px-3 text-sm font-bold text-rose-700 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
-                      <XCircle size={16}/> Cancel
+                      <XCircle size={16} /> Cancel
                     </button>
-                   )}
+                  )}
                 </div>
               </div>
             )}
@@ -293,25 +288,24 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                 <Scissors size={16} className="text-slate-400" />
                 <span className="font-medium truncate">{item.providerServices.map((i) => i.name).join(", ")}</span>
               </div>
-              
+
               <div className="space-y-1">
                 <p className="text-xs font-bold text-slate-400 uppercase">Date & Time</p>
                 <div className="flex items-center gap-2 font-medium text-slate-700">
                   <Calendar size={14} /> {formateDate(item.date)}
                 </div>
                 <div className="flex items-center gap-2 font-medium text-slate-700">
-                   <Clock size={14} /> {(new Date(item.startTime)).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                  <Clock size={14} /> {(new Date(item.startTime)).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                 </div>
               </div>
 
               <div className="space-y-1 text-right">
                 <p className="text-xs font-bold text-slate-400 uppercase">Total</p>
                 <p className="text-xl font-black text-slate-900">${item.totalPrice}</p>
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
-                  item.paymentStatus === "paid" 
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${item.paymentStatus === "paid"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                     : "bg-rose-50 text-rose-700 border-rose-100"
-                }`}>
+                  }`}>
                   {item.paymentStatus === "paid" ? "Paid" : "Unpaid"}
                 </span>
               </div>
@@ -319,12 +313,12 @@ const Appointments = ({ appointments, refreshAppointments }) => {
 
             <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between items-center pl-3">
               <div className="flex gap-4">
-                 <a href={`mailto:${item.customer.email}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
-                    <Mail size={14}/> Email
-                 </a>
-                 <a href={`tel:${item.customer.phone}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
-                    <Phone size={14}/> Call
-                 </a>
+                <a href={`mailto:${item.customer.email}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                  <Mail size={14} /> Email
+                </a>
+                <a href={`tel:${item.customer.phone}`} className="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors">
+                  <Phone size={14} /> Call
+                </a>
               </div>
               <span className="text-xs font-bold text-slate-400">{item.duration} min session</span>
             </div>

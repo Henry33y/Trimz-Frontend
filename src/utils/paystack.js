@@ -1,7 +1,7 @@
 import { BASE_URL } from '../config';
 
 export async function initAppointmentPayment({ appointmentId, token }) {
-  const res = await fetch(`${BASE_URL}payments/init`, {
+  const res = await fetch(`${BASE_URL}/payments/init`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
