@@ -128,23 +128,43 @@ const Signup = () => {
     try {
       const token = localStorage.getItem('token');
 
+      // Create FormData to send file along with other data
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('password', formData.password);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('gender', formData.gender);
+      formDataToSend.append('role', formData.role);
+
+      // Append profile picture if selected
+      if (selectedFile) {
+        formDataToSend.append('profilePicture', selectedFile);
+      }
+
       const res = await fetch(`${BASE_URL}/users`, {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : ""
+          // Don't set Content-Type - browser will set it automatically with boundary for FormData
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
       });
 
-      const { message } = await res.json();
+      const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(message);
+        throw new Error(result.message);
       }
 
       setLoading(false);
-      toast.success(message);
+      toast.success(result.message);
+
+      // If user data is returned, you could store it for auto-login (optional)
+      if (result.data) {
+        console.log('User created with profile:', result.data);
+      }
+
       navigate('/login');
 
     } catch (err) {

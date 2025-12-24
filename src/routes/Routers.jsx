@@ -20,6 +20,8 @@ import AuthCallback from '../pages/AuthCallback.jsx';
 import PaymentCallback from '../pages/PaymentCallback.jsx';
 import PendingApproval from '../pages/PendingApproval.jsx';
 import ProviderStatusDemo from '../pages/ProviderStatusDemo.jsx';
+import OwnerDashboard from '../pages/Admin/OwnerDashboard.jsx';
+import AdminLayout from '../layout/AdminLayout.jsx';
 
 
 const Routers = () => {
@@ -56,6 +58,17 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
+      {/* Admin Routes - No Header/Footer */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="providers"
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
+              <OwnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
       <Route
         path="*"
         element={

@@ -14,8 +14,9 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // check if you are on this location
-  const isAuthPage = ['/login', '/register', '/thank-you'].includes(location.pathname)
+  // check if you are on this location (exclude header/footer for these routes)
+  const isAuthPage = ['/login', '/register', '/thank-you'].includes(location.pathname);
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     const checkTokenExpiry = () => {
@@ -42,8 +43,8 @@ const Layout = () => {
   return (
     <>
       {/* Rendering the Header component */}
-      {/* Only show header if not on Auth Pages */}
-      {!isAuthPage && <Header />}
+      {/* Only show header if not on Auth Pages or Admin Pages */}
+      {!isAuthPage && !isAdminPage && <Header />}
 
       {/* Main content area where the current route's page will be displayed */}
       <main className="min-h-screen transition-colors">
@@ -51,8 +52,8 @@ const Layout = () => {
       </main>
 
       {/* Rendering the Footer component */}
-      {/* Only show footer if not on Auth PAges */}
-      {!isAuthPage && <Footer />}
+      {/* Only show footer if not on Auth Pages or Admin Pages */}
+      {!isAuthPage && !isAdminPage && <Footer />}
     </>
   );
 };

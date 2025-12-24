@@ -70,7 +70,7 @@ const Barbers = () => {
         const nameMatch = provider.name?.toLowerCase().includes(lowerQuery);
         const specializationMatch = provider.specialization?.toLowerCase().includes(lowerQuery);
         const serviceMatch = matchesService(provider, [lowerQuery]);
-        
+
         return nameMatch || specializationMatch || serviceMatch;
       });
     }
@@ -81,13 +81,13 @@ const Barbers = () => {
         result = result.filter(p => (p.averageRating || 0) >= 4.5);
       } else if (activeFilter === "female") {
         const femaleKeywords = ["female", "women", "ladies", "styling", "nails", "makeup"];
-        result = result.filter(p => 
+        result = result.filter(p =>
           femaleKeywords.some(k => p.specialization?.toLowerCase().includes(k)) ||
           matchesService(p, femaleKeywords)
         );
       } else if (activeFilter === "male") {
         const maleKeywords = ["barber", "men", "shave", "beard", "grooming"];
-        result = result.filter(p => 
+        result = result.filter(p =>
           maleKeywords.some(k => p.specialization?.toLowerCase().includes(k)) ||
           matchesService(p, maleKeywords)
         );
@@ -114,7 +114,7 @@ const Barbers = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900 font-sans">
-      
+
       {/* ==================== HEADER ==================== */}
       <section className="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
@@ -157,7 +157,7 @@ const Barbers = () => {
       {/* ==================== CONTENT ==================== */}
       <section className="py-6 bg-gray-50/50 dark:bg-slate-900 min-h-[80vh]">
         <div className="container mx-auto px-4 max-w-[1400px]">
-          
+
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               {query ? `Results for "${query}"` : 'Recommended for you'}
@@ -168,10 +168,10 @@ const Barbers = () => {
           </div>
 
           {loading && <Loader />}
-          
+
           {error && (
             <div className="max-w-lg mx-auto mt-10">
-               <Error errMessage={error.message} />
+              <Error errMessage={error.message} />
             </div>
           )}
 
@@ -186,17 +186,17 @@ const Barbers = () => {
                 </div>
               ) : (
                 <div className="text-center py-20">
-                   <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Search className="w-8 h-8 text-gray-400" />
-                   </div>
-                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No professionals found</h3>
-                   <p className="text-slate-500 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
-                   <button 
-                     onClick={() => { setQuery(""); setActiveFilter("all"); }}
-                     className="mt-6 text-sm font-bold text-blue-600 hover:underline"
-                   >
-                     Clear all filters
-                   </button>
+                  <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No professionals found</h3>
+                  <p className="text-slate-500 max-w-xs mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
+                  <button
+                    onClick={() => { setQuery(""); setActiveFilter("all"); }}
+                    className="mt-6 text-sm font-bold text-blue-600 hover:underline"
+                  >
+                    Clear all filters
+                  </button>
                 </div>
               )}
             </>
@@ -207,11 +207,11 @@ const Barbers = () => {
       {/* ==================== TESTIMONIALS ==================== */}
       <section className="py-16 bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800">
         <div className="container mx-auto px-4">
-           <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-10">Trusted by thousands</h2>
-           <Testimonial />
+          <h2 className="text-2xl font-bold text-center text-slate-900 dark:text-white mb-10">Trusted by thousands</h2>
+          <Testimonial />
         </div>
       </section>
-      
+
       <style>{`
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
@@ -230,13 +230,13 @@ const ProviderCard = ({ user }) => {
       <div className="bg-white dark:bg-slate-800 rounded-lg overflow-hidden border border-gray-100 dark:border-slate-700 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 h-full flex flex-col">
         {/* Rectangular Image - 4:3 Aspect Ratio */}
         <div className="relative aspect-[4/3] bg-gray-100 dark:bg-slate-700 overflow-hidden">
-          <img 
-            src={user.profilePicture?.url || "/placeholder.jpg"} 
+          <img
+            src={user.profilePicture?.url || "/placeholder.jpg"}
             alt={user.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/400x300?text=No+Image"; }}
           />
-          
+
           {/* Top Rating Badge - Simplified for small card */}
           {user.averageRating >= 4.5 && (
             <div className="absolute top-2 left-2 bg-white/95 dark:bg-slate-900/90 backdrop-blur-sm px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
@@ -258,9 +258,9 @@ const ProviderCard = ({ user }) => {
               <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 transition-colors truncate">
                 {user.name}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.specialization || 'Professional'}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{user.specialization?.title || 'Professional'}</p>
             </div>
-            
+
             {/* Rating Box - Compact */}
             <div className="flex items-center gap-1 shrink-0 bg-green-50 dark:bg-green-900/20 px-1 py-0.5 rounded">
               <span className="text-xs font-bold text-green-700 dark:text-green-400">{Number(user.averageRating).toFixed(1) || "5.0"}</span>
@@ -274,18 +274,18 @@ const ProviderCard = ({ user }) => {
           </div>
 
           <div className="mt-auto pt-3 border-t border-gray-50 dark:border-slate-700">
-             {/* Service Pills - Very Compact */}
-             <div className="flex flex-wrap gap-1.5 mb-2 h-6 overflow-hidden">
-               {user.services?.slice(0,2).map((s, idx) => (
-                 <span key={idx} className="text-[10px] font-medium px-1.5 py-0.5 bg-gray-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md border border-gray-100 dark:border-slate-600">
-                   {typeof s === 'string' ? s : s.name}
-                 </span>
-               ))}
-             </div>
-             
-             <button className="w-full py-1.5 rounded-md border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-bold text-xs hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-colors">
-               Book Now
-             </button>
+            {/* Service Pills - Very Compact */}
+            <div className="flex flex-wrap gap-1.5 mb-2 h-6 overflow-hidden">
+              {user.services?.slice(0, 2).map((s, idx) => (
+                <span key={idx} className="text-[10px] font-medium px-1.5 py-0.5 bg-gray-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md border border-gray-100 dark:border-slate-600">
+                  {typeof s === 'string' ? s : s.name}
+                </span>
+              ))}
+            </div>
+
+            <button className="w-full py-1.5 rounded-md border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-bold text-xs hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-colors">
+              Book Now
+            </button>
           </div>
         </div>
       </div>
