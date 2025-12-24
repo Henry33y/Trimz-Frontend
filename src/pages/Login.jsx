@@ -103,6 +103,14 @@ const Login = () => {
 
       console.log("User Role:", result.data.role);
 
+      // Check if provider is pending approval
+      if (result.data.role === 'provider' && result.data.status === 'pending') {
+        navigate('/pending-approval', { replace: true });
+        toast.info('Your account is awaiting approval');
+        setLoading(false);
+        return;
+      }
+
       // Dynamic navigation based on role
       if (userRole === 'user') {
         navigate('/users/profile/me', { replace: true });

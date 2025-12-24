@@ -18,6 +18,8 @@ import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
 import NotificationPage from '../pages/Notifications';
 import AuthCallback from '../pages/AuthCallback.jsx';
 import PaymentCallback from '../pages/PaymentCallback.jsx';
+import PendingApproval from '../pages/PendingApproval.jsx';
+import ProviderStatusDemo from '../pages/ProviderStatusDemo.jsx';
 
 
 const Routers = () => {
@@ -38,6 +40,8 @@ const Routers = () => {
       <Route path="/payment/callback" element={<PaymentCallback />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/notifications" element={<NotificationPage />} />
+      <Route path="/pending-approval" element={<PendingApproval />} />
+      <Route path="/provider-status-demo" element={<ProviderStatusDemo />} />
       <Route
         path="/users/profile/me"
         element={

@@ -4,6 +4,7 @@ import BarberAbout from './BarberAbout';
 import FeedbackDisplay from './FeedbackDisplay';
 import SidePanel from './SidePanel';
 import BarberServices from './BarberServices/BarberServices.jsx';
+import ProviderContact from './BarberServices/ProviderContact.jsx';
 import BarberGallery from './BarberGallery';
 
 import { BASE_URL } from './../../config';
@@ -148,7 +149,9 @@ const BarbersDetails = () => {
                           : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}
                     `}
                     >
-                      {tabName === 'services' ? 'Book Services' : tabName}
+                      {tabName === 'services'
+                        ? (role === 'provider' ? 'Contact Provider' : 'Book Services')
+                        : tabName}
                     </button>
                   ))}
               </div>
@@ -180,7 +183,11 @@ const BarbersDetails = () => {
                 )}
                 {tab === 'services' && (
                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <BarberServices barberData={provider} />
+                    {role === 'provider' ? (
+                      <ProviderContact providerData={provider} />
+                    ) : (
+                      <BarberServices barberData={provider} />
+                    )}
                   </div>
                 )}
               </div>
