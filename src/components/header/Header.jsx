@@ -168,7 +168,7 @@ const Header = () => {
           {/* Right section with profile/login, notification, and menu button */}
           <div className="flex items-center gap-5">
             <ThemeToggle />
-            <NotificationIcon />
+            {token && user && <NotificationIcon />}
 
             {token && user ? (
               <div>
