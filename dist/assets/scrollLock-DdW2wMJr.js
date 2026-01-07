@@ -1,0 +1,1 @@
+let o=0,t="";function c(){try{o===0&&(t=document.body.style.overflow||"",document.body.style.overflow="hidden",document.body.style.touchAction="none"),o+=1}catch{}}function l(){try{if(o<=0)return;o-=1,o===0&&(document.body.style.overflow=t||"",document.body.style.touchAction="",t="")}catch{}}export{c as lockScroll,l as unlockScroll};
