@@ -234,7 +234,7 @@ const ProviderCard = ({ user }) => {
             src={user.profilePicture?.url || "/placeholder.jpg"}
             alt={user.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/400x300?text=No+Image"; }}
+            onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
           />
 
           {/* Top Rating Badge - Simplified for small card */}

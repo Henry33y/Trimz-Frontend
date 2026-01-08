@@ -182,7 +182,7 @@ const Profile = ({ barberData }) => {
           : `${BASE_URL}/uploads/profilePictures/${barberData.profilePicture}`;
         setPreviewURL(url);
       } else {
-        setPreviewURL('https://via.placeholder.com/150'); // default fallback
+        setPreviewURL('/placeholder.jpg'); // default fallback
       }
     }
   }, [barberData]);
