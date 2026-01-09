@@ -1,25 +1,18 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, Eye, EyeOff, ShieldCheck, Terminal, AlertCircle } from 'lucide-react';
+import {
+    Terminal, Cpu, ShieldAlert, Loader2,
+    ArrowRight, Code, Activity, Command
+} from 'lucide-react';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../context/AuthContext.jsx';
-import HashLoader from 'react-spinners/BeatLoader';
-import { BASE_URL } from '../config';
-import logo from '../assets/images/trimz.png';
+import { AuthContext } from '../../context/AuthContext.jsx';
+import { BASE_URL } from '../../config';
 
 const SuperAdminLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const { token, role, dispatch } = useContext(AuthContext);
-
-    // Redirect if already logged in as superadmin
-    useEffect(() => {
-        if (token && role === 'superadmin') {
-            navigate('/superadmin/dashboard');
-        }
-    }, [token, role, navigate]);
+    const { dispatch } = useContext(AuthContext);
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,11 +30,14 @@ const SuperAdminLogin = () => {
             });
 
             const result = await res.json();
+            if (!res.ok) throw new Error(result.message || 'Access Denied');
 
-            if (!res.ok) throw new Error(result.message || 'Login failed');
+            const userRole = result.data.role;
 
-            if (result.data.role !== 'superadmin') {
-                throw new Error('Access denied. This portal is for SuperAdmins only.');
+            if (userRole !== 'superadmin') {
+                toast.error('Restricted Access: Developer Credentials Required.');
+                setLoading(false);
+                return;
             }
 
             dispatch({
@@ -49,116 +45,110 @@ const SuperAdminLogin = () => {
                 payload: {
                     user: result.data,
                     token: result.token,
-                    role: result.data.role,
+                    role: userRole,
                 },
             });
 
-            toast.success('Developer Authentication Verified');
-            navigate('/superadmin/dashboard');
+            toast.info('Developer Environment Initialized');
+            navigate('/superadmin/dashboard', { replace: true });
         } catch (err) {
-            toast.error(err.message);
-        } finally {
+            toast.error(err.message || 'Access Denied');
             setLoading(false);
         }
     };
 
     return (
-        <section className="min-h-screen bg-[#020617] flex items-center justify-center p-4 font-sans selection:bg-blue-500/30">
-            {/* Background Effects */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="min-h-screen bg-[#020617] text-slate-300 flex flex-col items-center justify-center p-6 font-mono selection:bg-blue-500/30">
+            {/* Background Decorations */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-20">
+                <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-blue-600 rounded-full blur-[120px]"></div>
+                <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-indigo-600 rounded-full blur-[120px]"></div>
             </div>
 
-            <div className="max-w-[440px] w-full relative">
-                {/* Branding */}
-                <div className="text-center mb-10">
-                    <img src={logo} alt="Trimz" className="h-20 mx-auto mb-6 brightness-0 invert opacity-90" />
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-                        <Terminal size={12} />
-                        Developer Nexus
+            <div className="w-full max-w-md relative z-10">
+                {/* Header Decoration */}
+                <div className="flex justify-center mb-8">
+                    <div className="flex items-center gap-3 bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-full backdrop-blur-md shadow-2xl">
+                        <Activity className="text-blue-500 animate-pulse" size={16} />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">System Core V1.0</span>
                     </div>
-                    <h1 className="text-3xl font-black text-white tracking-tight">SuperAdmin Access</h1>
-                    <p className="text-slate-500 mt-2 font-medium">Internal system authentication</p>
                 </div>
 
-                {/* Login Card */}
-                <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800 rounded-[32px] p-8 sm:p-10 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
+                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)]">
+                    <div className="p-8 sm:p-12">
+                        <div className="text-center mb-10">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-500/10 rounded-2xl border border-blue-500/20 mb-6 group hover:border-blue-500/50 transition-colors">
+                                <Terminal className="text-blue-500 w-10 h-10 group-hover:scale-110 transition-transform" />
+                            </div>
+                            <h1 className="text-2xl font-black text-white tracking-widest flex items-center justify-center gap-3">
+                                <Command size={20} className="text-blue-500" />
+                                SUPERADMIN
+                            </h1>
+                            <p className="text-slate-500 mt-2 text-xs font-bold uppercase tracking-widest">Developer Access Node</p>
+                        </div>
 
-                    <form onSubmit={submitHandler} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Identity</label>
-                            <div className="relative group/input">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-blue-500 transition-colors" size={18} />
+                        <form onSubmit={submitHandler} className="space-y-6">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between px-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Identity-Token (Email)</label>
+                                    <Code size={12} className="text-slate-600" />
+                                </div>
                                 <input
                                     type="email"
                                     name="email"
-                                    placeholder="developer@trimz.org"
+                                    required
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    required
-                                    className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all"
+                                    className="w-full px-5 py-4 bg-slate-950/50 border border-slate-800 rounded-xl focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 outline-none transition-all font-medium text-white placeholder:text-slate-700"
+                                    placeholder="dev@trimz.internal"
                                 />
                             </div>
-                        </div>
 
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Authentication Key</label>
-                            <div className="relative group/input">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within/input:text-blue-500 transition-colors" size={18} />
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between px-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">AccessKey (Password)</label>
+                                    <ShieldAlert size={12} className="text-slate-600" />
+                                </div>
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type="password"
                                     name="password"
-                                    placeholder="••••••••"
+                                    required
                                     value={formData.password}
                                     onChange={handleInputChange}
-                                    required
-                                    className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl py-4 pl-12 pr-12 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all"
+                                    className="w-full px-5 py-4 bg-slate-950/50 border border-slate-800 rounded-xl focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 outline-none transition-all font-medium text-white placeholder:text-slate-700"
+                                    placeholder="••••••••"
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-blue-500 transition-colors"
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
                             </div>
-                        </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full h-[60px] bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-xl shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
-                        >
-                            {loading ? <HashLoader size={20} color="#ffffff" /> : (
-                                <>
-                                    <span>Establish Connection</span>
-                                    <ArrowRight size={20} />
-                                </>
-                            )}
-                        </button>
-                    </form>
-
-                    {/* Security Notice */}
-                    <div className="mt-8 pt-8 border-t border-slate-800 flex gap-3">
-                        <AlertCircle className="text-slate-600 shrink-0" size={16} />
-                        <p className="text-[11px] text-slate-500 leading-relaxed uppercase tracking-wider font-bold">
-                            Warning: Unauthorized access to this terminal is strictly prohibited. All connection attempts are logged.
-                        </p>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full group relative overflow-hidden py-4 bg-blue-600 text-white font-black rounded-xl hover:bg-blue-500 transition-all flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(37,99,235,0.3)] shadow-blue-600/20 active:translate-y-0.5"
+                            >
+                                <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20 transform translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                                {loading ? <Loader2 className="animate-spin" /> : (
+                                    <>
+                                        <span>INITIALIZE_SESSION</span>
+                                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                {/* Footer Links */}
-                <div className="flex justify-between items-center mt-8 px-2 text-[12px] font-bold text-slate-600">
-                    <Link to="/home" className="hover:text-blue-400 transition-colors">Return to Site</Link>
-                    <span className="opacity-20">•</span>
-                    <button className="hover:text-blue-400 transition-colors">Request Support</button>
-                    <span className="opacity-20">•</span>
-                    <Link to="/admin/providers" className="hover:text-blue-400 transition-colors uppercase tracking-widest text-[10px]">Owner Login</Link>
+                <div className="mt-8 flex items-center justify-between px-4">
+                    <Link to="/home" className="text-[10px] font-bold text-slate-500 hover:text-blue-400 uppercase tracking-widest transition-colors flex items-center gap-2">
+                        <ArrowRight size={12} className="rotate-180" />
+                        Return to Hub
+                    </Link>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-700 uppercase tracking-widest">
+                        <Cpu size={12} />
+                        Encrypted Connection
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 
