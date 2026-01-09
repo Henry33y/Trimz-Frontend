@@ -172,7 +172,15 @@ const Header = () => {
 
             {token && user ? (
               <div className="flex items-center gap-4">
-                {(role === "admin" || role === "superadmin") && (
+                {role === "superadmin" && (
+                  <Link
+                    to="/superadmin/dashboard"
+                    className="hidden lg:block text-[15px] font-[600] text-blue-500 hover:text-blue-600 transition-colors"
+                  >
+                    SuperAdmin Panel
+                  </Link>
+                )}
+                {role === "admin" && (
                   <Link
                     to="/admin/providers"
                     className="hidden lg:block text-[15px] font-[600] text-primaryColor hover:text-blue-700 transition-colors"
@@ -259,7 +267,23 @@ const Header = () => {
                       </NavLink>
                     </li>
                   ))}
-                  {(role === "admin" || role === "superadmin") && (
+                  {role === "superadmin" && (
+                    <li className="border-b border-gray-100 dark:border-slate-700 last:border-none">
+                      <NavLink
+                        to="/superadmin/dashboard"
+                        className={(navClass) =>
+                          navClass.isActive
+                            ? "text-blue-500 text-[17px] leading-7 font-[700] flex items-center gap-3 px-5 py-3 bg-blue-500/10 border-l-3 border-blue-500"
+                            : "text-textColor dark:text-gray-200 text-[17px] leading-7 font-[600] hover:text-blue-500 flex items-center gap-3 px-5 py-3 hover:bg-gray-100 dark:hover:bg-slate-700 border-l-3 border-transparent transition-all duration-200"
+                        }
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="text-xl"><BiLockAlt /></span>
+                        <span>SuperAdmin Panel</span>
+                      </NavLink>
+                    </li>
+                  )}
+                  {role === "admin" && (
                     <li className="border-b border-gray-100 dark:border-slate-700 last:border-none">
                       <NavLink
                         to="/admin/providers"

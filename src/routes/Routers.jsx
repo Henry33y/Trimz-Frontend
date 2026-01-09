@@ -22,6 +22,7 @@ import PendingApproval from '../pages/PendingApproval.jsx';
 import ProviderStatusDemo from '../pages/ProviderStatusDemo.jsx';
 import OwnerDashboard from '../pages/Admin/OwnerDashboard.jsx';
 import AdminLayout from '../layout/AdminLayout.jsx';
+import SuperAdminDashboard from '../pages/Admin/SuperAdminDashboard.jsx';
 
 
 const Routers = () => {
@@ -65,6 +66,17 @@ const Routers = () => {
           element={
             <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
               <OwnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+
+      <Route path="/superadmin" element={<AdminLayout />}>
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['superadmin']}>
+              <SuperAdminDashboard />
             </ProtectedRoute>
           }
         />
