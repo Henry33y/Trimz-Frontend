@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext, useState } from "react";
 import logo from "../../assets/images/trimz.png";
 import { NavLink, Link } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
-import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-icons/bi";
+import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle, BiLockAlt } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import NotificationIcon from "./NotificationIcon.jsx";
@@ -171,7 +171,15 @@ const Header = () => {
             {token && user && <NotificationIcon />}
 
             {token && user ? (
-              <div>
+              <div className="flex items-center gap-4">
+                {(role === "admin" || role === "superadmin") && (
+                  <Link
+                    to="/admin/providers"
+                    className="hidden lg:block text-[15px] font-[600] text-primaryColor hover:text-blue-700 transition-colors"
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
                   <figure className="w-[44px] h-[44px] rounded-full cursor-pointer overflow-hidden ring-2 ring-primaryColor/20 hover:ring-primaryColor/40 transition-all duration-200">
                     <img
@@ -251,6 +259,22 @@ const Header = () => {
                       </NavLink>
                     </li>
                   ))}
+                  {(role === "admin" || role === "superadmin") && (
+                    <li className="border-b border-gray-100 dark:border-slate-700 last:border-none">
+                      <NavLink
+                        to="/admin/providers"
+                        className={(navClass) =>
+                          navClass.isActive
+                            ? "text-primaryColor text-[17px] leading-7 font-[700] flex items-center gap-3 px-5 py-3 bg-primaryColor/10 border-l-3 border-primaryColor"
+                            : "text-textColor dark:text-gray-200 text-[17px] leading-7 font-[600] hover:text-primaryColor flex items-center gap-3 px-5 py-3 hover:bg-gray-100 dark:hover:bg-slate-700 border-l-3 border-transparent transition-all duration-200"
+                        }
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="text-xl"><BiLockAlt /></span>
+                        <span>Admin Panel</span>
+                      </NavLink>
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
