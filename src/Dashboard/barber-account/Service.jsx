@@ -15,11 +15,15 @@ import {
   Image as ImageIcon,
   Loader2,
   AlertTriangle,
-  Upload
+  Upload,
+  Layers
 } from "lucide-react";
+import useFetchData from "../../hooks/useFetchData";
 
-// MOCK ServiceEdit Component (Remove this if you have the real file)
-const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
+// ==========================================
+// SUB-COMPONENT: ServiceEdit
+// ==========================================
+const ServiceEdit = ({ isOpen, service, onClose, onUpdate, categories }) => {
   const [formData, setFormData] = useState(service || {});
   useEffect(() => { setFormData(service || {}); }, [service]);
   if (!isOpen) return null;
@@ -32,51 +36,66 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden scale-100 animate-in zoom-in-95">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="text-xl font-bold text-gray-900">Edit Service</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><XCircle size={20} /></button>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden scale-100 animate-in zoom-in-95 border border-gray-100 dark:border-slate-700">
+        <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Edit Service</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><XCircle size={20} /></button>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Service Name</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Service Name</label>
             <input
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100"
               value={formData.name || ''}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Category</label>
+            <select
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all text-gray-900 dark:text-gray-100"
+              value={formData.category || ''}
+              onChange={e => setFormData({ ...formData, category: e.target.value })}
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat, i) => (
+                <option key={i} value={cat} className="capitalize">{cat}</option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Price</label>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Price</label>
               <input
                 type="number"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all text-gray-900 dark:text-gray-100"
                 value={formData.price || ''}
                 onChange={e => setFormData({ ...formData, price: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">Duration</label>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Duration (mins)</label>
               <input
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
+                className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all text-gray-900 dark:text-gray-100"
                 value={formData.duration || ''}
                 onChange={e => setFormData({ ...formData, duration: e.target.value })}
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Description</label>
             <textarea
               rows={3}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all resize-none text-gray-900 dark:text-gray-100"
               value={formData.description || ''}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
-          <div className="flex justify-end gap-3 mt-6 pt-2 border-t border-gray-100">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-colors">Cancel</button>
-            <button type="submit" className="px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 font-bold shadow-lg transition-all transform active:scale-95">Save Changes</button>
+          <div className="flex justify-end gap-3 mt-6 pt-2 border-t border-gray-100 dark:border-slate-700">
+            <button type="button" onClick={onClose} className="px-5 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl font-medium transition-colors">Cancel</button>
+            <button type="submit" className="px-5 py-2.5 bg-slate-900 dark:bg-slate-700 text-white rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 font-bold shadow-lg transition-all transform active:scale-95">Save Changes</button>
           </div>
         </form>
       </div>
@@ -87,6 +106,10 @@ const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
 const Service = () => {
   const [selectedFiles, setSelectedFiles] = useState([]); // To handle multiple files
   const [existingServices, setExistingServices] = useState([]); // New state for existing services
+
+  const { data: configData } = useFetchData('admin/public/config');
+  const categories = configData?.service_categories || ["barber", "hairdresser", "stylist", "other"];
+
   const [formData, setFormData] = useState({
     name: "",
     provider: "",
@@ -97,6 +120,7 @@ const Service = () => {
     averageRating: "",
     images: "",
     providersDescription: "",
+    category: "",
   });
 
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -220,6 +244,7 @@ const Service = () => {
       image: null,
       imagePreview: null,
       availability: true, // Default to available
+      category: "", // Add category field
     };
     setFormData((prev) => ({
       ...prev,
@@ -351,6 +376,7 @@ const Service = () => {
         service={editingService}
         onClose={() => setEditModalOpen(false)}
         onUpdate={updateExistingService}
+        categories={categories}
       />
 
       {showConfirm && (
@@ -572,6 +598,21 @@ const Service = () => {
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                      <select
+                        name="category"
+                        value={service.category}
+                        onChange={(e) => handleServiceChange(index, e)}
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((cat, i) => (
+                          <option key={i} value={cat} className="capitalize">{cat}</option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>

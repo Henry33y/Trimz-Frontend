@@ -12,10 +12,14 @@ import {
   Calendar,
   Save,
   Trash2,
-  Plus
+  Plus,
+  MapPin,
+  Search
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
+
+import useFetchData from '../../hooks/useFetchData';
 
 // ==========================================
 // SUB-COMPONENT: TimeSlotSection
@@ -137,6 +141,9 @@ const TimeSlotSection = ({ formData, setFormData }) => {
 // ==========================================
 const Profile = ({ barberData }) => {
   const [previewURL, setPreviewURL] = useState('');
+  const { data: configData } = useFetchData('admin/public/config');
+  const specializations = configData?.service_categories || ["Shaving", "Braiding", "Hairstyling"];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -145,6 +152,7 @@ const Profile = ({ barberData }) => {
     bio: '',
     gender: '',
     specialization: '',
+    location: '',
     experience: [],
     achievements: [],
     timeSlots: [],
@@ -162,7 +170,8 @@ const Profile = ({ barberData }) => {
         phone: barberData.phone || '',
         bio: barberData.bio || '',
         gender: barberData.gender || '',
-        specialization: barberData.specialization || '',
+        specialization: barberData.specialization?.title || barberData.specialization || '',
+        location: barberData.location || '',
         experience: barberData.experience || [],
         achievements: barberData.achievements || [],
         timeSlots: barberData.workingHours || [],
@@ -294,7 +303,10 @@ const Profile = ({ barberData }) => {
       const updateData = new FormData();
       Object.keys(formData).forEach(key => {
         if (key !== "profilePicture") {
-          if (typeof formData[key] === "object") {
+          // Special handling for specialization object structure expected by backend
+          if (key === "specialization") {
+            updateData.append(key, JSON.stringify({ title: formData[key] }));
+          } else if (typeof formData[key] === "object") {
             updateData.append(key, JSON.stringify(formData[key]));
           } else {
             updateData.append(key, formData[key]);
@@ -475,14 +487,64 @@ const Profile = ({ barberData }) => {
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 dark:focus:ring-blue-400/20 outline-none transition-all appearance-none text-gray-900 dark:text-gray-100"
                 >
                   <option value="">Select Specialization</option>
-                  <option value="Shaving">Shaving</option>
-                  <option value="Braiding">Braiding</option>
-                  <option value="Hairstyling">Hair Styling</option>
+                  {specializations.map((spec, i) => (
+                    <option key={i} value={spec} className="capitalize">{spec}</option>
+                  ))}
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg className="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
               </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <MapPin size={18} className="text-blue-600" />
+                  Your Operational Zone
+                </label>
+                <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">UG Campus & Accra</span>
+              </div>
+
+              {/* Quick Select Badges */}
+              <div className="flex flex-wrap gap-2">
+                {["UG - Sarbah", "UG - Akuafo", "UG - Legon", "UG - Volta", "East Legon"].map((loc) => (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, location: loc })}
+                    className={`px-3 py-1.5 rounded-xl text-[11px] font-bold border transition-all ${formData.location?.includes(loc)
+                      ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20 scale-105"
+                      : "bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 hover:border-blue-400"
+                      }`}
+                  >
+                    {loc}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative group">
+                <input
+                  type="text"
+                  list="campus-locations"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  placeholder="Type your hall, hostel, or neighborhood..."
+                  className="w-full pl-4 pr-10 py-3.5 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-2xl focus:bg-white dark:focus:bg-slate-600 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all text-sm font-bold text-gray-900 dark:text-gray-100 placeholder:text-gray-400"
+                />
+                <datalist id="campus-locations">
+                  {(configData?.available_locations || []).map((loc, i) => (
+                    <option key={i} value={loc} />
+                  ))}
+                </datalist>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                  <Search size={18} />
+                </div>
+              </div>
+              <p className="text-[10px] text-slate-400 font-medium italic px-1">
+                Pinning your location helps students near you find your services faster.
+              </p>
             </div>
 
             <div className="col-span-1 md:col-span-2 space-y-2">

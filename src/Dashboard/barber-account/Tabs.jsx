@@ -14,7 +14,8 @@ import {
     Menu,
     LogOut,
     Trash2,
-    ChevronRight
+    ChevronRight,
+    CreditCard
 } from 'lucide-react';
 import DeleteAccountModal from '../../components/DeleteAccountModal';
 
@@ -93,6 +94,7 @@ const Tabs = ({ tab, setTab }) => {
         { id: 'settings', label: 'Profile Settings', icon: User },
         { id: 'services', label: 'Services', icon: Scissors },
         { id: 'galleryupload', label: 'Gallery', icon: ImageIcon },
+        { id: 'payouts', label: 'Payouts', icon: CreditCard },
     ];
 
     return (

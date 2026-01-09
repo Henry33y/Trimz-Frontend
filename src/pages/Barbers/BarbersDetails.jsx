@@ -110,7 +110,11 @@ const BarbersDetails = () => {
                 <div className="flex-1 w-full">
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     <span className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 py-1.5 px-4 text-xs font-bold uppercase tracking-wider rounded-full border border-blue-100 dark:border-blue-800">
-                      {specialization}
+                      {typeof specialization === 'object' && specialization?.title
+                        ? specialization.title
+                        : typeof specialization === 'string'
+                          ? specialization
+                          : 'Professional'}
                     </span>
                     <span className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 py-1.5 px-3 rounded-full text-xs font-bold border border-yellow-100 dark:border-yellow-800">
                       <img src={starIcon} alt="star" className="w-3.5 h-3.5" />
@@ -125,6 +129,11 @@ const BarbersDetails = () => {
                   <p className="text-slate-600 dark:text-gray-300 text-base leading-relaxed mb-6 font-medium">
                     {bio}
                   </p>
+
+                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm font-bold bg-slate-50 dark:bg-slate-900/50 w-fit px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <MapPin size={16} className="text-blue-600 dark:text-blue-400" />
+                    {provider?.location || "Location not set"}
+                  </div>
                 </div>
               </div>
 

@@ -1,27 +1,13 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
 import { Calendar, CalendarX, Loader2, AlertTriangle } from "lucide-react";
+import Appointments from "./Appointments";
 
 // ==========================================
-// MOCKS FOR PREVIEW (Remove/Comment out in production)
+// HELPER COMPONENTS
 // ==========================================
 const Loader = () => <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-600" size={32} /></div>;
 const Error = ({ errMessage }) => <div className="p-4 bg-red-50 text-red-600 rounded-lg flex items-center gap-2"><AlertTriangle size={20} /> {errMessage}</div>;
-const Appointments = ({ appointments }) => (
-  <div className="space-y-4">
-    {appointments.map(app => (
-      <div key={app._id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex justify-between items-start">
-          <div>
-            <h4 className="font-bold text-slate-900 dark:text-gray-100">Appointment with {app.provider?.name || 'Provider'}</h4>
-            <p className="text-sm text-slate-500 dark:text-gray-400">{new Date(app.date).toDateString()}</p>
-          </div>
-          <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs px-2 py-1 rounded-full font-bold uppercase">{app.status}</span>
-        </div>
-      </div>
-    ))}
-  </div>
-);
 // ==========================================
 
 const MyAppointments = () => {

@@ -65,10 +65,10 @@ const MyAccount = () => {
               const { role } = userData.data;
 
               dispatch({
-                type: 'LOGIN',
+                type: 'LOGIN_SUCCESS',
                 payload: {
                   token: jwtToken,
-                  user: userData,
+                  user: userData.data,
                   role,
                 },
               });

@@ -52,7 +52,9 @@ const ProviderContact = ({ providerData }) => {
                     />
                     <div>
                         <h3 className="font-bold text-slate-900 dark:text-gray-100 text-lg">{providerData?.name}</h3>
-                        <p className="text-sm text-slate-600 dark:text-gray-400">{providerData?.specialization || 'Professional Stylist'}</p>
+                        <p className="text-sm text-slate-600 dark:text-gray-400">
+                            {providerData?.specialization?.title || (typeof providerData?.specialization === 'string' ? providerData?.specialization : 'Professional Stylist')}
+                        </p>
                         {providerData?.location && (
                             <p className="text-xs text-slate-500 dark:text-gray-500 mt-1">📍 {providerData.location}</p>
                         )}

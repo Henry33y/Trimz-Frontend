@@ -8,10 +8,11 @@ import Profile from "./Profile";
 import Appointments from "./Appointments";
 import Service from "./Service";
 import GalleryUpload from "./GalleryUpload";
+import PayoutSettings from "./PayoutSettings";
 import starIcon from '../../assets/images/Star.png';
 import { AuthContext } from "../../context/AuthContext";
 import useGetProfile from "../../hooks/useFetchData";
-import { AlertTriangle, Calendar, CheckCircle2, Grid, Settings, Scissors, Image as ImageIcon } from 'lucide-react';
+import { AlertTriangle, Calendar, CheckCircle2, Grid, Settings, Scissors, Image as ImageIcon, CreditCard } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -124,7 +125,11 @@ const Dashboard = () => {
                     {/* Profile Details */}
                     <div className="flex-1 text-center md:text-left">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 dark:bg-slate-700 text-white text-xs font-bold uppercase tracking-wider mb-3">
-                        {data?.specialization || "No specialization"}
+                        {typeof data?.specialization === 'object' && data?.specialization?.title
+                          ? data.specialization.title
+                          : typeof data?.specialization === 'string'
+                            ? data.specialization
+                            : "No specialization"}
                       </div>
 
                       <h3 className="text-3xl font-black text-slate-900 dark:text-gray-100 mb-2">
@@ -198,6 +203,11 @@ const Dashboard = () => {
               {tab === "galleryupload" && (
                 <GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))?._id} />
               )}
+
+              {/* ======================= */}
+              {/* PAYOUTS TAB */}
+              {/* ======================= */}
+              {tab === "payouts" && <PayoutSettings barberData={data} />}
             </div>
           </div>
         </div>

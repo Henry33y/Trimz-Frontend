@@ -10,8 +10,8 @@ import {
     History, CreditCard, Layout, Trash2, Edit3, X,
     MoreVertical, UserCheck, UserX, Search,
     TrendingUp, ArrowDownRight, ArrowUpRight as ArrowUpRightIcon,
-    Terminal, Clock, AlertTriangle, Briefcase,
-    Zap, Globe, Percent, Sliders, CheckCircle, Package, Plus
+    Terminal, Clock, AlertTriangle, Briefcase, User,
+    Zap, Globe, Percent, Sliders, CheckCircle, Package, Plus, MapPin
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
@@ -44,11 +44,14 @@ const SuperAdminDashboard = () => {
 
     const [dataLoading, setDataLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [sentinelSearch, setSentinelSearch] = useState('');
+    const [userSearch, setUserSearch] = useState('');
 
     // Modal/CRUD State
     const [editingUser, setEditingUser] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [newCategory, setNewCategory] = useState('');
+    const [newLocation, setNewLocation] = useState('');
 
     // Add Admin State
     const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
@@ -200,6 +203,17 @@ const SuperAdminDashboard = () => {
         if (activeTab === 'settings') fetchConfig();
     }, [activeTab]);
 
+    // Live Sentinel Polling
+    useEffect(() => {
+        let interval;
+        if (activeTab === 'sentinel') {
+            interval = setInterval(() => {
+                fetchAuditLogs();
+            }, 5000); // Pulse every 5 seconds
+        }
+        return () => clearInterval(interval);
+    }, [activeTab]);
+
     // --- CRUD ACTIONS ---
 
     const handleAddAdmin = async (e) => {
@@ -318,13 +332,36 @@ const SuperAdminDashboard = () => {
     // --- UI HELPERS ---
 
     const getLogIcon = (action) => {
+        if (action.includes('cancel')) return <X className="text-rose-500" size={18} />;
         if (action.includes('delete')) return <Trash2 className="text-rose-500" size={18} />;
         if (action.includes('approve')) return <UserCheck className="text-emerald-500" size={18} />;
         if (action.includes('reject')) return <UserX className="text-amber-500" size={18} />;
         if (action.includes('create')) return <UserPlus className="text-indigo-500" size={18} />;
         if (action.includes('force')) return <Zap className="text-amber-500" size={18} />;
+        if (action.includes('update')) return <Edit3 className="text-blue-500" size={18} />;
         return <RefreshCcw className="text-blue-500" size={18} />;
     };
+
+    const getTimeAgo = (date) => {
+        const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+        if (seconds < 60) return 'just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return new Date(date).toLocaleDateString();
+    };
+
+    const filteredAuditLogs = auditLogs.filter(log => {
+        const search = sentinelSearch.toLowerCase();
+        return (
+            log.user?.name?.toLowerCase().includes(search) ||
+            log.user?.role?.toLowerCase().includes(search) ||
+            log.details?.toLowerCase().includes(search) ||
+            log.action?.toLowerCase().includes(search) ||
+            log.targetModel?.toLowerCase().includes(search)
+        );
+    });
 
     const StatCard = ({ title, value, icon: Icon, color, delay, prefix = '' }) => (
         <div
@@ -343,88 +380,125 @@ const SuperAdminDashboard = () => {
         </div>
     );
 
-    const UserTable = ({ data, title }) => (
-        <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-                <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">{title}</h2>
-                <div className="relative w-full md:w-80">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search records..."
-                        className="w-full bg-slate-950/50 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold text-white focus:border-blue-500/50 outline-none transition-all"
-                    />
-                </div>
-            </div>
+    const UserTable = ({ data, title }) => {
+        const filteredData = data.filter(item => {
+            const search = userSearch.toLowerCase();
+            return (
+                item.name?.toLowerCase().includes(search) ||
+                item.email?.toLowerCase().includes(search) ||
+                item.phone?.toLowerCase().includes(search) ||
+                item.role?.toLowerCase().includes(search)
+            );
+        });
 
-            {dataLoading ? (
-                <div className="flex flex-col items-center py-20">
-                    <Loader2 size={40} className="animate-spin text-blue-500 mb-4" />
-                    <span className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Accessing Records...</span>
+        return (
+            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase">{title}</h2>
+                        <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-black">{data.length} TOTAL</span>
+                    </div>
+                    <div className="relative w-full md:w-80">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                        <input
+                            type="text"
+                            value={userSearch}
+                            onChange={(e) => setUserSearch(e.target.value)}
+                            placeholder="Search name, email or phone..."
+                            className="w-full bg-slate-950/50 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-sm font-bold text-white focus:border-blue-500/50 outline-none transition-all"
+                        />
+                    </div>
                 </div>
-            ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="border-b border-white/5">
-                                <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Profile</th>
-                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Role</th>
-                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Status</th>
-                                <th className="pb-6 pr-4 text-right text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                            {data.map((item) => (
-                                <tr key={item._id} className="group hover:bg-white/[0.02] transition-all">
-                                    <td className="py-6 pl-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center font-black text-slate-400 border border-white/5">
-                                                {item.name?.charAt(0) || '?'}
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-white leading-none mb-1.5">{item.name}</p>
-                                                <p className="text-xs text-slate-500">{item.email}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-6">
-                                        <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-md border ${item.role === 'admin' ? 'border-amber-500/20 text-amber-500 bg-amber-500/5' :
-                                                item.role === 'provider' ? 'border-purple-500/20 text-purple-500 bg-purple-500/5' :
-                                                    'border-blue-500/20 text-blue-500 bg-blue-500/5'
-                                            }`}>
-                                            {item.role}
-                                        </span>
-                                    </td>
-                                    <td className="py-6">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${item.status === 'approved' || item.status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
-                                            <span className="text-[10px] font-bold text-slate-400 capitalize">{item.status || 'Active'}</span>
-                                        </div>
-                                    </td>
-                                    <td className="py-6 pr-4 text-right">
-                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button
-                                                onClick={() => { setEditingUser(item); setIsEditModalOpen(true); }}
-                                                className="p-3 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all outline-none"
-                                            >
-                                                <Edit3 size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteUser(item._id)}
-                                                className="p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all outline-none"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
+
+                {dataLoading ? (
+                    <div className="flex flex-col items-center py-20">
+                        <Loader2 size={40} className="animate-spin text-blue-500 mb-4" />
+                        <span className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Accessing Records...</span>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="border-b border-white/5">
+                                    <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Profile</th>
+                                    <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Contact & Info</th>
+                                    <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Role</th>
+                                    <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Status</th>
+                                    <th className="pb-6 pr-4 text-right text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-        </div>
-    );
+                            </thead>
+                            <tbody className="divide-y divide-white/5">
+                                {filteredData.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="5" className="py-20 text-center">
+                                            <div className="flex flex-col items-center gap-4">
+                                                <Users size={48} className="text-slate-700" />
+                                                <p className="text-slate-500 font-black uppercase tracking-widest text-xs">No users found in this sector</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredData.map((item) => (
+                                        <tr key={item._id} className="group hover:bg-white/[0.02] transition-all">
+                                            <td className="py-6 pl-4">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center font-black text-slate-400 border border-white/5 group-hover:scale-105 transition-transform">
+                                                        {item.name?.charAt(0) || '?'}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-white leading-none mb-1.5">{item.name}</p>
+                                                        <p className="text-[10px] text-slate-500 font-medium">{item.email}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-6">
+                                                <div className="space-y-1">
+                                                    <p className="text-sm font-bold text-slate-400">{item.phone || 'No phone'}</p>
+                                                    <p className="text-[9px] font-black uppercase text-slate-600 tracking-widest flex items-center gap-1">
+                                                        <Clock size={10} /> Joined {new Date(item.createdAt).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="py-6">
+                                                <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-md border ${item.role === 'admin' ? 'border-amber-500/20 text-amber-500 bg-amber-500/5' :
+                                                    item.role === 'provider' ? 'border-purple-500/20 text-purple-500 bg-purple-500/5' :
+                                                        'border-blue-500/20 text-blue-500 bg-blue-500/5'
+                                                    }`}>
+                                                    {item.role}
+                                                </span>
+                                            </td>
+                                            <td className="py-6">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${item.status === 'approved' || item.status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`}></div>
+                                                    <span className="text-[10px] font-bold text-slate-400 capitalize">{item.status || 'Active'}</span>
+                                                </div>
+                                            </td>
+                                            <td className="py-6 pr-4 text-right">
+                                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button
+                                                        onClick={() => { setEditingUser(item); setIsEditModalOpen(true); }}
+                                                        className="p-3 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all outline-none"
+                                                    >
+                                                        <Edit3 size={16} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteUser(item._id)}
+                                                        className="p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all outline-none"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     if (loading) {
         return (
@@ -614,8 +688,8 @@ const SuperAdminDashboard = () => {
                                                     </td>
                                                     <td className="py-6">
                                                         <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-full border ${apt.status === 'completed' ? 'border-emerald-500/20 text-emerald-500 bg-emerald-500/5' :
-                                                                apt.status === 'cancelled' ? 'border-rose-500/20 text-rose-500 bg-rose-500/5' :
-                                                                    'border-amber-500/20 text-amber-500 bg-amber-500/5'
+                                                            apt.status === 'cancelled' ? 'border-rose-500/20 text-rose-500 bg-rose-500/5' :
+                                                                'border-amber-500/20 text-amber-500 bg-amber-500/5'
                                                             }`}>
                                                             {apt.status}
                                                         </span>
@@ -667,20 +741,39 @@ const SuperAdminDashboard = () => {
                                             </button>
                                         </div>
 
-                                        <div className="flex items-center gap-5 pt-10 border-t border-white/5">
-                                            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400"><Percent size={24} /></div>
-                                            <div className="flex-1">
-                                                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Global Commission</h3>
-                                                <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Trimz Transaction Fee</p>
+                                        <div className="flex flex-col gap-8 pt-10 border-t border-white/5">
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400"><User size={24} /></div>
+                                                <div className="flex-1">
+                                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Customer Fee</h3>
+                                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Platform Service Fee (Added to Price)</p>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <input
+                                                        type="number"
+                                                        value={config.customer_fee_percent}
+                                                        onChange={(e) => setConfig({ ...config, customer_fee_percent: parseInt(e.target.value) })}
+                                                        className="w-20 bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-white font-black text-center outline-none focus:border-blue-500"
+                                                    />
+                                                    <button onClick={() => updateConfig({ customer_fee_percent: config.customer_fee_percent })} className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all"><CheckCircle size={20} /></button>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <input
-                                                    type="number"
-                                                    value={config.commission_rate}
-                                                    onChange={(e) => setConfig({ ...config, commission_rate: parseInt(e.target.value) })}
-                                                    className="w-24 bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-white font-black text-center outline-none focus:border-blue-500"
-                                                />
-                                                <button onClick={() => updateConfig({ commission_rate: config.commission_rate })} className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all"><CheckCircle size={20} /></button>
+
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400"><Briefcase size={24} /></div>
+                                                <div className="flex-1">
+                                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Provider Fee</h3>
+                                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Lead Generation Fee (Deducted from Barber)</p>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <input
+                                                        type="number"
+                                                        value={config.provider_fee_percent}
+                                                        onChange={(e) => setConfig({ ...config, provider_fee_percent: parseInt(e.target.value) })}
+                                                        className="w-20 bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-white font-black text-center outline-none focus:border-blue-500"
+                                                    />
+                                                    <button onClick={() => updateConfig({ provider_fee_percent: config.provider_fee_percent })} className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all"><CheckCircle size={20} /></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -740,6 +833,54 @@ const SuperAdminDashboard = () => {
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Location Manager */}
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-10 rounded-[3rem]">
+                                    <div className="flex items-center gap-5 mb-10">
+                                        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400"><MapPin size={24} /></div>
+                                        <div>
+                                            <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Location Directory</h3>
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Operational City Hubs</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3 mb-10 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                        {config.available_locations?.map((loc, idx) => (
+                                            <div key={idx} className="flex justify-between items-center p-5 rounded-2xl bg-white/[0.02] border border-white/5 group hover:bg-white/[0.04] transition-all">
+                                                <span className="text-xs font-black text-white uppercase tracking-widest">{loc}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        const freshLocs = config.available_locations.filter(l => l !== loc);
+                                                        updateConfig({ available_locations: freshLocs });
+                                                    }}
+                                                    className="p-2 text-rose-500/50 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            value={newLocation}
+                                            onChange={(e) => setNewLocation(e.target.value)}
+                                            placeholder="e.g., Accra"
+                                            className="flex-1 bg-slate-950 border border-white/5 rounded-2xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-blue-500"
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                if (!newLocation) return;
+                                                updateConfig({ available_locations: [...(config.available_locations || []), newLocation] });
+                                                setNewLocation('');
+                                            }}
+                                            className="px-8 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/20"
+                                        >
+                                            ADD LOCATION
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -747,42 +888,68 @@ const SuperAdminDashboard = () => {
                     {/* Sentinel Log */}
                     {activeTab === 'sentinel' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div>
-                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Sentinel_Feed</h1>
-                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Historical Audit Trail & Platform Integrity</p>
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+                                <div>
+                                    <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Sentinel_Feed</h1>
+                                    <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Historical Audit Trail & Platform Integrity</p>
+                                </div>
+                                <div className="relative w-full md:w-80">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                    <input
+                                        type="text"
+                                        value={sentinelSearch}
+                                        onChange={(e) => setSentinelSearch(e.target.value)}
+                                        placeholder="Filter by user, action or node..."
+                                        className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-blue-500/50 transition-all shadow-2xl"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
+                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8 relative">
+                                {/* Live Status Indicator */}
+                                <div className="absolute top-8 right-8 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Live Uplink</span>
+                                </div>
+
                                 <div className="space-y-4">
-                                    {auditLogs.map((log) => (
-                                        <div key={log._id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] transition-all group">
-                                            <div className="flex items-center gap-6">
-                                                <div className="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 shadow-inner">
-                                                    {getLogIcon(log.action)}
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-3 mb-1.5">
-                                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/10">
-                                                            {log.action.replace(/_/g, ' ')}
-                                                        </span>
-                                                        <span className="text-[10px] text-slate-600 font-bold">
-                                                            {new Date(log.timestamp).toLocaleDateString()} {new Date(log.timestamp).toLocaleTimeString()}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm font-bold text-white leading-tight">{log.details}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 bg-slate-950/30 px-5 py-3 rounded-2xl border border-white/5">
-                                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">
-                                                    {log.user?.name?.charAt(0) || 'A'}
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-[10px] font-black text-slate-300 uppercase">{log.user?.name}</p>
-                                                    <p className="text-[9px] font-bold text-slate-600 uppercase">{log.user?.role}</p>
-                                                </div>
-                                            </div>
+                                    {filteredAuditLogs.length === 0 ? (
+                                        <div className="text-center py-20 bg-white/[0.01] rounded-[2rem] border border-dashed border-white/5">
+                                            <Terminal className="w-12 h-12 text-slate-700 mx-auto mb-4" />
+                                            <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">No matching activity found...</p>
                                         </div>
-                                    ))}
+                                    ) : (
+                                        filteredAuditLogs.map((log) => (
+                                            <div key={log._id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] transition-all group relative overflow-hidden">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 shadow-inner">
+                                                        {getLogIcon(log.action)}
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+                                                            <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/10">
+                                                                {log.action.replace(/_/g, ' ')}
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-600 font-bold flex items-center gap-1">
+                                                                <Clock size={10} /> {getTimeAgo(log.timestamp)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-baseline gap-1.5 flex-wrap">
+                                                            <span className="text-xs font-black text-blue-500 opacity-80 uppercase tracking-tighter">({log.user?.role || 'system'})</span>
+                                                            <span className="text-sm font-black text-white">{log.user?.name || 'SYSTEM'}:</span>
+                                                            <p className="text-sm font-bold text-slate-300 leading-tight italic">{log.details}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="hidden lg:flex items-center gap-4 bg-slate-950/40 px-5 py-3.5 rounded-2xl border border-white/5 min-w-[180px]">
+                                                    <div className="text-right w-full">
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Node Access</p>
+                                                        <p className="text-[10px] font-bold text-blue-400 uppercase tracking-tighter">{log.targetModel || 'System Protocol'}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -900,7 +1067,7 @@ const SuperAdminDashboard = () => {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Access Role</label>
                                     <select value={editingUser.role} onChange={e => setEditingUser({ ...editingUser, role: e.target.value })} className="w-full bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none appearance-none cursor-pointer">
-                                        <option value="user">Customer</option>
+                                        <option value="customer">Customer</option>
                                         <option value="provider">Provider</option>
                                         <option value="admin">Supervisor</option>
                                     </select>
