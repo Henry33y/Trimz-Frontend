@@ -23,8 +23,6 @@ import ProviderStatusDemo from '../pages/ProviderStatusDemo.jsx';
 import OwnerDashboard from '../pages/Admin/OwnerDashboard.jsx';
 import AdminLayout from '../layout/AdminLayout.jsx';
 import SuperAdminDashboard from '../pages/Admin/SuperAdminDashboard.jsx';
-import AdminLogin from '../pages/Admin/AdminLogin.jsx';
-import SuperAdminLogin from '../pages/Admin/SuperAdminLogin.jsx';
 
 
 const Routers = () => {
@@ -63,7 +61,6 @@ const Routers = () => {
       />
       {/* Admin Routes - No Header/Footer */}
       <Route path="/admin" element={<AdminLayout />}>
-        <Route path="login" element={<AdminLogin />} />
         <Route
           path="providers"
           element={
@@ -75,7 +72,6 @@ const Routers = () => {
       </Route>
 
       <Route path="/superadmin" element={<AdminLayout />}>
-        <Route path="login" element={<SuperAdminLogin />} />
         <Route
           path="dashboard"
           element={

@@ -21,15 +21,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     // Check if the user is allowed
     const isAllowed = token && allowedRoles.includes(role);
 
-    // Determine where to redirect if not allowed
-    let redirectPath = "/login";
-    if (allowedRoles.includes('superadmin') && !allowedRoles.includes('user')) {
-        redirectPath = "/superadmin/login";
-    } else if (allowedRoles.includes('admin') && !allowedRoles.includes('user')) {
-        redirectPath = "/admin/login";
-    }
-
-    const accessibleRoute = token && isAllowed ? children : <Navigate to={redirectPath} replace={true} />;
+    const accessibleRoute = token && isAllowed ? children : <Navigate to="/login" replace={true} />;
 
     return accessibleRoute
 };

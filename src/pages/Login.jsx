@@ -116,7 +116,9 @@ const Login = () => {
         navigate('/users/profile/me', { replace: true });
       } else if (userRole === 'barber') {
         navigate('/barber/profile/me', { replace: true });
-      } else if (userRole === 'admin' || userRole === 'superadmin') {
+      } else if (userRole === 'superadmin') {
+        navigate('/superadmin/dashboard', { replace: true });
+      } else if (userRole === 'admin') {
         navigate('/admin/providers', { replace: true });
       } else {
         navigate('/home', { replace: true });
