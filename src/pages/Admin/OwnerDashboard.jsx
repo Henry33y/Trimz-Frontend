@@ -15,8 +15,6 @@ const OwnerDashboard = () => {
     const [actionLoading, setActionLoading] = useState(null);
     const [activeTab, setActiveTab] = useState('providers');
     const [statusFilter, setStatusFilter] = useState('pending'); // 'pending', 'approved', 'rejected', 'all'
-    const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
-    const [addingAdmin, setAddingAdmin] = useState(false);
     const [rejectionReason, setRejectionReason] = useState({});
     const [showHistory, setShowHistory] = useState({});
 
@@ -93,32 +91,6 @@ const OwnerDashboard = () => {
         }
     };
 
-    const handleAddAdmin = async (e) => {
-        e.preventDefault();
-        setAddingAdmin(true);
-        try {
-            const res = await fetch(`${BASE_URL}/admin/create-admin`, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newAdmin)
-            });
-
-            if (!res.ok) throw new Error('Failed to create admin');
-
-            const data = await res.json();
-            toast.success(data.message || 'Admin created successfully!');
-            setNewAdmin({ name: '', email: '', password: '' });
-
-        } catch (error) {
-            console.error('Error creating admin:', error);
-            toast.error('Failed to create admin');
-        } finally {
-            setAddingAdmin(false);
-        }
-    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -175,16 +147,6 @@ const OwnerDashboard = () => {
                     >
                         <Users size={20} />
                         <span className="text-sm sm:text-base">Provider Management</span>
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('admins')}
-                        className={`flex items-center justify-center sm:justify-start gap-2 px-4 py-3 font-bold transition ${activeTab === 'admins'
-                            ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                            }`}
-                    >
-                        <Shield size={20} />
-                        <span className="text-sm sm:text-base">Add Admin</span>
                     </button>
                 </div>
 
@@ -345,67 +307,7 @@ const OwnerDashboard = () => {
                             ))}
                         </div>
                     </div>
-                ) : (
-                    /* Add Admin Form */
-                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 max-w-2xl">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-gray-100 mb-2">Create New Admin</h2>
-                        <p className="text-slate-500 dark:text-gray-400 mb-6">Add a new administrator to the platform</p>
-
-                        <form onSubmit={handleAddAdmin} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Name</label>
-                                <input
-                                    type="text"
-                                    value={newAdmin.name}
-                                    onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
-                                    required
-                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
-                                    placeholder="Enter admin name"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Email</label>
-                                <input
-                                    type="email"
-                                    value={newAdmin.email}
-                                    onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
-                                    required
-                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
-                                    placeholder="Enter admin email"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 dark:text-gray-300 mb-2">Password</label>
-                                <input
-                                    type="password"
-                                    value={newAdmin.password}
-                                    onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
-                                    required
-                                    minLength={6}
-                                    className="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500"
-                                    placeholder="Enter admin password (min 6 characters)"
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={addingAdmin}
-                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {addingAdmin ? (
-                                    <>
-                                        <Loader2 size={20} className="animate-spin" />
-                                        Creating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <UserPlus size={20} />
-                                        Create Admin
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    </div>
-                )}
+                ) : null}
             </div>
         </div>
     );

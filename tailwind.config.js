@@ -49,8 +49,17 @@ export default {
             backgroundImage: {
                 'dark-gradient': 'linear-gradient(135deg, #0A0E1A 0%, #12172B 100%)',
                 'dark-gradient-radial': 'radial-gradient(circle at top right, #1A2035 0%, #0A0E1A 100%)',
+            },
+            animation: {
+                'spin-slow': 'spin 8s linear infinite',
+                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+                // You can add custom ones here if needed
             }
         },
     },
-    plugins: [],
+    plugins: [
+        require('tailwindcss-animate'),
+    ],
 };
