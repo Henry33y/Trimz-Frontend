@@ -8,7 +8,9 @@ import {
     ArrowUpRight, Shield, UserPlus, Database,
     CheckCircle2, AlertCircle, RefreshCcw, Command,
     History, CreditCard, Layout, Trash2, Edit3, X,
-    MoreVertical, UserCheck, UserX, Search
+    MoreVertical, UserCheck, UserX, Search,
+    TrendingUp, ArrowDownRight, ArrowUpRight as ArrowUpRightIcon,
+    Terminal, Clock, AlertTriangle, Briefcase
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
@@ -34,6 +36,8 @@ const SuperAdminDashboard = () => {
     const [admins, setAdmins] = useState([]);
     const [providers, setProviders] = useState([]);
     const [customers, setCustomers] = useState([]);
+    const [financials, setFinancials] = useState({ grossVolume: 0, projectedEarnings: 0, transactions: [] });
+    const [auditLogs, setAuditLogs] = useState([]);
     const [dataLoading, setDataLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -120,6 +124,36 @@ const SuperAdminDashboard = () => {
         }
     };
 
+    const fetchFinancials = async () => {
+        setDataLoading(true);
+        try {
+            const res = await fetch(`${BASE_URL}/admin/financials`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const result = await res.json();
+            if (result.success) setFinancials(result.data);
+        } catch (error) {
+            toast.error('Failed to load financial records');
+        } finally {
+            setDataLoading(false);
+        }
+    };
+
+    const fetchAuditLogs = async () => {
+        setDataLoading(true);
+        try {
+            const res = await fetch(`${BASE_URL}/admin/audit-logs`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const result = await res.json();
+            if (result.success) setAuditLogs(result.data);
+        } catch (error) {
+            toast.error('Failed to load platform logs');
+        } finally {
+            setDataLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchSystemStats();
     }, []);
@@ -128,6 +162,8 @@ const SuperAdminDashboard = () => {
         if (activeTab === 'admins') fetchAdmins();
         if (activeTab === 'providers') fetchProviders();
         if (activeTab === 'users') fetchCustomers();
+        if (activeTab === 'revenue') fetchFinancials();
+        if (activeTab === 'sentinel') fetchAuditLogs();
     }, [activeTab]);
 
     // --- CRUD ACTIONS ---
@@ -225,7 +261,7 @@ const SuperAdminDashboard = () => {
 
     // --- UI HELPERS ---
 
-    const StatCard = ({ title, value, icon: Icon, color, delay }) => (
+    const StatCard = ({ title, value, icon: Icon, color, delay, prefix = '' }) => (
         <div
             className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-6 rounded-[2rem] hover:border-blue-500/30 transition-all group relative overflow-hidden"
             style={{ animationDelay: `${delay}ms` }}
@@ -237,7 +273,7 @@ const SuperAdminDashboard = () => {
             </div>
             <h3 className="text-slate-500 text-xs font-bold uppercase tracking-wider">{title}</h3>
             <p className="text-4xl font-black text-white mt-2 tabular-nums">
-                {value.toLocaleString()}
+                {prefix}{typeof value === 'number' ? value.toLocaleString() : value}
             </p>
         </div>
     );
@@ -278,7 +314,7 @@ const SuperAdminDashboard = () => {
                                     <td className="py-6 pl-4">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center font-black text-slate-400 border border-white/5">
-                                                {item.name.charAt(0)}
+                                                {item.name?.charAt(0) || '?'}
                                             </div>
                                             <div>
                                                 <p className="font-bold text-white leading-none mb-1.5">{item.name}</p>
@@ -355,18 +391,20 @@ const SuperAdminDashboard = () => {
                         </div>
                     </div>
 
-                    <nav className="space-y-2 flex-1">
+                    <nav className="space-y-1.5 flex-1">
                         {[
-                            { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+                            { id: 'overview', label: 'Common Room', icon: LayoutDashboard },
                             { id: 'admins', label: 'Supervisors', icon: ShieldCheck },
                             { id: 'providers', label: 'Service Units', icon: Scissors },
                             { id: 'users', label: 'End Users', icon: Users },
-                            { id: 'revenue', label: 'Financials', icon: CreditCard },
+                            { id: 'revenue', label: 'Financial Command', icon: CreditCard },
+                            { id: 'sentinel', label: 'Platform Sentinel', icon: Activity },
+                            { id: 'settings', label: 'Core Config', icon: Settings },
                         ].map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
-                                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
+                                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
                                     ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
                                     : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
@@ -418,12 +456,15 @@ const SuperAdminDashboard = () => {
                             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                                 <div className="xl:col-span-2">
                                     <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10">
-                                        <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter italic">Recent Signups</h2>
+                                        <div className="flex justify-between items-center mb-8">
+                                            <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter italic">Recent Signups</h2>
+                                            <button onClick={() => setActiveTab('users')} className="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:text-blue-400">View All</button>
+                                        </div>
                                         <div className="space-y-4">
                                             {stats.recentSignups?.map((u, i) => (
                                                 <div key={i} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
                                                     <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 font-bold uppercase">{u.name.charAt(0)}</div>
+                                                        <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 font-bold uppercase">{u.name?.charAt(0) || 'U'}</div>
                                                         <div>
                                                             <h4 className="font-bold text-white text-sm">{u.name}</h4>
                                                             <p className="text-xs text-slate-500">{u.email}</p>
@@ -451,6 +492,124 @@ const SuperAdminDashboard = () => {
                                             Initiate Forge
                                         </button>
                                     </div>
+
+                                    <div className="bg-slate-900 border border-white/5 rounded-[2.5rem] p-8">
+                                        <h3 className="text-[11px] font-black uppercase tracking-widest mb-6 flex items-center gap-2 text-blue-500">
+                                            <Activity size={16} />
+                                            Platform Health
+                                        </h3>
+                                        <div className="space-y-5">
+                                            <div className="flex items-start gap-4">
+                                                <div className="mt-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-white uppercase">Encrypted Core</p>
+                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase">Identity Verified</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-4">
+                                                <div className="mt-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-white uppercase">Relays Active</p>
+                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase">Latency: Minimal</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* FINANCIAL COMMAND TAB */}
+                    {activeTab === 'revenue' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-6xl font-black text-white tracking-tighter italic italic uppercase">FINANCIAL_HQ</h1>
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2 ml-1">Capital Flux & Transaction Integrity</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <StatCard title="Platform Gross Volume" value={financials.grossVolume} icon={TrendingUp} color="emerald" prefix="GH₵ " delay={100} />
+                                <StatCard title="Projected Monthly Revenue" value={financials.projectedEarnings} icon={BarChart3} color="blue" prefix="GH₵ " delay={200} />
+                            </div>
+
+                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
+                                <h2 className="text-2xl font-black text-white italic mb-10 uppercase tracking-tighter italic">Ledger History</h2>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="border-b border-white/5">
+                                                <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Transaction ID</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Customer</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Provider</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Method</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Value</th>
+                                                <th className="pb-6 pr-4 text-right text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {financials.transactions.map((tx) => (
+                                                <tr key={tx._id} className="group hover:bg-white/[0.01] transition-all">
+                                                    <td className="py-6 pl-4">
+                                                        <span className="font-bold text-slate-400 text-xs tabular-nums">{tx.paymentReference?.slice(-10) || 'TRZ-0000'}</span>
+                                                    </td>
+                                                    <td className="py-6 text-sm font-bold text-white">{tx.customer?.name}</td>
+                                                    <td className="py-6 text-sm font-bold text-slate-400">{tx.provider?.name}</td>
+                                                    <td className="py-6">
+                                                        <span className="text-[10px] font-black uppercase text-blue-500">{tx.paymentMethod || 'CARD'}</span>
+                                                    </td>
+                                                    <td className="py-6 font-black text-white tabular-nums text-sm">GH₵ {tx.totalPrice}</td>
+                                                    <td className="py-6 pr-4 text-right">
+                                                        <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">PAID</span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {financials.transactions.length === 0 && (
+                                        <div className="text-center py-20 text-slate-600 font-bold uppercase tracking-widest text-xs">No transaction records found</div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* PLATFORM SENTINEL TAB (AUDIT LOGS) */}
+                    {activeTab === 'sentinel' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-6xl font-black text-white tracking-tighter italic italic uppercase">PLATFORM_SENTINEL</h1>
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2 ml-1">Immutable Activity Logs & Audit Trails</p>
+                            </div>
+
+                            <div className="bg-slate-950/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 font-mono">
+                                <div className="flex items-center gap-3 mb-10 text-blue-500">
+                                    <Terminal size={20} />
+                                    <span className="text-xs font-black uppercase tracking-[0.3em]">Live Feed / System.stdout</span>
+                                </div>
+
+                                <div className="space-y-6">
+                                    {auditLogs.map((log) => (
+                                        <div key={log._id} className="flex gap-6 items-start group">
+                                            <div className="mt-1.5 flex flex-col items-center">
+                                                <div className="w-2.5 h-2.5 rounded-full border border-white/20 group-hover:bg-blue-500 transition-all"></div>
+                                                <div className="w-px h-12 bg-white/5 mt-1.5"></div>
+                                            </div>
+                                            <div className="flex-1 pb-6">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <span className="text-[10px] text-slate-600 tabular-nums">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                                                    <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{log.action.replace('_', ' ')}</span>
+                                                    <span className="text-[10px] text-slate-500 uppercase font-bold">BY: {log.user?.name} ({log.user?.role})</span>
+                                                </div>
+                                                <p className="text-sm text-slate-300 leading-relaxed font-bold">
+                                                    {log.details}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {auditLogs.length === 0 && (
+                                        <div className="text-center py-20 text-slate-700 font-black uppercase tracking-widest text-[10px]">No system activity recorded</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -474,7 +633,7 @@ const SuperAdminDashboard = () => {
                                         <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Credentials</label>
                                         <input type="password" value={newAdmin.password} onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })} required minLength={6} className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Set password" />
                                     </div>
-                                    <button type="submit" disabled={addingAdmin} className="md:col-span-3 w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all mt-4 flex items-center justify-center gap-3">
+                                    <button type="submit" disabled={addingAdmin} className="md:col-span-3 w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all mt-4 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(37,99,235,0.2)]">
                                         {addingAdmin ? <Loader2 className="animate-spin" size={20} /> : <UserPlus size={20} />}
                                         Generate Administrator Node
                                     </button>
@@ -487,11 +646,11 @@ const SuperAdminDashboard = () => {
                     {activeTab === 'providers' && <UserTable data={providers} title="Platform Service Units" />}
                     {activeTab === 'users' && <UserTable data={customers} title="Registered End Users" />}
 
-                    {activeTab === 'revenue' && (
+                    {activeTab === 'settings' && (
                         <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-lg mx-auto">
-                            <CreditCard className="text-slate-700 w-16 h-16 mb-8" />
-                            <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">FINANCIAL_LOG_RESTRICTED</h2>
-                            <p className="text-slate-500 font-bold text-xs uppercase tracking-widest leading-relaxed mt-4">Module currently syncing with secure bank gateways.</p>
+                            <Settings className="text-blue-500 w-16 h-16 mb-8 animate-[spin_10s_linear_infinite]" />
+                            <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">CORE_CONFIG_LOCKED</h2>
+                            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.3em] leading-relaxed mt-4">Platform kernel variables under secure encryption. Access restricted to System Architect.</p>
                         </div>
                     )}
 
