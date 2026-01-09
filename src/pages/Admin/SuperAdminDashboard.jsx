@@ -7,7 +7,7 @@ import {
     LayoutDashboard, Settings, LogOut,
     Search, Bell, ArrowUpRight, TrendingUp,
     Shield, UserPlus, Database, Server,
-    CheckCircle2, AlertCircle, RefreshCcw
+    CheckCircle2, AlertCircle, RefreshCcw, Command
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
@@ -162,8 +162,8 @@ const SuperAdminDashboard = () => {
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
                                 className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-sm transition-all group ${activeTab === item.id
-                                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
-                                        : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
+                                    : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
                             >
                                 <item.icon size={20} className={activeTab === item.id ? 'text-white' : 'group-hover:text-blue-400'} />
