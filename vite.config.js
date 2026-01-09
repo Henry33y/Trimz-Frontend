@@ -12,7 +12,7 @@ export default defineConfig(({ command, mode }) => ({
     // and to make BASE_URL = '/api/' work without extra backend config.
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:5000',
+        target: process.env.VITE_API_URL || 'http://localhost:5002',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path
