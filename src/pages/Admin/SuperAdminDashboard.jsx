@@ -11,7 +11,7 @@ import {
     MoreVertical, UserCheck, UserX, Search,
     TrendingUp, ArrowDownRight, ArrowUpRight as ArrowUpRightIcon,
     Terminal, Clock, AlertTriangle, Briefcase,
-    Zap, Globe, Percent, Sliders
+    Zap, Globe, Percent, Sliders, CheckCircle, Package, Plus
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
@@ -39,12 +39,16 @@ const SuperAdminDashboard = () => {
     const [customers, setCustomers] = useState([]);
     const [financials, setFinancials] = useState({ grossVolume: 0, projectedEarnings: 0, transactions: [] });
     const [auditLogs, setAuditLogs] = useState([]);
+    const [appointments, setAppointments] = useState([]);
+    const [config, setConfig] = useState({ commission_rate: 15, maintenance_mode: false, service_categories: [] });
+
     const [dataLoading, setDataLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     // Modal/CRUD State
     const [editingUser, setEditingUser] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [newCategory, setNewCategory] = useState('');
 
     // Add Admin State
     const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
@@ -152,6 +156,36 @@ const SuperAdminDashboard = () => {
         }
     };
 
+    const fetchAppointments = async () => {
+        setDataLoading(true);
+        try {
+            const res = await fetch(`${BASE_URL}/admin/appointments`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const result = await res.json();
+            if (result.success) setAppointments(result.data);
+        } catch (error) {
+            toast.error('Failed to load global appointments');
+        } finally {
+            setDataLoading(false);
+        }
+    };
+
+    const fetchConfig = async () => {
+        setDataLoading(true);
+        try {
+            const res = await fetch(`${BASE_URL}/admin/config`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const result = await res.json();
+            if (result.success) setConfig(result.data);
+        } catch (error) {
+            toast.error('Failed to load platform settings');
+        } finally {
+            setDataLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchSystemStats();
     }, []);
@@ -162,6 +196,8 @@ const SuperAdminDashboard = () => {
         if (activeTab === 'users') fetchCustomers();
         if (activeTab === 'revenue') fetchFinancials();
         if (activeTab === 'sentinel') fetchAuditLogs();
+        if (activeTab === 'appointments') fetchAppointments();
+        if (activeTab === 'settings') fetchConfig();
     }, [activeTab]);
 
     // --- CRUD ACTIONS ---
@@ -234,6 +270,45 @@ const SuperAdminDashboard = () => {
         }
     };
 
+    const handleForceStatus = async (appointmentId, status) => {
+        if (!window.confirm(`Force change appointment status to ${status.toUpperCase()}?`)) return;
+        try {
+            const res = await fetch(`${BASE_URL}/admin/appointments/${appointmentId}/status`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) {
+                toast.success(`Log: Status forced to ${status}`);
+                fetchAppointments();
+            }
+        } catch (error) {
+            toast.error('Override failed');
+        }
+    };
+
+    const updateConfig = async (newSettings) => {
+        try {
+            const res = await fetch(`${BASE_URL}/admin/config`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ settings: newSettings })
+            });
+            if (res.ok) {
+                toast.success('Global variables updated');
+                fetchConfig();
+            }
+        } catch (error) {
+            toast.error('System config update failed');
+        }
+    };
+
     const handleLogout = () => {
         localStorage.clear();
         navigate('/login');
@@ -247,6 +322,7 @@ const SuperAdminDashboard = () => {
         if (action.includes('approve')) return <UserCheck className="text-emerald-500" size={18} />;
         if (action.includes('reject')) return <UserX className="text-amber-500" size={18} />;
         if (action.includes('create')) return <UserPlus className="text-indigo-500" size={18} />;
+        if (action.includes('force')) return <Zap className="text-amber-500" size={18} />;
         return <RefreshCcw className="text-blue-500" size={18} />;
     };
 
@@ -345,7 +421,6 @@ const SuperAdminDashboard = () => {
                             ))}
                         </tbody>
                     </table>
-                    {data.length === 0 && <div className="text-center py-20 text-slate-600 font-bold uppercase tracking-widest text-xs">No records found</div>}
                 </div>
             )}
         </div>
@@ -356,7 +431,7 @@ const SuperAdminDashboard = () => {
             <div className="min-h-screen flex items-center justify-center bg-[#0b0f1a]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
-                    <p className="text-slate-400 font-black tracking-widest text-[10px] uppercase">Booting Kernel...</p>
+                    <p className="text-slate-400 font-black tracking-widest text-[10px] uppercase italic">VERIFYING_ROOT_ACCESS...</p>
                 </div>
             </div>
         );
@@ -368,30 +443,31 @@ const SuperAdminDashboard = () => {
 
                 {/* --- SIDEBAR --- */}
                 <aside className="w-full lg:w-72 bg-[#090d16] border-b lg:border-r border-white/5 p-8 lg:sticky lg:top-0 lg:h-screen flex flex-col">
-                    <div className="flex items-center gap-3 mb-12">
+                    <div className="flex items-center gap-3 mb-10">
                         <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 group">
                             <Shield className="text-white group-hover:scale-110 transition-transform" size={20} />
                         </div>
                         <div>
                             <h2 className="text-white font-black tracking-tight text-xl leading-tight italic uppercase">TRIMZ</h2>
-                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">MASTER_CONTROL</p>
+                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">MASTER_NODE</p>
                         </div>
                     </div>
 
                     <nav className="space-y-1 flex-1">
                         {[
                             { id: 'overview', label: 'Command Hub', icon: LayoutDashboard },
+                            { id: 'appointments', label: 'God-View', icon: Calendar },
+                            { id: 'revenue', label: 'Capital Logic', icon: CreditCard },
+                            { id: 'sentinel', label: 'Sentinel Log', icon: Activity },
                             { id: 'admins', label: 'Supervisors', icon: ShieldCheck },
                             { id: 'providers', label: 'Service Units', icon: Scissors },
                             { id: 'users', label: 'End Users', icon: Users },
-                            { id: 'revenue', label: 'Capital Logic', icon: CreditCard },
-                            { id: 'sentinel', label: 'Sentinel Log', icon: Activity },
                             { id: 'settings', label: 'Core Config', icon: Sliders },
                         ].map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
-                                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
+                                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
                                     ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
                                     : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
@@ -416,12 +492,12 @@ const SuperAdminDashboard = () => {
                 {/* --- MAIN CONTENT --- */}
                 <main className="flex-1 p-6 md:p-12 lg:p-16 max-w-7xl">
 
-                    {/* Command Hub */}
+                    {/* OVERVIEW */}
                     {activeTab === 'overview' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                                 <div>
-                                    <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Master_Node</h1>
+                                    <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Master_Control</h1>
                                     <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Live Platform Telemetry</p>
                                 </div>
                                 <button
@@ -443,7 +519,7 @@ const SuperAdminDashboard = () => {
                             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                                 <div className="xl:col-span-2">
                                     <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10">
-                                        <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter">Personnel Incoming</h2>
+                                        <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter">Recent Personnel</h2>
                                         <div className="space-y-4">
                                             {stats.recentSignups?.map((u, i) => (
                                                 <div key={i} className="flex items-center justify-between p-5 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
@@ -479,6 +555,239 @@ const SuperAdminDashboard = () => {
                         </div>
                     )}
 
+                    {/* GOD-VIEW APPOINTMENT MANAGER */}
+                    {activeTab === 'appointments' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">God_View</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Omniscient Booking Surveillance</p>
+                            </div>
+
+                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
+                                <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+                                    <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">Live Bookings</h2>
+                                    <div className="flex items-center gap-4 w-full md:w-auto">
+                                        <div className="relative flex-1 md:w-64">
+                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+                                            <input type="text" placeholder="Search customer/unit..." className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-xs font-bold text-white outline-none focus:border-blue-500" />
+                                        </div>
+                                        <select className="bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-xs font-black uppercase text-slate-400 outline-none cursor-pointer">
+                                            <option value="all">Every State</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="border-b border-white/5">
+                                                <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Schedule</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Customer</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Service Unit</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Logic State</th>
+                                                <th className="pb-6 pr-4 text-right text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Override</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {appointments.map((apt) => (
+                                                <tr key={apt._id} className="group hover:bg-white/[0.02] transition-all">
+                                                    <td className="py-6 pl-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500"><Clock size={16} /></div>
+                                                            <div>
+                                                                <p className="font-black text-white text-xs">{new Date(apt.date).toLocaleDateString('en-GB')}</p>
+                                                                <p className="text-[10px] text-slate-500 font-bold uppercase">{apt.startTime} - {apt.endTime}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-6">
+                                                        <p className="text-sm font-bold text-white leading-tight">{apt.customer?.name}</p>
+                                                        <p className="text-[10px] text-slate-500">{apt.customer?.email}</p>
+                                                    </td>
+                                                    <td className="py-6">
+                                                        <p className="text-sm font-bold text-slate-300 leading-tight">{apt.provider?.name}</p>
+                                                        <p className="text-[10px] text-slate-500">{apt.service?.name}</p>
+                                                    </td>
+                                                    <td className="py-6">
+                                                        <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-full border ${apt.status === 'completed' ? 'border-emerald-500/20 text-emerald-500 bg-emerald-500/5' :
+                                                                apt.status === 'cancelled' ? 'border-rose-500/20 text-rose-500 bg-rose-500/5' :
+                                                                    'border-amber-500/20 text-amber-500 bg-amber-500/5'
+                                                            }`}>
+                                                            {apt.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-6 pr-4 text-right">
+                                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            {apt.status !== 'completed' && (
+                                                                <button onClick={() => handleForceStatus(apt._id, 'completed')} className="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all"><CheckCircle size={14} /></button>
+                                                            )}
+                                                            {apt.status !== 'cancelled' && (
+                                                                <button onClick={() => handleForceStatus(apt._id, 'cancelled')} className="p-2.5 bg-rose-500/10 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all"><X size={14} /></button>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* CORE CONFIG (GLOBAL SETTINGS) */}
+                    {activeTab === 'settings' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Core_Config</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Platform Global Toggles & Logic Constants</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                {/* Maintenance & Commission */}
+                                <div className="space-y-8">
+                                    <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-10 rounded-[3rem]">
+                                        <div className="flex justify-between items-center mb-10">
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500"><Zap size={24} /></div>
+                                                <div>
+                                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Maintenance Mode</h3>
+                                                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Platform-wide Shutdown</p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => updateConfig({ maintenance_mode: !config.maintenance_mode })}
+                                                className={`px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${config.maintenance_mode ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-slate-950 text-slate-500 border border-white/5 hover:text-white'}`}
+                                            >
+                                                {config.maintenance_mode ? 'DEACTIVATE LOCKDOWN' : 'ACTIVATE LOCKDOWN'}
+                                            </button>
+                                        </div>
+
+                                        <div className="flex items-center gap-5 pt-10 border-t border-white/5">
+                                            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400"><Percent size={24} /></div>
+                                            <div className="flex-1">
+                                                <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Global Commission</h3>
+                                                <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Trimz Transaction Fee</p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <input
+                                                    type="number"
+                                                    value={config.commission_rate}
+                                                    onChange={(e) => setConfig({ ...config, commission_rate: parseInt(e.target.value) })}
+                                                    className="w-24 bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-white font-black text-center outline-none focus:border-blue-500"
+                                                />
+                                                <button onClick={() => updateConfig({ commission_rate: config.commission_rate })} className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all"><CheckCircle size={20} /></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-blue-600/5 border border-blue-500/20 rounded-[2.5rem] p-8 flex items-center gap-6">
+                                        <AlertCircle className="text-blue-500 flex-shrink-0" size={32} />
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-loose">
+                                            <span className="text-blue-400 font-black">Architect Warning:</span> Global variables propagate instantly. Changes here alter the business logic of the entire Trimz ecosystem for all users.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Service Categories Manager */}
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-10 rounded-[3rem]">
+                                    <div className="flex items-center gap-5 mb-10">
+                                        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400"><Package size={24} /></div>
+                                        <div>
+                                            <h3 className="text-xl font-black text-white italic uppercase tracking-tighter">Service Directory</h3>
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">Global Unit Classifications</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3 mb-10 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                        {config.service_categories?.map((cat, idx) => (
+                                            <div key={idx} className="flex justify-between items-center p-5 rounded-2xl bg-white/[0.02] border border-white/5 group hover:bg-white/[0.04] transition-all">
+                                                <span className="text-xs font-black text-white uppercase tracking-widest">{cat}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        const freshCats = config.service_categories.filter(c => c !== cat);
+                                                        updateConfig({ service_categories: freshCats });
+                                                    }}
+                                                    className="p-2 text-rose-500/50 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            value={newCategory}
+                                            onChange={(e) => setNewCategory(e.target.value)}
+                                            placeholder="e.g., Manicure"
+                                            className="flex-1 bg-slate-950 border border-white/5 rounded-2xl px-6 py-4 text-xs font-bold text-white outline-none focus:border-blue-500"
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                if (!newCategory) return;
+                                                updateConfig({ service_categories: [...(config.service_categories || []), newCategory.toLowerCase()] });
+                                                setNewCategory('');
+                                            }}
+                                            className="px-8 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20"
+                                        >
+                                            ADD CATEGORY
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Sentinel Log */}
+                    {activeTab === 'sentinel' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Sentinel_Feed</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Historical Audit Trail & Platform Integrity</p>
+                            </div>
+
+                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
+                                <div className="space-y-4">
+                                    {auditLogs.map((log) => (
+                                        <div key={log._id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] transition-all group">
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center border border-white/5 shadow-inner">
+                                                    {getLogIcon(log.action)}
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center gap-3 mb-1.5">
+                                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/10">
+                                                            {log.action.replace(/_/g, ' ')}
+                                                        </span>
+                                                        <span className="text-[10px] text-slate-600 font-bold">
+                                                            {new Date(log.timestamp).toLocaleDateString()} {new Date(log.timestamp).toLocaleTimeString()}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm font-bold text-white leading-tight">{log.details}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-4 bg-slate-950/30 px-5 py-3 rounded-2xl border border-white/5">
+                                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">
+                                                    {log.user?.name?.charAt(0) || 'A'}
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-black text-slate-300 uppercase">{log.user?.name}</p>
+                                                    <p className="text-[9px] font-bold text-slate-600 uppercase">{log.user?.role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Capital Logic (Financial HQ) */}
                     {activeTab === 'revenue' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -509,7 +818,7 @@ const SuperAdminDashboard = () => {
                                         <tbody className="divide-y divide-white/5">
                                             {financials.transactions.map((tx) => (
                                                 <tr key={tx._id} className="group hover:bg-white/[0.01] transition-all">
-                                                    <td className="py-6 pl-4 font-bold text-slate-500 text-xs tabular-nums tracking-tighter">{tx.paymentReference?.slice(-12) || '---'}</td>
+                                                    <td className="py-6 pl-4 font-bold text-slate-500 text-xs tabular-nums">{tx.paymentReference?.slice(-12) || '---'}</td>
                                                     <td className="py-6 text-sm font-bold text-white">{tx.customer?.name}</td>
                                                     <td className="py-6 text-sm font-bold text-slate-400">{tx.provider?.name}</td>
                                                     <td className="py-6">
@@ -517,115 +826,13 @@ const SuperAdminDashboard = () => {
                                                     </td>
                                                     <td className="py-6 font-black text-white tabular-nums text-sm">GH₵ {tx.totalPrice}</td>
                                                     <td className="py-6 pr-4 text-right">
-                                                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">VERIFIED</span>
+                                                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">VERIFIED</span>
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Sentinel Log - IMPROVED USER FRIENDLY VERSION */}
-                    {activeTab === 'sentinel' && (
-                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div>
-                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Sentinel_Feed</h1>
-                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Historical Audit Trail & Accountability Engine</p>
-                            </div>
-
-                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
-                                <div className="space-y-4">
-                                    {auditLogs.map((log, i) => (
-                                        <div key={log._id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] hover:border-blue-500/20 transition-all group">
-                                            <div className="flex items-center gap-6">
-                                                <div className="w-14 h-14 rounded-2xl bg-slate-950/50 flex items-center justify-center border border-white/5 shadow-inner transition-transform group-hover:scale-105">
-                                                    {getLogIcon(log.action)}
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-3 mb-1.5">
-                                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/10">
-                                                            {log.action.replace(/_/g, ' ')}
-                                                        </span>
-                                                        <span className="text-[10px] text-slate-600 font-bold tabular-nums">
-                                                            {new Date(log.timestamp).toLocaleDateString()} at {new Date(log.timestamp).toLocaleTimeString()}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-sm font-bold text-white leading-tight">{log.details}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 bg-slate-950/30 px-5 py-3 rounded-2xl border border-white/5">
-                                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">
-                                                    {log.user?.name?.charAt(0) || 'A'}
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-wider">{log.user?.name}</p>
-                                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{log.user?.role}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {auditLogs.length === 0 && (
-                                        <div className="text-center py-20 flex flex-col items-center">
-                                            <Activity className="text-slate-800 mb-6 w-16 h-16" />
-                                            <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-xs">No System Pulse Detected</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Core Config - WHAT DOES IT DO? */}
-                    {activeTab === 'settings' && (
-                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div>
-                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Core_Config</h1>
-                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Platform Global Constants & Logic Toggles</p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {/* Commission Logic */}
-                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-blue-500/30 transition-all group">
-                                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform">
-                                        <Percent size={24} />
-                                    </div>
-                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Commission Rate</h3>
-                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Global platform fee charged on every service transaction.</p>
-                                    <div className="flex items-end gap-3">
-                                        <input type="number" defaultValue="15" className="w-24 bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-white font-black outline-none" />
-                                        <span className="text-2xl font-black text-white mb-2">%</span>
-                                    </div>
-                                </div>
-
-                                {/* Availability Toggle */}
-                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-amber-500/30 transition-all group">
-                                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-8 group-hover:scale-110 transition-transform">
-                                        <Zap size={24} />
-                                    </div>
-                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Maintenance Mode</h3>
-                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Instant lockout of all non-admin users for emergency system repair.</p>
-                                    <button className="px-8 py-3 bg-slate-950 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all">Enable Lockout</button>
-                                </div>
-
-                                {/* Global Scope */}
-                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-indigo-500/30 transition-all group">
-                                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-8 group-hover:scale-110 transition-transform">
-                                        <Globe size={24} />
-                                    </div>
-                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Region Control</h3>
-                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Manage supported cities and currency formatting for the GH region.</p>
-                                    <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em]">Active: Greater Accra</p>
-                                </div>
-                            </div>
-
-                            <div className="bg-blue-600/5 border border-blue-500/20 rounded-[2.5rem] p-8 flex items-center gap-6">
-                                <AlertCircle className="text-blue-500 flex-shrink-0" size={32} />
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-loose">
-                                    <span className="text-blue-400 font-black">Architect Warning:</span> Changes to Core Config propagate through the entire system instantly. Modify these values ONLY when you intend to change the business logic of the Trimz Platform globally.
-                                </p>
                             </div>
                         </div>
                     )}
@@ -710,7 +917,7 @@ const SuperAdminDashboard = () => {
                             </div>
 
                             <button type="submit" className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-blue-500 transition-all shadow-xl mt-6">
-                                Update Platform State
+                                Commit State Update
                             </button>
                         </form>
                     </div>
