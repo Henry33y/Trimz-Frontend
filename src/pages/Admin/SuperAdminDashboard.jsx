@@ -42,7 +42,8 @@ const SuperAdminDashboard = () => {
     const fetchSystemStats = async () => {
         try {
             setRefreshing(true);
-            const res = await fetch(`${BASE_URL}/admin/stats`, {
+            // Using relative URL to benefit from Vite proxy or absolute BASE_URL
+            const res = await fetch(`${BASE_URL}/admin/platform-stats`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
