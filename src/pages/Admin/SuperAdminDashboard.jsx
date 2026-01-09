@@ -10,7 +10,8 @@ import {
     History, CreditCard, Layout, Trash2, Edit3, X,
     MoreVertical, UserCheck, UserX, Search,
     TrendingUp, ArrowDownRight, ArrowUpRight as ArrowUpRightIcon,
-    Terminal, Clock, AlertTriangle, Briefcase
+    Terminal, Clock, AlertTriangle, Briefcase,
+    Zap, Globe, Percent, Sliders
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
@@ -44,7 +45,6 @@ const SuperAdminDashboard = () => {
     // Modal/CRUD State
     const [editingUser, setEditingUser] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
 
     // Add Admin State
     const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
@@ -66,12 +66,10 @@ const SuperAdminDashboard = () => {
             const res = await fetch(`${BASE_URL}/admin/platform-stats`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            if (!res.ok) throw new Error(`Stats fetch failed: ${res.status}`);
             const result = await res.json();
-            setStats(result.data);
+            if (result.success) setStats(result.data);
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching system stats:', error);
             toast.error('Could not load real-time statistics');
             setLoading(false);
         } finally {
@@ -180,18 +178,13 @@ const SuperAdminDashboard = () => {
                 },
                 body: JSON.stringify(newAdmin)
             });
-
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || 'Failed to create administration account');
-            }
-
+            if (!res.ok) throw new Error('Forge failed');
             toast.success('Admin forge successful!');
             setNewAdmin({ name: '', email: '', password: '' });
-            fetchAdmins(); // Refresh admin list
+            fetchAdmins();
             fetchSystemStats();
         } catch (error) {
-            toast.error(error.message);
+            toast.error('Failed to forge admin');
         } finally {
             setAddingAdmin(false);
         }
@@ -210,56 +203,52 @@ const SuperAdminDashboard = () => {
             });
             const result = await res.json();
             if (result.success) {
-                toast.success('User updated successfully');
+                toast.success('System updated');
                 setIsEditModalOpen(false);
-                // Refresh relevant list
                 if (activeTab === 'admins') fetchAdmins();
                 if (activeTab === 'providers') fetchProviders();
                 if (activeTab === 'users') fetchCustomers();
                 fetchSystemStats();
-            } else {
-                toast.error(result.message);
             }
         } catch (error) {
-            toast.error('Error updating user');
+            toast.error('Update failed');
         }
     };
 
     const handleDeleteUser = async (userId) => {
-        if (!window.confirm('CRITICAL: Are you sure you want to PERMANENTLY delete this account? This cannot be undone.')) return;
-
-        setIsDeleting(true);
+        if (!window.confirm('CRITICAL: Delete this account permanently?')) return;
         try {
             const res = await fetch(`${BASE_URL}/admin/users/${userId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
-            const result = await res.json();
-            if (result.success) {
-                toast.success('Account deleted successfully');
+            if (res.ok) {
+                toast.success('Account purged');
                 if (activeTab === 'admins') fetchAdmins();
                 if (activeTab === 'providers') fetchProviders();
                 if (activeTab === 'users') fetchCustomers();
                 fetchSystemStats();
-            } else {
-                toast.error(result.message);
             }
         } catch (error) {
-            toast.error('Error deleting account');
-        } finally {
-            setIsDeleting(false);
+            toast.error('Purge failed');
         }
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('role');
+        localStorage.clear();
         navigate('/login');
-        toast.success('Session closed');
+        toast.success('Session terminated');
     };
 
     // --- UI HELPERS ---
+
+    const getLogIcon = (action) => {
+        if (action.includes('delete')) return <Trash2 className="text-rose-500" size={18} />;
+        if (action.includes('approve')) return <UserCheck className="text-emerald-500" size={18} />;
+        if (action.includes('reject')) return <UserX className="text-amber-500" size={18} />;
+        if (action.includes('create')) return <UserPlus className="text-indigo-500" size={18} />;
+        return <RefreshCcw className="text-blue-500" size={18} />;
+    };
 
     const StatCard = ({ title, value, icon: Icon, color, delay, prefix = '' }) => (
         <div
@@ -295,7 +284,7 @@ const SuperAdminDashboard = () => {
             {dataLoading ? (
                 <div className="flex flex-col items-center py-20">
                     <Loader2 size={40} className="animate-spin text-blue-500 mb-4" />
-                    <span className="text-slate-500 font-bold uppercase tracking-widest text-xs">Accessing Records...</span>
+                    <span className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Accessing Records...</span>
                 </div>
             ) : (
                 <div className="overflow-x-auto">
@@ -340,13 +329,13 @@ const SuperAdminDashboard = () => {
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
                                                 onClick={() => { setEditingUser(item); setIsEditModalOpen(true); }}
-                                                className="p-3 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all"
+                                                className="p-3 bg-blue-500/10 text-blue-400 rounded-xl hover:bg-blue-500 hover:text-white transition-all outline-none"
                                             >
                                                 <Edit3 size={16} />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteUser(item._id)}
-                                                className="p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                                                className="p-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all outline-none"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -356,9 +345,7 @@ const SuperAdminDashboard = () => {
                             ))}
                         </tbody>
                     </table>
-                    {data.length === 0 && (
-                        <div className="text-center py-20 text-slate-500 italic">No records found matching your criteria</div>
-                    )}
+                    {data.length === 0 && <div className="text-center py-20 text-slate-600 font-bold uppercase tracking-widest text-xs">No records found</div>}
                 </div>
             )}
         </div>
@@ -369,7 +356,7 @@ const SuperAdminDashboard = () => {
             <div className="min-h-screen flex items-center justify-center bg-[#0b0f1a]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
-                    <p className="text-slate-400 font-medium tracking-wide italic">ACCESSING PLATFORM KERNEL...</p>
+                    <p className="text-slate-400 font-black tracking-widest text-[10px] uppercase">Booting Kernel...</p>
                 </div>
             </div>
         );
@@ -382,29 +369,29 @@ const SuperAdminDashboard = () => {
                 {/* --- SIDEBAR --- */}
                 <aside className="w-full lg:w-72 bg-[#090d16] border-b lg:border-r border-white/5 p-8 lg:sticky lg:top-0 lg:h-screen flex flex-col">
                     <div className="flex items-center gap-3 mb-12">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-                            <Shield className="text-white" size={20} />
+                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 group">
+                            <Shield className="text-white group-hover:scale-110 transition-transform" size={20} />
                         </div>
                         <div>
-                            <h2 className="text-white font-black tracking-tight text-xl leading-tight italic">TRIMZ</h2>
-                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">MASTER_NODE</p>
+                            <h2 className="text-white font-black tracking-tight text-xl leading-tight italic uppercase">TRIMZ</h2>
+                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">MASTER_CONTROL</p>
                         </div>
                     </div>
 
-                    <nav className="space-y-1.5 flex-1">
+                    <nav className="space-y-1 flex-1">
                         {[
-                            { id: 'overview', label: 'Common Room', icon: LayoutDashboard },
+                            { id: 'overview', label: 'Command Hub', icon: LayoutDashboard },
                             { id: 'admins', label: 'Supervisors', icon: ShieldCheck },
                             { id: 'providers', label: 'Service Units', icon: Scissors },
                             { id: 'users', label: 'End Users', icon: Users },
-                            { id: 'revenue', label: 'Financial Command', icon: CreditCard },
-                            { id: 'sentinel', label: 'Platform Sentinel', icon: Activity },
-                            { id: 'settings', label: 'Core Config', icon: Settings },
+                            { id: 'revenue', label: 'Capital Logic', icon: CreditCard },
+                            { id: 'sentinel', label: 'Sentinel Log', icon: Activity },
+                            { id: 'settings', label: 'Core Config', icon: Sliders },
                         ].map((item) => (
                             <button
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
-                                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
+                                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-black text-[11px] uppercase tracking-wider transition-all group ${activeTab === item.id
                                     ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
                                     : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
@@ -421,7 +408,7 @@ const SuperAdminDashboard = () => {
                             className="w-full flex items-center gap-4 px-5 py-4 text-red-500 font-black text-[11px] uppercase tracking-widest hover:bg-red-500/10 rounded-2xl transition-all group"
                         >
                             <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
-                            Terminate Session
+                            Sign Out
                         </button>
                     </div>
                 </aside>
@@ -429,13 +416,13 @@ const SuperAdminDashboard = () => {
                 {/* --- MAIN CONTENT --- */}
                 <main className="flex-1 p-6 md:p-12 lg:p-16 max-w-7xl">
 
-                    {/* OVERVIEW TAB */}
+                    {/* Command Hub */}
                     {activeTab === 'overview' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                                 <div>
-                                    <h1 className="text-6xl font-black text-white tracking-tighter italic italic">SYSTEM_ROOT</h1>
-                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2 ml-1">Live Environment Overview</p>
+                                    <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Master_Node</h1>
+                                    <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Live Platform Telemetry</p>
                                 </div>
                                 <button
                                     onClick={fetchSystemStats}
@@ -456,22 +443,19 @@ const SuperAdminDashboard = () => {
                             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                                 <div className="xl:col-span-2">
                                     <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10">
-                                        <div className="flex justify-between items-center mb-8">
-                                            <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter italic">Recent Signups</h2>
-                                            <button onClick={() => setActiveTab('users')} className="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:text-blue-400">View All</button>
-                                        </div>
+                                        <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter">Personnel Incoming</h2>
                                         <div className="space-y-4">
                                             {stats.recentSignups?.map((u, i) => (
-                                                <div key={i} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
+                                                <div key={i} className="flex items-center justify-between p-5 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
                                                     <div className="flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 font-bold uppercase">{u.name?.charAt(0) || 'U'}</div>
+                                                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-slate-400 font-bold border border-white/5">{u.name?.charAt(0) || 'U'}</div>
                                                         <div>
                                                             <h4 className="font-bold text-white text-sm">{u.name}</h4>
                                                             <p className="text-xs text-slate-500">{u.email}</p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded bg-blue-500/10 text-blue-400">{u.role}</span>
+                                                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">{u.role}</span>
                                                         <p className="text-[9px] text-slate-500 mt-2 font-bold uppercase tracking-widest">{new Date(u.createdAt).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
@@ -480,177 +464,202 @@ const SuperAdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="space-y-6">
-                                    <div className="bg-gradient-to-br from-blue-700 to-indigo-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group border border-white/10">
-                                        <Shield className="absolute -right-6 -bottom-6 opacity-10 group-hover:scale-110 transition-transform duration-1000" size={200} />
-                                        <h3 className="text-2xl font-black mb-4 italic italic">Forge Admin</h3>
-                                        <p className="text-blue-100/70 text-sm font-medium leading-relaxed mb-10">Create high-level administrative nodes to assist in platform management.</p>
-                                        <button
-                                            onClick={() => setActiveTab('admins')}
-                                            className="w-full py-5 bg-white text-blue-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-50 transition-all"
-                                        >
-                                            Initiate Forge
-                                        </button>
-                                    </div>
-
-                                    <div className="bg-slate-900 border border-white/5 rounded-[2.5rem] p-8">
-                                        <h3 className="text-[11px] font-black uppercase tracking-widest mb-6 flex items-center gap-2 text-blue-500">
-                                            <Activity size={16} />
-                                            Platform Health
-                                        </h3>
-                                        <div className="space-y-5">
-                                            <div className="flex items-start gap-4">
-                                                <div className="mt-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                                                <div>
-                                                    <p className="text-xs font-bold text-white uppercase">Encrypted Core</p>
-                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase">Identity Verified</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-start gap-4">
-                                                <div className="mt-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                                                <div>
-                                                    <p className="text-xs font-bold text-white uppercase">Relays Active</p>
-                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase">Latency: Minimal</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="bg-gradient-to-br from-blue-700 to-indigo-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group border border-white/10">
+                                    <Shield className="absolute -right-6 -bottom-6 opacity-10 group-hover:scale-110 transition-transform duration-1000" size={200} />
+                                    <h3 className="text-2xl font-black mb-4 italic uppercase">Forge Admin</h3>
+                                    <p className="text-blue-100/70 text-sm font-medium leading-relaxed mb-10">Expand the administrative hierarchy by generating new supervisor nodes.</p>
+                                    <button
+                                        onClick={() => setActiveTab('admins')}
+                                        className="w-full py-5 bg-white text-blue-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-50 transition-all shadow-xl"
+                                    >
+                                        Execute Forge
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* FINANCIAL COMMAND TAB */}
+                    {/* Capital Logic (Financial HQ) */}
                     {activeTab === 'revenue' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div>
-                                <h1 className="text-6xl font-black text-white tracking-tighter italic italic uppercase">FINANCIAL_HQ</h1>
-                                <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2 ml-1">Capital Flux & Transaction Integrity</p>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Capital_Flow</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Platform Liquidity & Transaction Integrity</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <StatCard title="Platform Gross Volume" value={financials.grossVolume} icon={TrendingUp} color="emerald" prefix="GH₵ " delay={100} />
-                                <StatCard title="Projected Monthly Revenue" value={financials.projectedEarnings} icon={BarChart3} color="blue" prefix="GH₵ " delay={200} />
+                                <StatCard title="Gross Platform Volume" value={financials.grossVolume} icon={TrendingUp} color="emerald" prefix="GH₵ " delay={100} />
+                                <StatCard title="Estimated Monthly Yield" value={financials.projectedEarnings} icon={BarChart3} color="blue" prefix="GH₵ " delay={200} />
                             </div>
 
                             <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
-                                <h2 className="text-2xl font-black text-white italic mb-10 uppercase tracking-tighter italic">Ledger History</h2>
+                                <h2 className="text-2xl font-black text-white italic mb-10 uppercase tracking-tighter">Global Ledger</h2>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
                                         <thead>
                                             <tr className="border-b border-white/5">
-                                                <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Transaction ID</th>
-                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Customer</th>
-                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Provider</th>
-                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Method</th>
-                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Value</th>
+                                                <th className="pb-6 pl-4 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Hash ID</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Counterparty</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Service Unit</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Channel</th>
+                                                <th className="pb-6 text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Amount</th>
                                                 <th className="pb-6 pr-4 text-right text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-white/5">
                                             {financials.transactions.map((tx) => (
                                                 <tr key={tx._id} className="group hover:bg-white/[0.01] transition-all">
-                                                    <td className="py-6 pl-4">
-                                                        <span className="font-bold text-slate-400 text-xs tabular-nums">{tx.paymentReference?.slice(-10) || 'TRZ-0000'}</span>
-                                                    </td>
+                                                    <td className="py-6 pl-4 font-bold text-slate-500 text-xs tabular-nums tracking-tighter">{tx.paymentReference?.slice(-12) || '---'}</td>
                                                     <td className="py-6 text-sm font-bold text-white">{tx.customer?.name}</td>
                                                     <td className="py-6 text-sm font-bold text-slate-400">{tx.provider?.name}</td>
                                                     <td className="py-6">
-                                                        <span className="text-[10px] font-black uppercase text-blue-500">{tx.paymentMethod || 'CARD'}</span>
+                                                        <span className="text-[9px] font-black uppercase text-blue-500 px-2 py-1 bg-blue-500/5 rounded border border-blue-500/10">{tx.paymentMethod || 'SECURE'}</span>
                                                     </td>
                                                     <td className="py-6 font-black text-white tabular-nums text-sm">GH₵ {tx.totalPrice}</td>
                                                     <td className="py-6 pr-4 text-right">
-                                                        <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">PAID</span>
+                                                        <span className="text-[9px] font-black uppercase px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">VERIFIED</span>
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
-                                    {financials.transactions.length === 0 && (
-                                        <div className="text-center py-20 text-slate-600 font-bold uppercase tracking-widest text-xs">No transaction records found</div>
-                                    )}
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* PLATFORM SENTINEL TAB (AUDIT LOGS) */}
+                    {/* Sentinel Log - IMPROVED USER FRIENDLY VERSION */}
                     {activeTab === 'sentinel' && (
                         <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div>
-                                <h1 className="text-6xl font-black text-white tracking-tighter italic italic uppercase">PLATFORM_SENTINEL</h1>
-                                <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px] mt-2 ml-1">Immutable Activity Logs & Audit Trails</p>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Sentinel_Feed</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Historical Audit Trail & Accountability Engine</p>
                             </div>
 
-                            <div className="bg-slate-950/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 font-mono">
-                                <div className="flex items-center gap-3 mb-10 text-blue-500">
-                                    <Terminal size={20} />
-                                    <span className="text-xs font-black uppercase tracking-[0.3em]">Live Feed / System.stdout</span>
-                                </div>
-
-                                <div className="space-y-6">
-                                    {auditLogs.map((log) => (
-                                        <div key={log._id} className="flex gap-6 items-start group">
-                                            <div className="mt-1.5 flex flex-col items-center">
-                                                <div className="w-2.5 h-2.5 rounded-full border border-white/20 group-hover:bg-blue-500 transition-all"></div>
-                                                <div className="w-px h-12 bg-white/5 mt-1.5"></div>
-                                            </div>
-                                            <div className="flex-1 pb-6">
-                                                <div className="flex items-center gap-4 mb-2">
-                                                    <span className="text-[10px] text-slate-600 tabular-nums">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
-                                                    <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{log.action.replace('_', ' ')}</span>
-                                                    <span className="text-[10px] text-slate-500 uppercase font-bold">BY: {log.user?.name} ({log.user?.role})</span>
+                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden p-8">
+                                <div className="space-y-4">
+                                    {auditLogs.map((log, i) => (
+                                        <div key={log._id} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 rounded-[2rem] bg-white/[0.01] border border-white/5 hover:bg-white/[0.03] hover:border-blue-500/20 transition-all group">
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-14 h-14 rounded-2xl bg-slate-950/50 flex items-center justify-center border border-white/5 shadow-inner transition-transform group-hover:scale-105">
+                                                    {getLogIcon(log.action)}
                                                 </div>
-                                                <p className="text-sm text-slate-300 leading-relaxed font-bold">
-                                                    {log.details}
-                                                </p>
+                                                <div>
+                                                    <div className="flex items-center gap-3 mb-1.5">
+                                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/10">
+                                                            {log.action.replace(/_/g, ' ')}
+                                                        </span>
+                                                        <span className="text-[10px] text-slate-600 font-bold tabular-nums">
+                                                            {new Date(log.timestamp).toLocaleDateString()} at {new Date(log.timestamp).toLocaleTimeString()}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm font-bold text-white leading-tight">{log.details}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-4 bg-slate-950/30 px-5 py-3 rounded-2xl border border-white/5">
+                                                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">
+                                                    {log.user?.name?.charAt(0) || 'A'}
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-wider">{log.user?.name}</p>
+                                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{log.user?.role}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
                                     {auditLogs.length === 0 && (
-                                        <div className="text-center py-20 text-slate-700 font-black uppercase tracking-widest text-[10px]">No system activity recorded</div>
+                                        <div className="text-center py-20 flex flex-col items-center">
+                                            <Activity className="text-slate-800 mb-6 w-16 h-16" />
+                                            <p className="text-slate-500 font-black uppercase tracking-[0.4em] text-xs">No System Pulse Detected</p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* TABLE VIEWS */}
-                    {activeTab === 'admins' && (
-                        <div className="space-y-12">
-                            <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 mb-10">
-                                <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter italic">Admin Forge</h2>
-                                <form onSubmit={handleAddAdmin} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Full Name</label>
-                                        <input type="text" value={newAdmin.name} onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })} required className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Enter name" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">System Email</label>
-                                        <input type="email" value={newAdmin.email} onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })} required className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Enter email" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Credentials</label>
-                                        <input type="password" value={newAdmin.password} onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })} required minLength={6} className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Set password" />
-                                    </div>
-                                    <button type="submit" disabled={addingAdmin} className="md:col-span-3 w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all mt-4 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(37,99,235,0.2)]">
-                                        {addingAdmin ? <Loader2 className="animate-spin" size={20} /> : <UserPlus size={20} />}
-                                        Generate Administrator Node
-                                    </button>
-                                </form>
+                    {/* Core Config - WHAT DOES IT DO? */}
+                    {activeTab === 'settings' && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div>
+                                <h1 className="text-7xl font-black text-white tracking-tighter italic uppercase">Core_Config</h1>
+                                <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Platform Global Constants & Logic Toggles</p>
                             </div>
-                            <UserTable data={admins} title="Active Supervisors" />
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {/* Commission Logic */}
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-blue-500/30 transition-all group">
+                                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-8 group-hover:scale-110 transition-transform">
+                                        <Percent size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Commission Rate</h3>
+                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Global platform fee charged on every service transaction.</p>
+                                    <div className="flex items-end gap-3">
+                                        <input type="number" defaultValue="15" className="w-24 bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-white font-black outline-none" />
+                                        <span className="text-2xl font-black text-white mb-2">%</span>
+                                    </div>
+                                </div>
+
+                                {/* Availability Toggle */}
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-amber-500/30 transition-all group">
+                                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-8 group-hover:scale-110 transition-transform">
+                                        <Zap size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Maintenance Mode</h3>
+                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Instant lockout of all non-admin users for emergency system repair.</p>
+                                    <button className="px-8 py-3 bg-slate-950 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all">Enable Lockout</button>
+                                </div>
+
+                                {/* Global Scope */}
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 p-8 rounded-[2.5rem] hover:border-indigo-500/30 transition-all group">
+                                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-8 group-hover:scale-110 transition-transform">
+                                        <Globe size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-2">Region Control</h3>
+                                    <p className="text-xs text-slate-500 font-bold leading-relaxed mb-8 uppercase tracking-widest">Manage supported cities and currency formatting for the GH region.</p>
+                                    <p className="text-emerald-500 text-[10px] font-black uppercase tracking-[0.2em]">Active: Greater Accra</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-blue-600/5 border border-blue-500/20 rounded-[2.5rem] p-8 flex items-center gap-6">
+                                <AlertCircle className="text-blue-500 flex-shrink-0" size={32} />
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-loose">
+                                    <span className="text-blue-400 font-black">Architect Warning:</span> Changes to Core Config propagate through the entire system instantly. Modify these values ONLY when you intend to change the business logic of the Trimz Platform globally.
+                                </p>
+                            </div>
                         </div>
                     )}
 
-                    {activeTab === 'providers' && <UserTable data={providers} title="Platform Service Units" />}
-                    {activeTab === 'users' && <UserTable data={customers} title="Registered End Users" />}
-
-                    {activeTab === 'settings' && (
-                        <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-lg mx-auto">
-                            <Settings className="text-blue-500 w-16 h-16 mb-8 animate-[spin_10s_linear_infinite]" />
-                            <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter italic">CORE_CONFIG_LOCKED</h2>
-                            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.3em] leading-relaxed mt-4">Platform kernel variables under secure encryption. Access restricted to System Architect.</p>
+                    {/* Supervisors, Service Units, End Users Table Views */}
+                    {['admins', 'providers', 'users'].includes(activeTab) && (
+                        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            {activeTab === 'admins' && (
+                                <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 mb-10">
+                                    <h2 className="text-2xl font-black text-white italic mb-8 uppercase tracking-tighter">Admin Forge</h2>
+                                    <form onSubmit={handleAddAdmin} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-blue-500 uppercase tracking-[0.3em] ml-1">Identity Name</label>
+                                            <input type="text" value={newAdmin.name} onChange={e => setNewAdmin({ ...newAdmin, name: e.target.value })} required className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Alpha Node" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-blue-500 uppercase tracking-[0.3em] ml-1">System Email</label>
+                                            <input type="email" value={newAdmin.email} onChange={e => setNewAdmin({ ...newAdmin, email: e.target.value })} required className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="alpha@trimz.com" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[9px] font-black text-blue-500 uppercase tracking-[0.3em] ml-1">Key Hash</label>
+                                            <input type="password" value={newAdmin.password} onChange={e => setNewAdmin({ ...newAdmin, password: e.target.value })} required minLength={6} className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none" placeholder="Min 6 Bytes" />
+                                        </div>
+                                        <button type="submit" disabled={addingAdmin} className="md:col-span-3 w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-blue-500 transition-all mt-4 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(37,99,235,0.2)]">
+                                            {addingAdmin ? <Loader2 className="animate-spin" size={20} /> : <Zap size={18} />}
+                                            Commit Admin Generation
+                                        </button>
+                                    </form>
+                                </div>
+                            )}
+                            <UserTable
+                                data={activeTab === 'admins' ? admins : activeTab === 'providers' ? providers : customers}
+                                title={activeTab === 'admins' ? 'Supervisor Hierarchy' : activeTab === 'providers' ? 'Active Service Units' : 'Platform Customer Base'}
+                            />
                         </div>
                     )}
 
@@ -667,17 +676,17 @@ const SuperAdminDashboard = () => {
                         </button>
 
                         <div className="mb-10">
-                            <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter italic">Edit Account</h2>
-                            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-2">{editingUser._id}</p>
+                            <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter">Edit Entity</h2>
+                            <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-2">UUID: {editingUser._id}</p>
                         </div>
 
                         <form onSubmit={handleUpdateUser} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Identity Name</label>
+                                <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Public Name</label>
                                 <input type="text" value={editingUser.name} onChange={e => setEditingUser({ ...editingUser, name: e.target.value })} className="w-full bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none transition-all" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Contact Email</label>
+                                <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">System Email</label>
                                 <input type="email" value={editingUser.email} onChange={e => setEditingUser({ ...editingUser, email: e.target.value })} className="w-full bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none transition-all" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -690,7 +699,7 @@ const SuperAdminDashboard = () => {
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Status</label>
+                                    <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest ml-1">Logic Status</label>
                                     <select value={editingUser.status || (editingUser.verified ? 'active' : 'pending')} onChange={e => setEditingUser({ ...editingUser, status: e.target.value })} className="w-full bg-slate-900 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:border-blue-500 outline-none appearance-none cursor-pointer">
                                         <option value="active">Active</option>
                                         <option value="approved">Approved</option>
@@ -700,8 +709,8 @@ const SuperAdminDashboard = () => {
                                 </div>
                             </div>
 
-                            <button type="submit" className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-blue-500 transition-all shadow-[0_20px_40px_rgba(37,99,235,0.2)] mt-6">
-                                Apply Encryption & Save
+                            <button type="submit" className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] hover:bg-blue-500 transition-all shadow-xl mt-6">
+                                Update Platform State
                             </button>
                         </form>
                     </div>
