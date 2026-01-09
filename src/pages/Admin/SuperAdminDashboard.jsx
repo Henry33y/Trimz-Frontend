@@ -48,7 +48,10 @@ const SuperAdminDashboard = () => {
                 }
             });
 
-            if (!res.ok) throw new Error('Failed to fetch platform statistics');
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Failed to fetch platform statistics: ${res.status} ${res.statusText}`);
+            }
 
             const result = await res.json();
             setStats(result.data);
@@ -160,8 +163,8 @@ const SuperAdminDashboard = () => {
                                 key={item.id}
                                 onClick={() => setActiveTab(item.id)}
                                 className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-sm transition-all group ${activeTab === item.id
-                                        ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
-                                        : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/10'
+                                    : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
                                     }`}
                             >
                                 <item.icon size={20} className={activeTab === item.id ? 'text-white' : 'group-hover:text-blue-400'} />
